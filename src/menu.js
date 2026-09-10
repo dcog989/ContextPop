@@ -87,14 +87,18 @@
   color: inherit;
   cursor: pointer;
 }
-.cs-tile:hover,
-.cs-tile:focus-visible {
+.cs-tile:hover {
+  background: #00000014;
+  border-color: #00000029;
+  outline: none;
+}
+.cs-menu.kb .cs-tile:focus {
   background: #00000014;
   border-color: #00000029;
   outline: none;
 }
 .cs-menu.dark .cs-tile:hover,
-.cs-menu.dark .cs-tile:focus-visible {
+.cs-menu.dark.kb .cs-tile:focus {
   background: #ffffff1f;
   border-color: #ffffff33;
 }
@@ -341,6 +345,7 @@
 
   function handleMenuKeydown(event) {
     const menu = event.currentTarget;
+    menu.classList.add('kb');
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowDown':
