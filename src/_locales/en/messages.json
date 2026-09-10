@@ -72,6 +72,18 @@
   "columnsLabel": {
     "message": "Columns"
   },
+  "iconSizeLabel": {
+    "message": "Icon size"
+  },
+  "iconSizeSmall": {
+    "message": "Small"
+  },
+  "iconSizeMedium": {
+    "message": "Medium"
+  },
+  "iconSizeLarge": {
+    "message": "Large"
+  },
   "themeLabel": {
     "message": "Theme"
   },

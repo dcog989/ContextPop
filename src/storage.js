@@ -9,6 +9,7 @@ const CONTEXTS = Object.freeze(['text', 'word', 'link', 'image', 'page']);
 const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 const FAVICON_PROVIDERS = Object.freeze(['site', 'duckduckgo', 'none']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
+const ICON_SIZES = Object.freeze(['small', 'medium', 'large']);
 
 const BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', location: 'content', contexts: ['text', 'word'] },
@@ -40,6 +41,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   showGroupHeaders: true,
   faviconProvider: 'site',
   actionsPosition: 'before',
+  iconSize: 'medium',
 });
 
 function defaultSettings() {
@@ -127,6 +129,9 @@ function normalizeSettings(stored) {
   }
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {
     settings.actionsPosition = DEFAULT_SETTINGS.actionsPosition;
+  }
+  if (!ICON_SIZES.includes(settings.iconSize)) {
+    settings.iconSize = DEFAULT_SETTINGS.iconSize;
   }
   return settings;
 }

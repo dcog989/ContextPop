@@ -72,14 +72,26 @@
   display: grid;
   gap: 4px;
 }
+.cs-menu {
+  --icon-size: 28px;
+  --tile-size: 52px;
+}
+.cs-menu.icon-sm {
+  --icon-size: 22px;
+  --tile-size: 44px;
+}
+.cs-menu.icon-lg {
+  --icon-size: 36px;
+  --tile-size: 64px;
+}
 .cs-tile {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
-  width: 46px;
-  height: 46px;
+  width: var(--tile-size);
+  height: var(--tile-size);
   padding: 2px;
   border: 1px solid transparent;
   border-radius: 8px;
@@ -119,32 +131,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--icon-size);
+  height: var(--icon-size);
 }
 .cs-icon [hidden] {
   display: none !important;
 }
 .cs-icon img {
-  width: 24px;
-  height: 24px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   object-fit: contain;
   pointer-events: none;
 }
 .cs-icon svg {
-  width: 22px;
-  height: 22px;
+  width: calc(var(--icon-size) - 2px);
+  height: calc(var(--icon-size) - 2px);
 }
 .cs-letter {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   border-radius: 50%;
   background: var(--accent);
   color: #ffffff;
-  font-size: 13px;
+  font-size: calc(var(--icon-size) * 0.54);
   font-weight: 600;
 }
 .cs-label {
@@ -532,6 +544,9 @@
     menu.style.visibility = 'hidden';
 
     if (settings.showLabels) menu.classList.add('has-labels');
+    if (settings.iconSize === 'small' || settings.iconSize === 'large') {
+      menu.classList.add(`icon-${settings.iconSize}`);
+    }
     applyTheme(menu, settings.theme);
 
     const iconSetters = new Map();

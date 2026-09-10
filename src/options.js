@@ -26,6 +26,7 @@ const elements = {
   labels: document.getElementById('setting-labels'),
   groupHeaders: document.getElementById('setting-group-headers'),
   faviconProvider: document.getElementById('setting-favicon-provider'),
+  iconSize: document.getElementById('setting-icon-size'),
 };
 
 function msg(name, substitutions) {
@@ -267,6 +268,7 @@ function renderSettings() {
   elements.labels.checked = Boolean(state.settings.showLabels);
   elements.groupHeaders.checked = Boolean(state.settings.showGroupHeaders);
   elements.faviconProvider.value = state.settings.faviconProvider;
+  elements.iconSize.value = state.settings.iconSize;
 }
 
 function moveEngine(index, offset) {
@@ -514,6 +516,10 @@ function bindSettings() {
     state.settings.faviconProvider = elements.faviconProvider.value;
     markDirty();
     refreshIcons();
+  });
+  elements.iconSize.addEventListener('change', () => {
+    state.settings.iconSize = elements.iconSize.value;
+    markDirty();
   });
 }
 
