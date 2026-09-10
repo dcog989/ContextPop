@@ -188,5 +188,143 @@
   },
   "menuLabel": {
     "message": "Selection actions"
+  },
+  "menuNoActions": {
+    "message": "Nothing available for this selection"
+  },
+  "actionsGroup": {
+    "message": "Actions"
+  },
+  "enginesGroup": {
+    "message": "Search engines"
+  },
+  "clipboardBlocked": {
+    "message": "Clipboard access was not granted, so copy actions are hidden"
+  },
+  "actionsHeading": {
+    "message": "Actions"
+  },
+  "actionsHint": {
+    "message": "Choose which built-in actions appear, which selections they apply to, and their order."
+  },
+  "actionsPositionLabel": {
+    "message": "Action group position"
+  },
+  "actionsBefore": {
+    "message": "Before search engines"
+  },
+  "actionsAfter": {
+    "message": "After search engines"
+  },
+  "actionCopyRich": {
+    "message": "Copy to clipboard"
+  },
+  "actionCopyPlain": {
+    "message": "Copy as plain text"
+  },
+  "actionOpenLink": {
+    "message": "Open link in new tab"
+  },
+  "actionOpenLinkBackground": {
+    "message": "Open link in background tab"
+  },
+  "actionDefine": {
+    "message": "Define \"$word$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurus": {
+    "message": "Thesaurus \"$word$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionSearchBrowser": {
+    "message": "Search with the browser's default engine"
+  },
+  "actionFallbackName": {
+    "message": "Action"
+  },
+  "contextText": {
+    "message": "Text"
+  },
+  "contextWord": {
+    "message": "Word"
+  },
+  "contextLink": {
+    "message": "Link"
+  },
+  "contextImage": {
+    "message": "Image"
+  },
+  "contextPage": {
+    "message": "Page"
+  },
+  "providerTemplateLabel": {
+    "message": "Provider template"
+  },
+  "providerTemplatePlaceholder": {
+    "message": "https://example.com/lookup/{searchTerms}"
+  },
+  "importFromBrowser": {
+    "message": "Import from browser"
+  },
+  "importUnavailable": {
+    "message": "This browser does not let extensions list installed search engines. Add them manually."
+  },
+  "engineSourceBrowser": {
+    "message": "From browser"
+  },
+  "engineContextsLabel": {
+    "message": "Show for"
+  },
+  "engineResultViewLabel": {
+    "message": "Result view"
+  },
+  "resultViewTab": {
+    "message": "New tab"
+  },
+  "resultViewPopup": {
+    "message": "Popup window"
+  },
+  "faviconLabel": {
+    "message": "Engine icons"
+  },
+  "faviconSite": {
+    "message": "From the engine's own site"
+  },
+  "faviconDuckduckgo": {
+    "message": "DuckDuckGo icon service"
+  },
+  "faviconNone": {
+    "message": "No remote icons"
+  },
+  "showGroupHeaders": {
+    "message": "Show group headers"
+  },
+  "errorTemplateScheme": {
+    "message": "\"$name$\" template must use http or https.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusBrowserImported": {
+    "message": "Imported $count$ browser engines - not saved yet",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   }
 }

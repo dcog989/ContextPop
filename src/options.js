@@ -1,24 +1,35 @@
 const state = {
   engines: [],
-  settings: { ...DEFAULT_SETTINGS },
+  settings: null,
   dirty: false,
 };
 
 const elements = {
+  actionList: document.getElementById('action-list'),
+  actionRowTemplate: document.getElementById('action-row-template'),
   list: document.getElementById('engine-list'),
   status: document.getElementById('status'),
   importFile: document.getElementById('import-file'),
   importConfigFile: document.getElementById('import-config-file'),
+  importBrowser: document.getElementById('import-browser-engines'),
+  browserNote: document.getElementById('browser-import-note'),
   rowTemplate: document.getElementById('engine-row-template'),
+  actionsPosition: document.getElementById('setting-actions-position'),
   trigger: document.getElementById('setting-trigger'),
   openMethod: document.getElementById('setting-open-method'),
   columns: document.getElementById('setting-columns'),
   theme: document.getElementById('setting-theme'),
   labels: document.getElementById('setting-labels'),
+  groupHeaders: document.getElementById('setting-group-headers'),
+  faviconProvider: document.getElementById('setting-favicon-provider'),
 };
 
 function msg(name, substitutions) {
   return api.i18n.getMessage(name, substitutions);
+}
+
+function capitalize(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function localize() {
@@ -41,7 +52,7 @@ function localize() {
     if (value) element.textContent = value;
   }
 
-  const roots = [document, elements.rowTemplate?.content].filter(Boolean);
+  const roots = [document, elements.rowTemplate?.content, elements.actionRowTemplate?.content].filter(Boolean);
   for (const root of roots) {
     for (const { selector, key, apply } of attributeBindings) {
       for (const element of root.querySelectorAll(selector)) {
@@ -68,6 +79,81 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function buildContextChips(contexts, onChange) {
+  const container = document.createElement('div');
+  for (const context of CONTEXTS) {
+    const label = document.createElement('label');
+    label.className = 'chip';
+
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = contexts.includes(context);
+    input.addEventListener('change', () => onChange(context, input.checked));
+
+    const span = document.createElement('span');
+    span.textContent = msg(`context${capitalize(context)}`);
+
+    label.append(input, span);
+    container.appendChild(label);
+  }
+  return container;
+}
+
+function createActionRow(actionId, index) {
+  const def = BUILTIN_ACTION_DEFS.find((item) => item.id === actionId);
+  const value = state.settings.builtinActions[actionId];
+  const fragment = elements.actionRowTemplate.content.cloneNode(true);
+
+  const enabled = fragment.querySelector('.action-enabled');
+  enabled.checked = value.enabled;
+  enabled.addEventListener('change', () => {
+    value.enabled = enabled.checked;
+    markDirty();
+  });
+
+  fragment.querySelector('.action-name').textContent = msg(`action${capitalize(actionId)}`);
+
+  const contextHost = fragment.querySelector('.action-contexts');
+  contextHost.replaceChildren(
+    buildContextChips(value.contexts, (context, checked) => {
+      value.contexts = CONTEXTS.filter((item) => (item === context ? checked : value.contexts.includes(item)));
+      markDirty();
+    }),
+  );
+
+  const templateField = fragment.querySelector('.action-template-field');
+  if (def?.template) {
+    templateField.hidden = false;
+    const templateInput = fragment.querySelector('.action-template');
+    templateInput.value = value.template || def.template;
+    templateInput.addEventListener('input', () => {
+      value.template = templateInput.value;
+      markDirty();
+    });
+  }
+
+  fragment.querySelector('.move-up').addEventListener('click', () => moveAction(index, -1));
+  fragment.querySelector('.move-down').addEventListener('click', () => moveAction(index, 1));
+  return fragment;
+}
+
+function renderActions() {
+  elements.actionList.replaceChildren();
+  state.settings.actionOrder.forEach((actionId, index) => {
+    elements.actionList.appendChild(createActionRow(actionId, index));
+  });
+}
+
+function moveAction(index, offset) {
+  const target = index + offset;
+  const order = state.settings.actionOrder;
+  if (target < 0 || target >= order.length) return;
+  const [id] = order.splice(index, 1);
+  order.splice(target, 0, id);
+  renderActions();
+  markDirty();
+}
+
 function createRow(engine, index) {
   const fragment = elements.rowTemplate.content.cloneNode(true);
 
@@ -82,6 +168,7 @@ function createRow(engine, index) {
 
   const template = fragment.querySelector('.engine-template');
   template.value = engine.template;
+  template.disabled = engine.source === 'browser';
   template.addEventListener('input', () => {
     engine.template = template.value;
     markDirty();
@@ -93,6 +180,23 @@ function createRow(engine, index) {
     engine.icon = iconUrl.value.trim();
     markDirty();
   });
+
+  const resultView = fragment.querySelector('.engine-result-view');
+  resultView.value = engine.resultView || 'tab';
+  resultView.addEventListener('change', () => {
+    engine.resultView = resultView.value;
+    markDirty();
+  });
+
+  if (engine.source === 'browser') fragment.querySelector('.engine-badge').hidden = false;
+
+  const contextHost = fragment.querySelector('.engine-contexts');
+  contextHost.replaceChildren(
+    buildContextChips(engine.contexts, (context, checked) => {
+      engine.contexts = CONTEXTS.filter((item) => (item === context ? checked : engine.contexts.includes(item)));
+      markDirty();
+    }),
+  );
 
   fragment.querySelector('.move-up').addEventListener('click', () => moveEngine(index, -1));
   fragment.querySelector('.move-down').addEventListener('click', () => moveEngine(index, 1));
@@ -109,11 +213,14 @@ function renderEngines() {
 }
 
 function renderSettings() {
+  elements.actionsPosition.value = state.settings.actionsPosition;
   elements.trigger.value = state.settings.trigger;
   elements.openMethod.value = state.settings.openMethod;
   elements.columns.value = state.settings.columns;
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
+  elements.groupHeaders.checked = Boolean(state.settings.showGroupHeaders);
+  elements.faviconProvider.value = state.settings.faviconProvider;
 }
 
 function moveEngine(index, offset) {
@@ -132,7 +239,9 @@ function deleteEngine(index) {
 }
 
 function addEngine() {
-  state.engines.push({ id: generateId(), name: '', template: '', icon: '' });
+  state.engines.push(
+    normalizeEngine({ id: generateId(), name: '', source: 'template', template: '', icon: '', resultView: 'tab' }),
+  );
   renderEngines();
   markDirty();
 }
@@ -144,13 +253,38 @@ function restoreDefaults() {
   setStatus(msg('statusDefaultsRestored'));
 }
 
-function normalizeEngine(engine) {
-  return {
-    id: engine.id || generateId(),
-    name: String(engine.name ?? ''),
-    template: String(engine.template ?? ''),
-    icon: engine.icon || '',
-  };
+async function importBrowserEngines() {
+  if (typeof api.search?.get !== 'function') return;
+
+  let installed = [];
+  try {
+    installed = await api.search.get();
+  } catch (error) {
+    setStatus(msg('statusImportFailed', error.message), true);
+    return;
+  }
+
+  const existing = new Set(state.engines.map((engine) => engine.browserEngineName).filter(Boolean));
+  let added = 0;
+  for (const item of installed) {
+    if (!item?.name || existing.has(item.name)) continue;
+    state.engines.push(
+      normalizeEngine({
+        id: generateId(),
+        name: item.name,
+        source: 'browser',
+        browserEngineName: item.name,
+        icon: item.favIconUrl || '',
+        resultView: 'tab',
+      }),
+    );
+    existing.add(item.name);
+    added += 1;
+  }
+
+  renderEngines();
+  markDirty();
+  setStatus(msg('statusBrowserImported', String(added)));
 }
 
 function downloadJson(filename, data) {
@@ -200,9 +334,8 @@ function exportEngines() {
 function importConfig(file) {
   readConfigFile(file, (parsed, incoming) => {
     state.engines = incoming.map(normalizeEngine);
-    if (parsed.settings && typeof parsed.settings === 'object') {
-      state.settings = { ...DEFAULT_SETTINGS, ...parsed.settings };
-    }
+    state.settings = normalizeSettings({ ...state.settings, ...(parsed.settings || {}) });
+    renderActions();
     renderEngines();
     renderSettings();
     markDirty();
@@ -222,31 +355,44 @@ function exportConfig() {
 function validate() {
   for (const engine of state.engines) {
     if (!engine.name.trim()) return msg('errorNameRequired');
-    if (!engine.template.includes('{searchTerms}')) {
-      return msg('errorTemplateTerms', engine.name);
-    }
+    if (engine.source === 'browser') continue;
+    if (!engine.template.includes('{searchTerms}')) return msg('errorTemplateTerms', engine.name);
+    if (!/^https?:\/\//i.test(engine.template)) return msg('errorTemplateScheme', engine.name);
   }
   return null;
 }
 
-function collectIconOrigins(engines) {
+function addOrigin(origins, value) {
+  try {
+    const url = new URL(value);
+    if (url.protocol === 'http:' || url.protocol === 'https:') origins.add(`${url.protocol}//${url.host}/*`);
+  } catch {
+    // Malformed URLs are ignored; the icon falls back to a letter.
+  }
+}
+
+function collectIconOrigins(engines, settings) {
   const origins = new Set();
   for (const engine of engines) {
-    if (!engine.icon || engine.icon.startsWith('data:')) continue;
+    if (engine.icon && !engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
+    if (engine.source === 'browser' || engine.icon) continue;
+    if (settings.faviconProvider === 'none') continue;
+    if (settings.faviconProvider === 'duckduckgo') {
+      origins.add('https://icons.duckduckgo.com/*');
+      continue;
+    }
     try {
-      const url = new URL(engine.icon);
-      if (url.protocol === 'http:' || url.protocol === 'https:') {
-        origins.add(`${url.protocol}//${url.host}/*`);
-      }
+      const url = new URL(engine.template.replace(/\{searchTerms\}/g, 'x'));
+      origins.add(`${url.protocol}//${url.host}/*`);
     } catch {
-      // Malformed icon URLs are ignored here; the icon falls back to a letter.
+      // Skip engines with unparseable templates.
     }
   }
   return [...origins];
 }
 
-async function ensureIconPermission(engines) {
-  const origins = collectIconOrigins(engines);
+async function ensureIconPermission(engines, settings) {
+  const origins = collectIconOrigins(engines, settings);
   if (!origins.length || !api.permissions?.request) return true;
   try {
     return await api.permissions.request({ origins });
@@ -262,15 +408,11 @@ async function save() {
     return;
   }
 
-  state.engines = state.engines.map((engine) => ({
-    id: engine.id || generateId(),
-    name: engine.name.trim(),
-    template: engine.template.trim(),
-    icon: engine.icon || '',
-  }));
+  state.engines = state.engines.map((engine) => normalizeEngine(engine));
+  state.settings = normalizeSettings(state.settings);
   state.settings.columns = clamp(Number(state.settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
-  const iconAccess = await ensureIconPermission(state.engines);
+  const iconAccess = await ensureIconPermission(state.engines, state.settings);
 
   try {
     await Promise.all([saveEngines(state.engines), saveSettings(state.settings)]);
@@ -280,6 +422,7 @@ async function save() {
   }
 
   state.dirty = false;
+  renderActions();
   renderEngines();
   renderSettings();
   setStatus(iconAccess ? msg('statusSaved') : msg('statusIconPermission'));
@@ -288,7 +431,17 @@ async function save() {
   }, 1500);
 }
 
+function configureBrowserImport() {
+  const available = typeof api.search?.get === 'function';
+  elements.importBrowser.hidden = !available;
+  elements.browserNote.hidden = available;
+}
+
 function bindSettings() {
+  elements.actionsPosition.addEventListener('change', () => {
+    state.settings.actionsPosition = elements.actionsPosition.value;
+    markDirty();
+  });
   elements.trigger.addEventListener('change', () => {
     state.settings.trigger = elements.trigger.value;
     markDirty();
@@ -309,6 +462,14 @@ function bindSettings() {
     state.settings.showLabels = elements.labels.checked;
     markDirty();
   });
+  elements.groupHeaders.addEventListener('change', () => {
+    state.settings.showGroupHeaders = elements.groupHeaders.checked;
+    markDirty();
+  });
+  elements.faviconProvider.addEventListener('change', () => {
+    state.settings.faviconProvider = elements.faviconProvider.value;
+    markDirty();
+  });
 }
 
 function bindActions() {
@@ -316,6 +477,7 @@ function bindActions() {
   document.getElementById('restore-defaults').addEventListener('click', restoreDefaults);
   document.getElementById('export-engines').addEventListener('click', exportEngines);
   document.getElementById('import-engines').addEventListener('click', () => elements.importFile.click());
+  elements.importBrowser.addEventListener('click', importBrowserEngines);
   document.getElementById('export-config').addEventListener('click', exportConfig);
   document.getElementById('import-config').addEventListener('click', () => elements.importConfigFile.click());
   document.getElementById('save').addEventListener('click', save);
@@ -345,8 +507,10 @@ function bindActions() {
 
 async function load() {
   [state.engines, state.settings] = await Promise.all([loadEngines(), loadSettings()]);
+  renderActions();
   renderEngines();
   renderSettings();
+  configureBrowserImport();
 }
 
 globalThis.__contextSmartTheme?.applyTokens(document.documentElement);

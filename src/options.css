@@ -108,17 +108,50 @@ button:hover {
   filter: brightness(1.08);
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.inline-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.action-list,
 .engine-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+.action-row,
 .engine-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.action-main,
+.engine-main {
   display: grid;
-  grid-template-columns: 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) auto;
   gap: 8px;
   align-items: center;
+}
+
+.action-main {
+  grid-template-columns: minmax(200px, 1fr) auto auto;
+}
+
+.engine-main {
+  grid-template-columns: 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) minmax(120px, auto) auto;
 }
 
 .engine-icon {
@@ -145,10 +178,19 @@ select {
   font-family: inherit;
 }
 
+input:disabled {
+  opacity: 0.6;
+}
+
 input:focus,
 select:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+}
+
+.inline-field select {
+  width: auto;
+  min-width: 220px;
 }
 
 .row-actions {
@@ -168,6 +210,75 @@ select:focus {
 
 .row-actions .delete {
   color: var(--danger);
+}
+
+.action-contexts,
+.engine-contexts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.engine-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.engine-contexts-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.engine-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.chip input {
+  width: auto;
+  margin: 0;
+}
+
+.action-toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-toggle input {
+  width: auto;
+}
+
+.action-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.action-template-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 .settings-grid {

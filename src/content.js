@@ -14,6 +14,8 @@
   const contentState = {
     settings: null,
     engines: [],
+    clipboardAllowed: true,
+    selection: null,
     rightHoldTimer: null,
     suppressMouseUp: false,
   };
@@ -27,12 +29,14 @@
 
   async function loadConfig() {
     try {
-      const [settings, engines] = await Promise.all([
+      const [settings, engines, clipboardAllowed] = await Promise.all([
         request({ type: 'getSettings' }),
         request({ type: 'getEngines' }),
+        request({ type: 'hasClipboard' }),
       ]);
       contentState.settings = settings;
       contentState.engines = engines;
+      contentState.clipboardAllowed = clipboardAllowed !== false;
     } catch (error) {
       console.error('Context Smart: failed to load config', error);
     }
@@ -48,6 +52,30 @@
     );
   }
 
+  function findAnchor(node) {
+    let element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+    while (element && element !== document.documentElement) {
+      if (element.tagName === 'A' && element.href) return element;
+      element = element.parentElement;
+    }
+    return null;
+  }
+
+  function isHttpUrl(value) {
+    try {
+      const url = new URL(value);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  function serializeSelection(range) {
+    const container = document.createElement('div');
+    container.appendChild(range.cloneContents());
+    return container.innerHTML;
+  }
+
   function readSelection() {
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
@@ -55,10 +83,99 @@
     const text = selection.toString().trim();
     if (!text) return null;
 
-    const rect = selection.getRangeAt(0).getBoundingClientRect();
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
     if (!rect || (rect.width === 0 && rect.height === 0)) return null;
 
-    return { text, rect };
+    const anchor = findAnchor(range.commonAncestorContainer);
+    const anchorHref = anchor?.href && isHttpUrl(anchor.href) ? anchor.href : '';
+
+    return {
+      text,
+      rect,
+      html: serializeSelection(range),
+      href: anchorHref || (isHttpUrl(text) ? text : ''),
+      linkText: anchor ? anchor.textContent.trim() : '',
+    };
+  }
+
+  function classify(info, target) {
+    if (!info) return target?.tagName === 'IMG' ? 'image' : 'page';
+    if (info.href) return 'link';
+    if (/^\S+$/.test(info.text)) return 'word';
+    return 'text';
+  }
+
+  function buildActivation(event) {
+    const info = readSelection();
+    const context = classify(info, event.target);
+    if (info) return { ...info, context };
+    if (context !== 'image') return null;
+
+    const image = event.target?.closest?.('img') || (event.target?.tagName === 'IMG' ? event.target : null);
+    const source = image?.currentSrc || image?.src || '';
+    if (!image || !source) return null;
+
+    const rect = image.getBoundingClientRect();
+    if (!rect || (rect.width === 0 && rect.height === 0)) return null;
+
+    return {
+      text: image.alt?.trim() || source,
+      rect,
+      html: '',
+      href: '',
+      linkText: '',
+      context: 'image',
+    };
+  }
+
+  function fallbackCopy(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.top = '-1000px';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+
+    let copied = false;
+    try {
+      copied = document.execCommand('copy');
+    } catch {
+      copied = false;
+    }
+    area.remove();
+
+    if (!copied) throw new Error('Copy failed');
+  }
+
+  async function copyPlain() {
+    const text = (contentState.selection?.text || '').replace(/\s+/g, ' ').trim();
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      fallbackCopy(text);
+    }
+  }
+
+  async function copyRich() {
+    const plain = contentState.selection?.text || '';
+    const html = contentState.selection?.html?.trim() ? contentState.selection.html : plain;
+    try {
+      if (navigator.clipboard?.write && globalThis.ClipboardItem) {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([plain], { type: 'text/plain' }),
+          }),
+        ]);
+        return;
+      }
+    } catch {
+      // Clipboard Item unavailable or rejected; fall back to a plain-text copy.
+    }
+    await copyPlain();
   }
 
   function triggerMatches(event) {
@@ -75,11 +192,18 @@
   }
 
   function showMenu(info) {
+    contentState.selection = info;
     openMenu({
       text: info.text,
+      html: info.html,
+      context: info.context,
+      href: info.href,
+      linkText: info.linkText,
       rect: info.rect,
       engines: contentState.engines,
       settings: contentState.settings ?? {},
+      clipboardAllowed: contentState.clipboardAllowed,
+      handlers: { copyRich, copyPlain },
     });
   }
 
@@ -97,7 +221,7 @@
     if (event.composedPath().includes(menuState.host)) return;
     if (isEditableElement(event.target)) return;
 
-    const info = readSelection();
+    const info = buildActivation(event);
     if (info) showMenu(info);
   }
 
@@ -110,7 +234,7 @@
     if (event.button !== 2) return;
     if ((contentState.settings?.trigger ?? 'mouseup') !== 'rightHold') return;
 
-    const info = readSelection();
+    const info = buildActivation(event);
     if (!info) return;
     contentState.rightHoldTimer = setTimeout(() => showMenu(info), 300);
   }

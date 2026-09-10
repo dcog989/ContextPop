@@ -5,8 +5,13 @@ Context Smart shows a popup of search engines, plus options to copy to clipboard
 ## Features
 
 - Popup tile grid on text selection, keyboard navigable (arrows, Home/End, Tab, Escape)
-- Manage engines (name, template, optional icon) with import/export
-- Open results in a new tab, background tab, current tab, or new window
+- Built-in actions: copy (rich or plain), open link, define, thesaurus, and search with the browser default
+- Search engines, with a configurable Actions-before/after-engines group order
+- Context-aware: actions and engines declare which selections (`text`, `word`, `link`, `image`, `page`) they apply to
+- Manage engines (name, template, contexts, result view, optional icon) with import/export
+- Import the engines already installed in Firefox; search them through the browser
+- Favicon source: the engine's own site, DuckDuckGo's icon service, or none, with a letter fallback
+- Open results in a new tab, background tab, current tab, new window, or a popup window
 - Shift-click opens a new window; Ctrl/Cmd-click or middle-click opens a background tab
 - Light, dark, or system theme
 - English UI with a `_locales` bundle ready for translation
@@ -68,8 +73,10 @@ https://duckduckgo.com/?q={searchTerms}
 
 ## Permissions and privacy
 
-- `storage` — engines and preferences, kept on-device.
+- `storage` — engines, actions, and preferences, kept on-device.
+- `search` — enumerate and use the browser's installed engines (Firefox import/search, Chrome default search).
+- `clipboardWrite` — copy actions.
 - Host access to all sites — needed to show the menu wherever you select text.
-- Optional host access — requested only when you configure a remote icon URL.
+- Optional host access — requested only when you configure remote icons or favicons.
 
 Remote icons are fetched by the background and cached for the session, without cookies or a referrer. See [PRIVACY.md](PRIVACY.md).

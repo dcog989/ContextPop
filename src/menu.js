@@ -6,7 +6,13 @@
   const menuState = {
     open: false,
     text: '',
+    html: '',
+    context: '',
+    href: '',
+    linkText: '',
+    actions: [],
     settings: null,
+    handlers: null,
     host: null,
     root: null,
     previousFocus: null,
@@ -16,9 +22,10 @@
 .cs-menu {
   position: absolute;
   z-index: 2147483647;
-  display: grid;
-  gap: 4px;
-  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
   max-width: min(92vw, 560px);
   max-height: 70vh;
   overflow: auto;
@@ -34,6 +41,36 @@
   background: #202124;
   color: #f1f3f4;
   border-color: #ffffff29;
+}
+.cs-context {
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+.cs-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cs-group + .cs-group {
+  border-top: 1px solid #00000014;
+  padding-top: 8px;
+}
+.cs-menu.dark .cs-group + .cs-group {
+  border-top-color: #ffffff1f;
+}
+.cs-group-title {
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+.cs-tiles {
+  display: grid;
+  gap: 4px;
 }
 .cs-tile {
   display: flex;
@@ -83,6 +120,10 @@
   object-fit: contain;
   pointer-events: none;
 }
+.cs-icon svg {
+  width: 22px;
+  height: 22px;
+}
 .cs-letter {
   display: flex;
   align-items: center;
@@ -110,12 +151,54 @@
 }
 `;
 
-  function t(name, fallback) {
-    return api.i18n?.getMessage(name) || fallback;
+  const BUILTIN_ICON_SVG = Object.freeze({
+    copyRich:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
+    copyPlain:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>',
+    openLink:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+    openLinkBackground:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5h6v6"/><path d="M19 5l-8 8"/><path d="M11 6H6a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-5"/></svg>',
+    define:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>',
+    thesaurus:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M9 8h6"/><path d="M9 12h4"/></svg>',
+    searchBrowser:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-3.5-3.5"/></svg>',
+  });
+
+  function t(name, fallback, substitutions) {
+    const value = api.i18n?.getMessage(name, substitutions);
+    if (value) return value;
+    if (!substitutions) return fallback;
+    return fallback.replace(/\$(\d+)\$/g, (_match, index) => String(substitutions[Number(index) - 1] ?? ''));
+  }
+
+  function capitalize(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
+  function listActions(settings) {
+    return typeof globalThis.builtinActionList === 'function' ? globalThis.builtinActionList(settings) : [];
+  }
+
+  function contextMatches(item, context) {
+    if (typeof globalThis.matchesContext === 'function') return globalThis.matchesContext(item, context);
+    const contexts = Array.isArray(item?.contexts) ? item.contexts : ['text', 'word', 'link', 'image', 'page'];
+    return contexts.includes(context);
+  }
+
+  function isCopyAction(id) {
+    return id === 'copyRich' || id === 'copyPlain';
   }
 
   function isMenuOpen() {
     return menuState.open;
+  }
+
+  function send(message) {
+    api.runtime.sendMessage(message).catch(() => {});
   }
 
   function closeMenu({ restoreFocus = false } = {}) {
@@ -160,23 +243,78 @@
     return { element: wrapper, setSource };
   }
 
-  function requestSearch(engineId, method) {
-    api.runtime.sendMessage({ type: 'search', engineId, terms: menuState.text, method }).catch(() => {});
+  function createBuiltinIcon(id) {
+    const wrapper = document.createElement('span');
+    wrapper.className = 'cs-icon';
+    wrapper.innerHTML = BUILTIN_ICON_SVG[id] || BUILTIN_ICON_SVG.copyRich;
+    return wrapper;
   }
 
-  function handleTileClick(event) {
-    let method = menuState.settings?.openMethod || 'newTab';
-    if (event.shiftKey) method = 'newWindow';
-    else if (event.ctrlKey || event.metaKey) method = 'backgroundTab';
+  function resolveMethod(event, base) {
+    if (event.shiftKey) return 'newWindow';
+    if (event.ctrlKey || event.metaKey) return 'backgroundTab';
+    return base || 'newTab';
+  }
 
-    requestSearch(event.currentTarget.dataset.engineId, method);
+  function actionLabel(action, text) {
+    switch (action.id) {
+      case 'define':
+        return t('actionDefine', 'Define "$1$"', [text]);
+      case 'thesaurus':
+        return t('actionThesaurus', 'Thesaurus "$1$"', [text]);
+      default:
+        return t(`action${capitalize(action.id)}`, action.id);
+    }
+  }
+
+  function dispatchAction(id, event) {
+    const action = menuState.actions.find((item) => item.id === id);
+    if (!action) return;
+    const method = resolveMethod(event, menuState.settings?.openMethod);
+
+    switch (id) {
+      case 'copyRich':
+      case 'copyPlain':
+        menuState.handlers?.[id]?.();
+        break;
+      case 'openLink':
+        send({ type: 'openLink', url: menuState.href, method });
+        break;
+      case 'openLinkBackground':
+        send({ type: 'openLink', url: menuState.href, method: 'backgroundTab' });
+        break;
+      case 'define':
+      case 'thesaurus':
+        send({ type: 'openReference', template: action.template, terms: menuState.text });
+        break;
+      case 'searchBrowser':
+        send({ type: 'searchBrowser', terms: menuState.text, method });
+        break;
+      default:
+        break;
+    }
+  }
+
+  function handleActionClick(event) {
+    dispatchAction(event.currentTarget.dataset.actionId, event);
     closeMenu({ restoreFocus: true });
   }
 
-  function handleTileAuxClick(event) {
+  function handleEngineClick(event) {
+    const method = resolveMethod(event, menuState.settings?.openMethod);
+    send({ type: 'search', engineId: event.currentTarget.dataset.engineId, terms: menuState.text, method });
+    closeMenu({ restoreFocus: true });
+  }
+
+  function handleEngineAuxClick(event) {
     if (event.button !== 1) return;
     event.preventDefault();
-    requestSearch(event.currentTarget.dataset.engineId, 'backgroundTab');
+    send({
+      type: 'search',
+      engineId: event.currentTarget.dataset.engineId,
+      terms: menuState.text,
+      method: 'backgroundTab',
+    });
     closeMenu({ restoreFocus: true });
   }
 
@@ -235,28 +373,42 @@
     }
   }
 
-  function createTile(engine, showLabels) {
-    const tile = document.createElement('button');
+  function decorateTile(tile, label, showLabels) {
     tile.type = 'button';
     tile.className = 'cs-tile';
-    tile.dataset.engineId = engine.id;
-    tile.title = engine.name;
-    tile.setAttribute('aria-label', engine.name);
+    tile.title = label;
+    tile.setAttribute('aria-label', label);
     tile.setAttribute('role', 'menuitem');
     tile.tabIndex = -1;
 
-    const icon = createIcon(engine);
-    tile.appendChild(icon.element);
-
     if (showLabels) {
-      const label = document.createElement('span');
-      label.className = 'cs-label';
-      label.textContent = engine.name;
-      tile.appendChild(label);
+      const span = document.createElement('span');
+      span.className = 'cs-label';
+      span.textContent = label;
+      tile.appendChild(span);
     }
+    return tile;
+  }
 
-    tile.addEventListener('click', handleTileClick);
-    tile.addEventListener('auxclick', handleTileAuxClick);
+  function createActionTile(action, text, showLabels) {
+    const label = actionLabel(action, text);
+    const tile = document.createElement('button');
+    decorateTile(tile, label, showLabels);
+    tile.dataset.actionId = action.id;
+    tile.prepend(createBuiltinIcon(action.id));
+    tile.addEventListener('click', handleActionClick);
+    return tile;
+  }
+
+  function createEngineTile(engine, showLabels) {
+    const tile = document.createElement('button');
+    decorateTile(tile, engine.name, showLabels);
+    tile.dataset.engineId = engine.id;
+
+    const icon = createIcon(engine);
+    tile.prepend(icon.element);
+    tile.addEventListener('click', handleEngineClick);
+    tile.addEventListener('auxclick', handleEngineAuxClick);
     return { tile, setIcon: icon.setSource };
   }
 
@@ -284,7 +436,7 @@
   }
 
   async function upgradeIcons(iconSetters, engines) {
-    if (!engines.some((engine) => engine.icon)) return;
+    if (!engines.length) return;
 
     let icons = {};
     try {
@@ -301,10 +453,56 @@
     }
   }
 
-  function openMenu({ text, rect, engines, settings }) {
+  function createTileGroup(title, items, kind, settings, iconSetters) {
+    if (!items.length) return null;
+
+    const group = document.createElement('div');
+    group.className = 'cs-group';
+
+    if (settings.showGroupHeaders) {
+      const heading = document.createElement('div');
+      heading.className = 'cs-group-title';
+      heading.textContent = title;
+      group.appendChild(heading);
+    }
+
+    const tiles = document.createElement('div');
+    tiles.className = 'cs-tiles';
+    tiles.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
+
+    for (const item of items) {
+      if (kind === 'actions') {
+        tiles.appendChild(createActionTile(item, menuState.text, settings.showLabels));
+      } else {
+        const { tile, setIcon } = createEngineTile(item, settings.showLabels);
+        tiles.appendChild(tile);
+        iconSetters.set(item.id, setIcon);
+      }
+    }
+
+    group.appendChild(tiles);
+    return group;
+  }
+
+  function openMenu({ text, html, context, href, linkText, rect, engines, settings, clipboardAllowed, handlers }) {
     closeMenu();
 
+    menuState.text = text;
+    menuState.html = html;
+    menuState.context = context;
+    menuState.href = href;
+    menuState.linkText = linkText;
+    menuState.handlers = handlers;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    const allActions = listActions(settings);
+    const actions = allActions.filter(
+      (action) => action.enabled && (clipboardAllowed || !isCopyAction(action.id)) && contextMatches(action, context),
+    );
+    const visibleEngines = engines.filter((engine) => contextMatches(engine, context));
+    const copyBlocked =
+      !clipboardAllowed &&
+      allActions.some((action) => action.enabled && isCopyAction(action.id) && contextMatches(action, context));
 
     const host = document.createElement('div');
     host.style.position = 'fixed';
@@ -324,32 +522,54 @@
     menu.setAttribute('role', 'menu');
     menu.setAttribute('aria-label', t('menuLabel', 'Selection actions'));
     menu.style.visibility = 'hidden';
-    menu.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
 
     if (settings.showLabels) menu.classList.add('has-labels');
     applyTheme(menu, settings.theme);
 
     const iconSetters = new Map();
 
-    if (engines.length) {
-      for (const engine of engines) {
-        const { tile, setIcon } = createTile(engine, settings.showLabels);
-        menu.appendChild(tile);
-        iconSetters.set(engine.id, setIcon);
-      }
-      menu.addEventListener('keydown', handleMenuKeydown);
-    } else {
+    if (settings.showGroupHeaders && context) {
+      const contextHeader = document.createElement('div');
+      contextHeader.className = 'cs-context';
+      contextHeader.textContent = t(`context${capitalize(context)}`, context);
+      menu.appendChild(contextHeader);
+    }
+
+    const actionGroup = createTileGroup(t('actionsGroup', 'Actions'), actions, 'actions', settings, iconSetters);
+    const engineGroup = createTileGroup(
+      t('enginesGroup', 'Search engines'),
+      visibleEngines,
+      'engines',
+      settings,
+      iconSetters,
+    );
+
+    const groups = settings.actionsPosition === 'after' ? [engineGroup, actionGroup] : [actionGroup, engineGroup];
+    for (const group of groups) {
+      if (group) menu.appendChild(group);
+    }
+
+    if (copyBlocked) {
+      const notice = document.createElement('div');
+      notice.className = 'cs-empty';
+      notice.textContent = t('clipboardBlocked', 'Clipboard access was not granted');
+      menu.appendChild(notice);
+    }
+
+    if (!menu.querySelector('.cs-tile') && !copyBlocked) {
       const empty = document.createElement('div');
       empty.className = 'cs-empty';
-      empty.textContent = t('menuNoEngines', 'No search engines configured');
+      empty.textContent = t('menuNoActions', 'Nothing available for this selection');
       menu.appendChild(empty);
     }
+
+    if (menu.querySelector('.cs-tile')) menu.addEventListener('keydown', handleMenuKeydown);
 
     root.appendChild(menu);
     document.documentElement.appendChild(host);
 
     menuState.open = true;
-    menuState.text = text;
+    menuState.actions = allActions;
     menuState.settings = settings;
     menuState.host = host;
     menuState.root = root;
@@ -360,7 +580,7 @@
     const firstTile = menu.querySelector('.cs-tile');
     if (firstTile) focusTile(firstTile);
 
-    upgradeIcons(iconSetters, engines);
+    upgradeIcons(iconSetters, visibleEngines);
   }
 
   globalThis.__contextSmartMenu = { openMenu, closeMenu, isMenuOpen, menuState };
