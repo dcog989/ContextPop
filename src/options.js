@@ -4,6 +4,9 @@ const state = {
   dirty: false,
 };
 
+let saveTimer = null;
+let statusTimer = null;
+
 const elements = {
   actionList: document.getElementById('action-list'),
   actionRowTemplate: document.getElementById('action-row-template'),
@@ -70,9 +73,18 @@ function setStatus(message, isError = false) {
   elements.status.classList.toggle('error', isError);
 }
 
+function clearStatusSoon() {
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => {
+    if (!state.dirty) setStatus('');
+  }, 1500);
+}
+
 function markDirty() {
   state.dirty = true;
-  setStatus(msg('statusUnsaved'));
+  setStatus(msg('statusSaving'));
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => save(), 400);
 }
 
 function clamp(value, min, max) {
@@ -402,6 +414,7 @@ async function ensureIconPermission(engines, settings) {
 }
 
 async function save() {
+  clearTimeout(saveTimer);
   const problem = validate();
   if (problem) {
     setStatus(problem, true);
@@ -422,13 +435,8 @@ async function save() {
   }
 
   state.dirty = false;
-  renderActions();
-  renderEngines();
-  renderSettings();
   setStatus(iconAccess ? msg('statusSaved') : msg('statusIconPermission'));
-  setTimeout(() => {
-    if (!state.dirty) setStatus('');
-  }, 1500);
+  clearStatusSoon();
 }
 
 function configureBrowserImport() {
@@ -451,7 +459,8 @@ function bindSettings() {
     markDirty();
   });
   elements.columns.addEventListener('change', () => {
-    state.settings.columns = Number(elements.columns.value);
+    state.settings.columns = clamp(Number(elements.columns.value) || DEFAULT_SETTINGS.columns, 1, 12);
+    elements.columns.value = state.settings.columns;
     markDirty();
   });
   elements.theme.addEventListener('change', () => {
@@ -480,7 +489,6 @@ function bindActions() {
   elements.importBrowser.addEventListener('click', importBrowserEngines);
   document.getElementById('export-config').addEventListener('click', exportConfig);
   document.getElementById('import-config').addEventListener('click', () => elements.importConfigFile.click());
-  document.getElementById('save').addEventListener('click', save);
   elements.importFile.addEventListener('change', () => {
     const [file] = elements.importFile.files;
     elements.importFile.value = '';

@@ -31,7 +31,7 @@
     "message": "Export"
   },
   "templateHint": {
-    "message": "The {searchTerms} placeholder is replaced with the selected text. Changes are not applied until you save."
+    "message": "The {searchTerms} placeholder is replaced with the selected text. Changes are saved automatically."
   },
   "behaviorHeading": {
     "message": "Behavior"
@@ -87,9 +87,6 @@
   "showLabels": {
     "message": "Show engine names"
   },
-  "saveChanges": {
-    "message": "Save changes"
-  },
   "namePlaceholder": {
     "message": "Name"
   },
@@ -108,17 +105,17 @@
   "delete": {
     "message": "Delete"
   },
-  "statusUnsaved": {
-    "message": "Unsaved changes"
+  "statusSaving": {
+    "message": "Saving..."
   },
   "statusSaved": {
     "message": "Saved"
   },
   "statusDefaultsRestored": {
-    "message": "Defaults restored - not saved yet"
+    "message": "Defaults restored"
   },
   "statusImported": {
-    "message": "Imported $count$ engines - not saved yet",
+    "message": "Imported $count$ engines",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -175,7 +172,7 @@
     "message": "Import settings"
   },
   "statusConfigImported": {
-    "message": "Settings imported - review and save."
+    "message": "Settings imported."
   },
   "errorConfigInvalid": {
     "message": "No engines found in file."
@@ -319,7 +316,7 @@
     }
   },
   "statusBrowserImported": {
-    "message": "Imported $count$ browser engines - not saved yet",
+    "message": "Imported $count$ browser engines",
     "placeholders": {
       "count": {
         "content": "$1",
