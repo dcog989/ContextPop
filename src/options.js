@@ -8,6 +8,7 @@ const elements = {
   list: document.getElementById('engine-list'),
   status: document.getElementById('status'),
   importFile: document.getElementById('import-file'),
+  importConfigFile: document.getElementById('import-config-file'),
   rowTemplate: document.getElementById('engine-row-template'),
   trigger: document.getElementById('setting-trigger'),
   openMethod: document.getElementById('setting-open-method'),
@@ -143,38 +144,79 @@ function restoreDefaults() {
   setStatus(msg('statusDefaultsRestored'));
 }
 
-function importEngines(file) {
+function normalizeEngine(engine) {
+  return {
+    id: engine.id || generateId(),
+    name: String(engine.name ?? ''),
+    template: String(engine.template ?? ''),
+    icon: engine.icon || '',
+  };
+}
+
+function downloadJson(filename, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function readConfigFile(file, apply) {
   const reader = new FileReader();
   reader.onload = () => {
+    let parsed;
     try {
-      const parsed = JSON.parse(String(reader.result));
-      const incoming = Array.isArray(parsed) ? parsed : parsed.engines;
-      if (!Array.isArray(incoming)) throw new Error('No engine array found');
-      state.engines = incoming.map((engine) => ({
-        id: engine.id || generateId(),
-        name: String(engine.name ?? ''),
-        template: String(engine.template ?? ''),
-        icon: engine.icon || '',
-      }));
-      renderEngines();
-      markDirty();
-      setStatus(msg('statusImported', String(state.engines.length)));
+      parsed = JSON.parse(String(reader.result));
     } catch (error) {
       setStatus(msg('statusImportFailed', error.message), true);
+      return;
     }
+    const incoming = Array.isArray(parsed) ? parsed : parsed.engines;
+    if (!Array.isArray(incoming)) {
+      setStatus(msg('errorConfigInvalid'), true);
+      return;
+    }
+    apply(parsed, incoming);
   };
   reader.onerror = () => setStatus(msg('statusImportReadFailed'), true);
   reader.readAsText(file);
 }
 
+function importEngines(file) {
+  readConfigFile(file, (_parsed, incoming) => {
+    state.engines = incoming.map(normalizeEngine);
+    renderEngines();
+    markDirty();
+    setStatus(msg('statusImported', String(state.engines.length)));
+  });
+}
+
 function exportEngines() {
-  const blob = new Blob([JSON.stringify({ engines: state.engines }, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'context-smart-engines.json';
-  link.click();
-  URL.revokeObjectURL(url);
+  downloadJson('context-smart-engines.json', { engines: state.engines });
+}
+
+function importConfig(file) {
+  readConfigFile(file, (parsed, incoming) => {
+    state.engines = incoming.map(normalizeEngine);
+    if (parsed.settings && typeof parsed.settings === 'object') {
+      state.settings = { ...DEFAULT_SETTINGS, ...parsed.settings };
+    }
+    renderEngines();
+    renderSettings();
+    markDirty();
+    setStatus(msg('statusConfigImported'));
+  });
+}
+
+function exportConfig() {
+  downloadJson('context-smart-settings.json', {
+    app: 'context-smart',
+    schema: 1,
+    engines: state.engines,
+    settings: state.settings,
+  });
 }
 
 function validate() {
@@ -274,11 +316,18 @@ function bindActions() {
   document.getElementById('restore-defaults').addEventListener('click', restoreDefaults);
   document.getElementById('export-engines').addEventListener('click', exportEngines);
   document.getElementById('import-engines').addEventListener('click', () => elements.importFile.click());
+  document.getElementById('export-config').addEventListener('click', exportConfig);
+  document.getElementById('import-config').addEventListener('click', () => elements.importConfigFile.click());
   document.getElementById('save').addEventListener('click', save);
   elements.importFile.addEventListener('change', () => {
     const [file] = elements.importFile.files;
     elements.importFile.value = '';
     if (file) importEngines(file);
+  });
+  elements.importConfigFile.addEventListener('change', () => {
+    const [file] = elements.importConfigFile.files;
+    elements.importConfigFile.value = '';
+    if (file) importConfig(file);
   });
 
   document.addEventListener('keydown', (event) => {

@@ -90,7 +90,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #4c6ef5;
+  background: #e27207;
   color: #ffffff;
   font-size: 13px;
   font-weight: 600;

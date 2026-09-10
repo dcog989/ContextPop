@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
+  "homepage_url": "https://github.com/dcog989/Context-Smart",
   "minimum_chrome_version": "109",
   "background": {
     "service_worker": "background.js"

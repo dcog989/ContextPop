@@ -72,9 +72,27 @@
           </label>
         </div>
       </section>
+
+      <section>
+        <h2 data-i18n="backupHeading">Backup</h2>
+        <p class="hint" data-i18n="backupHint">Export or import your full configuration (engines and settings).</p>
+        <div class="actions">
+          <button id="export-config" type="button" data-i18n="exportConfig">Export settings</button>
+          <button id="import-config" type="button" class="secondary" data-i18n="importConfig">Import settings</button>
+          <input id="import-config-file" type="file" accept="application/json,.json" hidden>
+        </div>
+      </section>
     </main>
 
     <footer>
+      <a
+        class="repo-link"
+        href="https://github.com/dcog989/Context-Smart"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-i18n="repositoryLink"
+        >Project on GitHub</a
+      >
       <span id="status" role="status"></span>
       <button id="save" type="button" data-i18n="saveChanges">Save changes</button>
     </footer>

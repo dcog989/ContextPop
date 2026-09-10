@@ -162,6 +162,27 @@
   "statusIconPermission": {
     "message": "Saved. Icon access was not granted, so remote icons fall back to letters."
   },
+  "backupHeading": {
+    "message": "Backup"
+  },
+  "backupHint": {
+    "message": "Export or import your full configuration (engines and settings)."
+  },
+  "exportConfig": {
+    "message": "Export settings"
+  },
+  "importConfig": {
+    "message": "Import settings"
+  },
+  "statusConfigImported": {
+    "message": "Settings imported - review and save."
+  },
+  "errorConfigInvalid": {
+    "message": "No engines found in file."
+  },
+  "repositoryLink": {
+    "message": "Project on GitHub"
+  },
   "menuNoEngines": {
     "message": "No search engines configured"
   },

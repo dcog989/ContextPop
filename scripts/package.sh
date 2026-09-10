@@ -18,7 +18,7 @@ def compare(path, expected, actual):
         problems.append(f"{path}: firefox={expected!r} chrome={actual!r}")
 
 
-for key in ("name", "version", "description", "permissions", "optional_host_permissions"):
+for key in ("name", "version", "description", "homepage_url", "permissions", "optional_host_permissions"):
     compare(key, firefox.get(key), chrome.get(key))
 
 ff_scripts = firefox["content_scripts"][0]
