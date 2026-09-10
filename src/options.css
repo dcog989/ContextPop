@@ -36,6 +36,8 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
+  max-width: 960px;
+  margin: 0 auto;
   padding: 20px 0;
 }
 
@@ -348,13 +350,18 @@ footer {
   left: 0;
   right: 0;
   bottom: 0;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 16px;
-  padding: 12px 24px;
-  background: var(--panel);
-  border-top: 1px solid var(--border);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 0;
 }
 
 .repo-link {
