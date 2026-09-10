@@ -8,7 +8,8 @@ const HTTP_URL_PATTERN = /^https?:\/\//i;
 const ICON_CACHE_PREFIX = 'icon:';
 const MAX_ICON_BYTES = 256 * 1024;
 const BASE64_CHUNK_SIZE = 0x8000;
-const REFERENCE_POPUP = Object.freeze({ width: 520, height: 720 });
+const POPUP_WIDTH = 520;
+const POPUP_HEIGHT = 720;
 
 const DISPOSITIONS = Object.freeze({
   newTab: 'NEW_TAB',
@@ -75,7 +76,7 @@ async function openSearch({ engine, terms, method }, sender) {
 
   const url = buildSearchUrl(engine.template, query);
   if (engine.resultView === 'popup') {
-    await api.windows.create({ url, type: 'popup', ...REFERENCE_POPUP });
+    await api.windows.create({ url, type: 'popup', width: POPUP_WIDTH, height: POPUP_HEIGHT });
     return;
   }
   await openUrl(url, method, sender);
@@ -100,7 +101,12 @@ async function openReference({ template, terms }) {
   const value = String(template ?? '');
   if (!value.includes('{searchTerms}')) throw new Error('Provider template is missing {searchTerms}');
   if (!HTTP_URL_PATTERN.test(value)) throw new Error('Provider template must use http or https');
-  await api.windows.create({ url: buildSearchUrl(value, String(terms ?? '')), type: 'popup', ...REFERENCE_POPUP });
+  await api.windows.create({
+    url: buildSearchUrl(value, String(terms ?? '')),
+    type: 'popup',
+    width: POPUP_WIDTH,
+    height: POPUP_HEIGHT,
+  });
 }
 
 async function openLink({ url, method }, sender) {
