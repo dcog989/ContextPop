@@ -151,7 +151,7 @@ button:disabled {
 }
 
 .engine-main {
-  grid-template-columns: 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) minmax(120px, auto) auto;
+  grid-template-columns: 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) auto;
 }
 
 .engine-icon {

@@ -75,10 +75,6 @@ async function openSearch({ engine, terms, method }, sender) {
   if (!HTTP_URL_PATTERN.test(engine.template)) throw new Error('Engine template must use http or https');
 
   const url = buildSearchUrl(engine.template, query);
-  if (engine.resultView === 'popup') {
-    await api.windows.create({ url, type: 'popup', width: POPUP_WIDTH, height: POPUP_HEIGHT });
-    return;
-  }
   await openUrl(url, method, sender);
 }
 

@@ -223,13 +223,6 @@ function createRow(engine, index) {
     markDirty();
   });
 
-  const resultView = fragment.querySelector('.engine-result-view');
-  resultView.value = engine.resultView || 'tab';
-  resultView.addEventListener('change', () => {
-    engine.resultView = resultView.value;
-    markDirty();
-  });
-
   if (engine.source === 'browser') fragment.querySelector('.engine-badge').hidden = false;
 
   const contextHost = fragment.querySelector('.engine-contexts');
@@ -301,7 +294,7 @@ function deleteEngine(index) {
 
 function addEngine() {
   state.engines.push(
-    normalizeEngine({ id: generateId(), name: '', source: 'template', template: '', icon: '', resultView: 'tab' }),
+    normalizeEngine({ id: generateId(), name: '', source: 'template', template: '', icon: '' }),
   );
   renderEngines();
   markDirty();
@@ -336,7 +329,6 @@ async function importBrowserEngines() {
         source: 'browser',
         browserEngineName: item.name,
         icon: item.favIconUrl || '',
-        resultView: 'tab',
       }),
     );
     existing.add(item.name);

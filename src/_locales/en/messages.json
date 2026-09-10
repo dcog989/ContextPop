@@ -279,15 +279,6 @@
   "engineContextsLabel": {
     "message": "Show for"
   },
-  "engineResultViewLabel": {
-    "message": "Result view"
-  },
-  "resultViewTab": {
-    "message": "New tab"
-  },
-  "resultViewPopup": {
-    "message": "Popup window"
-  },
   "faviconLabel": {
     "message": "Engine icons"
   },

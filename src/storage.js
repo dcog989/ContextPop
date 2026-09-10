@@ -6,7 +6,6 @@ const STORAGE_KEYS = Object.freeze({
 });
 
 const CONTEXTS = Object.freeze(['text', 'word', 'link', 'image', 'page']);
-const RESULT_VIEWS = Object.freeze(['tab', 'popup']);
 const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 const FAVICON_PROVIDERS = Object.freeze(['site', 'duckduckgo', 'none']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
@@ -80,7 +79,6 @@ function normalizeEngine(engine) {
     browserEngineName: String(engine?.browserEngineName ?? ''),
     icon: typeof engine?.icon === 'string' ? engine.icon : '',
     contexts: normalizeContexts(engine?.contexts, CONTEXTS),
-    resultView: RESULT_VIEWS.includes(engine?.resultView) ? engine.resultView : 'tab',
   };
 }
 
