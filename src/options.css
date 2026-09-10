@@ -139,18 +139,25 @@ button:disabled {
   border-radius: 10px;
 }
 
-.action-main,
+.action-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-main .action-toggle {
+  flex: 1 1 180px;
+}
+
+.action-main .row-actions {
+  margin-left: auto;
+}
+
 .engine-main {
   display: grid;
   gap: 8px;
   align-items: center;
-}
-
-.action-main {
-  grid-template-columns: minmax(200px, 1fr) auto;
-}
-
-.engine-main {
   grid-template-columns: 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) auto;
 }
 
@@ -299,8 +306,9 @@ select:focus {
 
 .action-template-field {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  flex: 1 1 280px;
+  max-width: 380px;
   font-size: 12px;
   color: var(--muted);
 }

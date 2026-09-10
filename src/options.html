@@ -136,22 +136,21 @@
             <input type="checkbox" class="action-enabled">
             <span class="action-name" data-i18n="actionFallbackName">Action</span>
           </label>
+          <label class="action-template-field" hidden>
+            <input
+              type="text"
+              class="action-template"
+              placeholder="https://example.com/lookup/{searchTerms}"
+              data-i18n-placeholder="providerTemplatePlaceholder"
+              aria-label="Provider template"
+              data-i18n-aria-label="providerTemplateLabel"
+            >
+          </label>
           <div class="row-actions">
             <button type="button" class="move-up" title="Move up" data-i18n-title="moveUp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 6-6 6 6"/></svg></button>
             <button type="button" class="move-down" title="Move down" data-i18n-title="moveDown"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 6 6 6-6"/></svg></button>
           </div>
         </div>
-        <label class="action-template-field" hidden>
-          <span data-i18n="providerTemplateLabel">Provider template</span>
-          <input
-            type="text"
-            class="action-template"
-            placeholder="https://example.com/lookup/{searchTerms}"
-            data-i18n-placeholder="providerTemplatePlaceholder"
-            aria-label="Provider template"
-            data-i18n-aria-label="providerTemplateLabel"
-          >
-        </label>
       </article>
     </template>
 
