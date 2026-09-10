@@ -4,7 +4,7 @@
   --panel: #ffffff;
   --text: #1a1a1a;
   --muted: #6b6b6b;
-  --border: rgba(0, 0, 0, 0.14);
+  --border: #00000024;
   --danger: #d64545;
 }
 
@@ -14,7 +14,7 @@
     --panel: #2a2a2a;
     --text: #eeeeee;
     --muted: #9a9a9a;
-    --border: rgba(255, 255, 255, 0.14);
+    --border: #ffffff24;
     --danger: #ff6b6b;
   }
 }
@@ -83,7 +83,7 @@ h2 {
 }
 
 code {
-  background: rgba(127, 127, 127, 0.16);
+  background: #7f7f7f29;
   border-radius: 4px;
   padding: 1px 4px;
 }

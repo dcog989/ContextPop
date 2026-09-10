@@ -24,16 +24,16 @@
   overflow: auto;
   background: #ffffff;
   color: #1a1a1a;
-  border: 1px solid rgba(0, 0, 0, 0.16);
+  border: 1px solid #00000029;
   border-radius: 10px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 32px #00000047;
   pointer-events: auto;
   font-family: var(--font-family);
 }
 .cs-menu.dark {
   background: #202124;
   color: #f1f3f4;
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: #ffffff29;
 }
 .cs-tile {
   display: flex;
@@ -52,14 +52,14 @@
 }
 .cs-tile:hover,
 .cs-tile:focus-visible {
-  background: rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.16);
+  background: #00000014;
+  border-color: #00000029;
   outline: none;
 }
 .cs-menu.dark .cs-tile:hover,
 .cs-menu.dark .cs-tile:focus-visible {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: #ffffff1f;
+  border-color: #ffffff33;
 }
 .cs-menu.has-labels .cs-tile {
   width: auto;
