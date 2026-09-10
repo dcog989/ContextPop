@@ -223,7 +223,14 @@ select:focus {
   background: transparent;
   border-color: var(--border);
   color: var(--text);
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-actions button svg {
+  width: 18px;
+  height: 18px;
 }
 
 .row-actions .delete {
