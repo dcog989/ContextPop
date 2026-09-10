@@ -86,16 +86,15 @@
   background: transparent;
   color: inherit;
   cursor: pointer;
+  outline: none;
 }
 .cs-tile:hover {
   background: #00000014;
   border-color: #00000029;
-  outline: none;
 }
 .cs-menu.kb .cs-tile:focus {
   background: #00000014;
   border-color: #00000029;
-  outline: none;
 }
 .cs-menu.dark .cs-tile:hover,
 .cs-menu.dark.kb .cs-tile:focus {
