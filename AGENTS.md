@@ -3,7 +3,7 @@
 ## Project Specifics
 
 - Name: Context Smart
-- Description: Browser extension that shows a popup of search engines, plus options to copy to clipboard, open in new tab, etc. when text is selected. Firefox and Chrome, Manifest V3.
+- Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox and Chrome, Manifest V3.
 - Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, lefthook, and cocogitto binaries.
 
 ### Key Files
@@ -43,7 +43,7 @@
 ### File System Access
 
 - Allowed: <project root> and all contained directories + files; `/tmp/*`.
-- Read-Only: `.env*`, `.git/`.
+- Read-Only: `.docs/ToDo.md`, `.env*`, `.git/`.
 - Disallowed: everything not listed in 'Allowed' unless user grants permission.
 - Require confirmation: adding/removing dependencies, any operation outside project root.
 - Do not delete files or make destructive changes without permission / confirmation.

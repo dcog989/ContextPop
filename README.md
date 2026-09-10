@@ -1,6 +1,6 @@
 # Context Smart
 
-Context Smart shows a popup of search engines, plus options to copy to clipboard, open in new tab, etc. when text is selected.
+Launches a customizable popup when text is selected. Provides instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, open link in new tab, etc..
 
 ## Features
 
