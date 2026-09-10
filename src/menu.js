@@ -28,7 +28,7 @@
   border-radius: 10px;
   box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
   pointer-events: auto;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-family);
 }
 .cs-menu.dark {
   background: #202124;

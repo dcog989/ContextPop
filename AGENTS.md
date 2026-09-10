@@ -38,7 +38,7 @@
 - Add feature: extend `src/background.js` message handling and `src/menu.js` UI, then persist via `src/storage.js`.
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
 - Content scripts `theme.js`, `menu.js`, and `content.js` run in one isolated world but are wrapped in IIFEs; `theme.js` publishes `globalThis.__contextSmartTheme` and `menu.js` publishes `globalThis.__contextSmartMenu`, which `content.js` consumes.
-- Colors: design tokens live only in `src/theme.js`; stylesheets consume `var(--accent)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
+- Design tokens (accent, font family) live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access
 
