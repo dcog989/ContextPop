@@ -126,14 +126,6 @@ function createActionRow(actionId, index) {
 
   fragment.querySelector('.action-name').textContent = msg(`action${capitalize(actionId)}`);
 
-  const contextHost = fragment.querySelector('.action-contexts');
-  contextHost.replaceChildren(
-    buildContextChips(value.contexts, (context, checked) => {
-      value.contexts = CONTEXTS.filter((item) => (item === context ? checked : value.contexts.includes(item)));
-      markDirty();
-    }),
-  );
-
   const templateField = fragment.querySelector('.action-template-field');
   if (def?.template) {
     templateField.hidden = false;

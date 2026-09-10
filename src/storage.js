@@ -50,7 +50,6 @@ function defaultSettings() {
         def.id,
         {
           enabled: true,
-          contexts: [...def.contexts],
           ...(def.template ? { template: def.template } : {}),
         },
       ]),
@@ -95,7 +94,6 @@ function normalizeBuiltinActions(stored, base) {
       const value = source[def.id] || {};
       const entry = {
         enabled: value.enabled !== false,
-        contexts: normalizeContexts(value.contexts, fallback.contexts),
       };
       if (def.template) entry.template = String(value.template ?? fallback.template ?? def.template);
       return [def.id, entry];
@@ -148,7 +146,7 @@ function builtinActionList(settings) {
         resultView: def.resultView || 'tab',
         template: value.template ?? def.template ?? '',
         enabled: value.enabled,
-        contexts: value.contexts,
+        contexts: [...def.contexts],
       };
     });
 }

@@ -107,6 +107,14 @@
   height: auto;
   padding: 6px 8px;
 }
+.cs-tile:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.cs-tile:disabled:hover {
+  background: transparent;
+  border-color: transparent;
+}
 .cs-icon {
   display: flex;
   align-items: center;
@@ -323,7 +331,7 @@
   }
 
   function moveFocus(menu, delta) {
-    const tiles = [...menu.querySelectorAll('.cs-tile')];
+    const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
     if (!tiles.length) return;
     const current = tiles.indexOf(document.activeElement);
     let next = current + delta;
@@ -333,7 +341,7 @@
   }
 
   function focusEdge(menu, last) {
-    const tiles = [...menu.querySelectorAll('.cs-tile')];
+    const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
     if (tiles.length) focusTile(last ? tiles[tiles.length - 1] : tiles[0]);
   }
 
@@ -394,6 +402,7 @@
     const tile = document.createElement('button');
     decorateTile(tile, label, showLabels);
     tile.dataset.actionId = action.id;
+    if (action.disabled) tile.disabled = true;
     tile.prepend(createBuiltinIcon(action.id));
     tile.addEventListener('click', handleActionClick);
     return tile;
@@ -495,9 +504,9 @@
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     const allActions = listActions(settings);
-    const actions = allActions.filter(
-      (action) => action.enabled && (clipboardAllowed || !isCopyAction(action.id)) && contextMatches(action, context),
-    );
+    const actions = allActions
+      .filter((action) => action.enabled && (clipboardAllowed || !isCopyAction(action.id)))
+      .map((action) => ({ ...action, disabled: !contextMatches(action, context) }));
     const visibleEngines = engines.filter((engine) => contextMatches(engine, context));
     const copyBlocked =
       !clipboardAllowed &&
@@ -555,7 +564,7 @@
       menu.appendChild(notice);
     }
 
-    if (!menu.querySelector('.cs-tile') && !copyBlocked) {
+    if (!menu.querySelector('.cs-tile:not(:disabled)') && !copyBlocked) {
       const empty = document.createElement('div');
       empty.className = 'cs-empty';
       empty.textContent = t('menuNoActions', 'Nothing available for this selection');
@@ -576,7 +585,7 @@
     positionMenu(menu, rect);
     menu.style.visibility = '';
 
-    const firstTile = menu.querySelector('.cs-tile');
+    const firstTile = menu.querySelector('.cs-tile:not(:disabled)');
     if (firstTile) focusTile(firstTile);
 
     upgradeIcons(iconSetters, visibleEngines);

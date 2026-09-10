@@ -147,7 +147,7 @@ button:disabled {
 }
 
 .action-main {
-  grid-template-columns: minmax(200px, 1fr) auto auto;
+  grid-template-columns: minmax(200px, 1fr) auto;
 }
 
 .engine-main {
@@ -230,7 +230,6 @@ select:focus {
   color: var(--danger);
 }
 
-.action-contexts,
 .engine-contexts {
   display: flex;
   flex-wrap: wrap;
