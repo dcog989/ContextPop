@@ -117,6 +117,7 @@ function createActionRow(actionId, index) {
   const def = BUILTIN_ACTION_DEFS.find((item) => item.id === actionId);
   const value = state.settings.builtinActions[actionId];
   const fragment = elements.actionRowTemplate.content.cloneNode(true);
+  fragment.querySelector('.action-row').dataset.rowId = actionId;
 
   const enabled = fragment.querySelector('.action-enabled');
   enabled.checked = value.enabled;
@@ -150,13 +151,45 @@ function renderActions() {
   });
 }
 
+function captureRowPositions(container) {
+  return new Map([...container.children].map((el) => [el.dataset.rowId, el.getBoundingClientRect().top]));
+}
+
+function playRowReorder(container, first) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (const el of container.children) {
+    const oldTop = first.get(el.dataset.rowId);
+    if (oldTop === undefined) continue;
+    const delta = oldTop - el.getBoundingClientRect().top;
+    if (delta === 0) continue;
+    el.style.transition = 'none';
+    el.style.transform = `translateY(${delta}px)`;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.transition = 'transform 180ms ease';
+        el.style.transform = '';
+      });
+    });
+    el.addEventListener(
+      'transitionend',
+      () => {
+        el.style.transition = '';
+        el.style.transform = '';
+      },
+      { once: true },
+    );
+  }
+}
+
 function moveAction(index, offset) {
   const target = index + offset;
   const order = state.settings.actionOrder;
   if (target < 0 || target >= order.length) return;
+  const first = captureRowPositions(elements.actionList);
   const [id] = order.splice(index, 1);
   order.splice(target, 0, id);
   renderActions();
+  playRowReorder(elements.actionList, first);
   markDirty();
 }
 
@@ -190,6 +223,7 @@ function createEngineIcon(engine) {
 
 function createRow(engine, index) {
   const fragment = elements.rowTemplate.content.cloneNode(true);
+  fragment.querySelector('.engine-row').dataset.rowId = engine.id;
 
   const icon = createEngineIcon(engine);
   fragment.querySelector('.engine-icon').replaceWith(icon.element);
@@ -274,9 +308,11 @@ function renderSettings() {
 function moveEngine(index, offset) {
   const target = index + offset;
   if (target < 0 || target >= state.engines.length) return;
+  const first = captureRowPositions(elements.list);
   const [engine] = state.engines.splice(index, 1);
   state.engines.splice(target, 0, engine);
   renderEngines();
+  playRowReorder(elements.list, first);
   markDirty();
 }
 
