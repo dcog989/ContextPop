@@ -293,9 +293,7 @@ function deleteEngine(index) {
 }
 
 function addEngine() {
-  state.engines.push(
-    normalizeEngine({ id: generateId(), name: '', source: 'template', template: '', icon: '' }),
-  );
+  state.engines.push(normalizeEngine({ id: generateId(), name: '', source: 'template', template: '', icon: '' }));
   renderEngines();
   markDirty();
 }
