@@ -1,0 +1,19 @@
+# https://github.com/evilmartians/lefthook
+min_version: 2.0.0
+
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{js,json,css,html}"
+      run: biome check --write --no-errors-on-unmatched {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    conventional-commits:
+      # Merge/Revert lines bypass cog; everything else must pass cog verify.
+      run: >-
+        head -1 {1} |
+        grep -qE '^(Merge |Revert )' ||
+        cog verify --file {1}

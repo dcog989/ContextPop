@@ -1,0 +1,171 @@
+{
+  "extName": {
+    "message": "Context Smart",
+    "description": "Extension name."
+  },
+  "extDescription": {
+    "message": "Context Smart shows a popup of search engines, plus options to copy to clipboard, open in new tab, etc. when text is selected.",
+    "description": "Extension description."
+  },
+  "actionTitle": {
+    "message": "Context Smart - open settings",
+    "description": "Toolbar button tooltip."
+  },
+  "optionsPageTitle": {
+    "message": "Context Smart - Options",
+    "description": "Options page title."
+  },
+  "enginesHeading": {
+    "message": "Search engines"
+  },
+  "addEngine": {
+    "message": "Add engine"
+  },
+  "restoreDefaults": {
+    "message": "Restore defaults"
+  },
+  "import": {
+    "message": "Import"
+  },
+  "export": {
+    "message": "Export"
+  },
+  "templateHint": {
+    "message": "The {searchTerms} placeholder is replaced with the selected text. Changes are not applied until you save."
+  },
+  "behaviorHeading": {
+    "message": "Behavior"
+  },
+  "triggerLabel": {
+    "message": "Open the menu"
+  },
+  "triggerMouseup": {
+    "message": "Whenever text is selected"
+  },
+  "triggerAlt": {
+    "message": "Selection + hold Alt"
+  },
+  "triggerCtrl": {
+    "message": "Selection + hold Ctrl/Cmd"
+  },
+  "triggerShift": {
+    "message": "Selection + hold Shift"
+  },
+  "triggerRightHold": {
+    "message": "Hold right mouse after selecting"
+  },
+  "openInLabel": {
+    "message": "Open results in"
+  },
+  "openNewTab": {
+    "message": "New tab"
+  },
+  "openBackgroundTab": {
+    "message": "Background tab"
+  },
+  "openCurrentTab": {
+    "message": "Current tab"
+  },
+  "openNewWindow": {
+    "message": "New window"
+  },
+  "columnsLabel": {
+    "message": "Columns"
+  },
+  "themeLabel": {
+    "message": "Theme"
+  },
+  "themeAuto": {
+    "message": "Match system"
+  },
+  "themeLight": {
+    "message": "Light"
+  },
+  "themeDark": {
+    "message": "Dark"
+  },
+  "showLabels": {
+    "message": "Show engine names"
+  },
+  "saveChanges": {
+    "message": "Save changes"
+  },
+  "namePlaceholder": {
+    "message": "Name"
+  },
+  "templatePlaceholder": {
+    "message": "https://example.com/search?q={searchTerms}"
+  },
+  "iconUrlPlaceholder": {
+    "message": "Icon URL (optional)"
+  },
+  "moveUp": {
+    "message": "Move up"
+  },
+  "moveDown": {
+    "message": "Move down"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "statusUnsaved": {
+    "message": "Unsaved changes"
+  },
+  "statusSaved": {
+    "message": "Saved"
+  },
+  "statusDefaultsRestored": {
+    "message": "Defaults restored - not saved yet"
+  },
+  "statusImported": {
+    "message": "Imported $count$ engines - not saved yet",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "statusImportFailed": {
+    "message": "Import failed: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "No engine array found"
+      }
+    }
+  },
+  "statusImportReadFailed": {
+    "message": "Import failed: could not read file"
+  },
+  "errorNameRequired": {
+    "message": "Every engine needs a name."
+  },
+  "errorTemplateTerms": {
+    "message": "\"$name$\" template must include {searchTerms}.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusSaveFailed": {
+    "message": "Save failed: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Quota exceeded"
+      }
+    }
+  },
+  "statusIconPermission": {
+    "message": "Saved. Icon access was not granted, so remote icons fall back to letters."
+  },
+  "menuNoEngines": {
+    "message": "No search engines configured"
+  },
+  "menuLabel": {
+    "message": "Selection actions"
+  }
+}

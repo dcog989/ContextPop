@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Context Smart - Options</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <header>
+      <img src="icons/icon-48.png" alt="" width="32" height="32">
+      <h1 data-i18n="extName">Context Smart</h1>
+    </header>
+
+    <main>
+      <section>
+        <div class="section-head">
+          <h2 data-i18n="enginesHeading">Search engines</h2>
+          <div class="actions">
+            <button id="add-engine" type="button" data-i18n="addEngine">Add engine</button>
+            <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults">
+              Restore defaults
+            </button>
+            <button id="import-engines" type="button" class="secondary" data-i18n="import">Import</button>
+            <button id="export-engines" type="button" class="secondary" data-i18n="export">Export</button>
+            <input id="import-file" type="file" accept="application/json,.json" hidden>
+          </div>
+        </div>
+        <p class="hint" data-i18n="templateHint">
+          The {searchTerms} placeholder is replaced with the selected text. Changes are not applied until you save.
+        </p>
+        <div id="engine-list" class="engine-list"></div>
+      </section>
+
+      <section>
+        <h2 data-i18n="behaviorHeading">Behavior</h2>
+        <div class="settings-grid">
+          <label>
+            <span data-i18n="triggerLabel">Open the menu</span>
+            <select id="setting-trigger">
+              <option value="mouseup" data-i18n="triggerMouseup">Whenever text is selected</option>
+              <option value="alt" data-i18n="triggerAlt">Selection + hold Alt</option>
+              <option value="ctrl" data-i18n="triggerCtrl">Selection + hold Ctrl/Cmd</option>
+              <option value="shift" data-i18n="triggerShift">Selection + hold Shift</option>
+              <option value="rightHold" data-i18n="triggerRightHold">Hold right mouse after selecting</option>
+            </select>
+          </label>
+          <label>
+            <span data-i18n="openInLabel">Open results in</span>
+            <select id="setting-open-method">
+              <option value="newTab" data-i18n="openNewTab">New tab</option>
+              <option value="backgroundTab" data-i18n="openBackgroundTab">Background tab</option>
+              <option value="currentTab" data-i18n="openCurrentTab">Current tab</option>
+              <option value="newWindow" data-i18n="openNewWindow">New window</option>
+            </select>
+          </label>
+          <label>
+            <span data-i18n="columnsLabel">Columns</span>
+            <input id="setting-columns" type="number" min="1" max="12">
+          </label>
+          <label>
+            <span data-i18n="themeLabel">Theme</span>
+            <select id="setting-theme">
+              <option value="auto" data-i18n="themeAuto">Match system</option>
+              <option value="light" data-i18n="themeLight">Light</option>
+              <option value="dark" data-i18n="themeDark">Dark</option>
+            </select>
+          </label>
+          <label class="checkbox">
+            <input id="setting-labels" type="checkbox">
+            <span data-i18n="showLabels">Show engine names</span>
+          </label>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span id="status" role="status"></span>
+      <button id="save" type="button" data-i18n="saveChanges">Save changes</button>
+    </footer>
+
+    <template id="engine-row-template">
+      <article class="engine-row">
+        <span class="engine-icon" aria-hidden="true"></span>
+        <input
+          class="engine-name"
+          type="text"
+          placeholder="Name"
+          data-i18n-placeholder="namePlaceholder"
+          aria-label="Name"
+          data-i18n-aria-label="namePlaceholder"
+        >
+        <input
+          class="engine-template"
+          type="text"
+          placeholder="https://example.com/search?q={searchTerms}"
+          data-i18n-placeholder="templatePlaceholder"
+          aria-label="Search template"
+          data-i18n-aria-label="templatePlaceholder"
+        >
+        <input
+          class="engine-icon-url"
+          type="text"
+          placeholder="Icon URL (optional)"
+          data-i18n-placeholder="iconUrlPlaceholder"
+          aria-label="Icon URL"
+          data-i18n-aria-label="iconUrlPlaceholder"
+        >
+        <div class="row-actions">
+          <button type="button" class="move-up" title="Move up" data-i18n-title="moveUp">&#8593;</button>
+          <button type="button" class="move-down" title="Move down" data-i18n-title="moveDown">&#8595;</button>
+          <button type="button" class="delete" title="Delete" data-i18n-title="delete">&#10005;</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="defaultEngines.js"></script>
+    <script src="storage.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
