@@ -243,9 +243,6 @@
       }
     }
   },
-  "actionSearchBrowser": {
-    "message": "Search with the browser's default engine"
-  },
   "actionFallbackName": {
     "message": "Action"
   },

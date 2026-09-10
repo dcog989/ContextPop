@@ -30,7 +30,6 @@ const BUILTIN_ACTION_DEFS = Object.freeze([
     contexts: ['word'],
     template: 'https://www.merriam-webster.com/thesaurus/{searchTerms}',
   },
-  { id: 'searchBrowser', location: 'background', contexts: ['text', 'word'] },
 ]);
 
 const DEFAULT_SETTINGS = Object.freeze({

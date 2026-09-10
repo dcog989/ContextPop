@@ -82,21 +82,6 @@ async function openSearch({ engine, terms, method }, sender) {
   await openUrl(url, method, sender);
 }
 
-async function openDefaultSearch({ terms, method }) {
-  const text = String(terms ?? '');
-  const disposition = dispositionFor(method);
-
-  if (typeof api.search?.query === 'function') {
-    await api.search.query({ text, disposition });
-    return;
-  }
-  if (typeof api.search?.search === 'function') {
-    await api.search.search({ text, disposition });
-    return;
-  }
-  throw new Error('Browser search is unavailable');
-}
-
 async function openReference({ template, terms }) {
   const value = String(template ?? '');
   if (!value.includes('{searchTerms}')) throw new Error('Provider template is missing {searchTerms}');
@@ -242,9 +227,6 @@ async function handleMessage(message, sender) {
       await openSearch({ engine, terms: message.terms, method: message.method }, sender);
       return { ok: true };
     }
-    case 'searchBrowser':
-      await openDefaultSearch({ terms: message.terms, method: message.method });
-      return { ok: true };
     case 'openLink':
       await openLink({ url: message.url, method: message.method }, sender);
       return { ok: true };
