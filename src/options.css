@@ -160,6 +160,24 @@ button:disabled {
   justify-content: center;
   width: 28px;
   height: 28px;
+}
+
+.engine-icon [hidden] {
+  display: none !important;
+}
+
+.engine-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.engine-icon .engine-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--accent);
   color: #ffffff;

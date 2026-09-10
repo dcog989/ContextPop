@@ -6,6 +6,7 @@ const state = {
 
 let saveTimer = null;
 let statusTimer = null;
+let iconSetters = new Map();
 
 const elements = {
   actionList: document.getElementById('action-list'),
@@ -166,10 +167,39 @@ function moveAction(index, offset) {
   markDirty();
 }
 
+function createEngineIcon(engine) {
+  const icon = document.createElement('span');
+  icon.className = 'engine-icon';
+
+  const fallback = document.createElement('span');
+  fallback.className = 'engine-letter';
+  fallback.textContent = (engine.name || '?').trim().charAt(0).toUpperCase();
+
+  const img = document.createElement('img');
+  img.alt = '';
+  img.referrerPolicy = 'no-referrer';
+  img.hidden = true;
+  img.addEventListener('error', () => {
+    img.hidden = true;
+    fallback.hidden = false;
+  });
+
+  const setSource = (source) => {
+    if (!source) return;
+    img.src = source;
+    img.hidden = false;
+    fallback.hidden = true;
+  };
+
+  icon.append(img, fallback);
+  return { element: icon, setSource };
+}
+
 function createRow(engine, index) {
   const fragment = elements.rowTemplate.content.cloneNode(true);
 
-  fragment.querySelector('.engine-icon').textContent = (engine.name || '?').trim().charAt(0).toUpperCase();
+  const icon = createEngineIcon(engine);
+  fragment.querySelector('.engine-icon').replaceWith(icon.element);
 
   const name = fragment.querySelector('.engine-name');
   name.value = engine.name;
@@ -214,14 +244,33 @@ function createRow(engine, index) {
   fragment.querySelector('.move-down').addEventListener('click', () => moveEngine(index, 1));
   fragment.querySelector('.delete').addEventListener('click', () => deleteEngine(index));
 
-  return fragment;
+  return { fragment, setIcon: icon.setSource };
+}
+
+async function upgradeIcons(iconSetters) {
+  let icons = {};
+  try {
+    const response = await api.runtime.sendMessage({ type: 'getIcons' });
+    if (response?.error) throw new Error(response.error);
+    icons = response?.data || {};
+  } catch {
+    icons = {};
+  }
+  for (const engine of state.engines) {
+    const setIcon = iconSetters.get(engine.id);
+    if (setIcon) setIcon(icons[engine.id] || engine.icon);
+  }
 }
 
 function renderEngines() {
   elements.list.replaceChildren();
+  iconSetters = new Map();
   state.engines.forEach((engine, index) => {
-    elements.list.appendChild(createRow(engine, index));
+    const { fragment, setIcon } = createRow(engine, index);
+    elements.list.appendChild(fragment);
+    iconSetters.set(engine.id, setIcon);
   });
+  upgradeIcons(iconSetters);
 }
 
 function renderSettings() {
@@ -445,6 +494,10 @@ function configureBrowserImport() {
   elements.browserNote.hidden = available;
 }
 
+function refreshIcons() {
+  upgradeIcons(iconSetters);
+}
+
 function bindSettings() {
   elements.actionsPosition.addEventListener('change', () => {
     state.settings.actionsPosition = elements.actionsPosition.value;
@@ -478,6 +531,7 @@ function bindSettings() {
   elements.faviconProvider.addEventListener('change', () => {
     state.settings.faviconProvider = elements.faviconProvider.value;
     markDirty();
+    refreshIcons();
   });
 }
 
