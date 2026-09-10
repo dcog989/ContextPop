@@ -268,9 +268,9 @@
   function actionLabel(action, text) {
     switch (action.id) {
       case 'define':
-        return t('actionDefine', 'Define "$1$"', [text]);
+        return t('actionDefine', 'Define $1$', [text]);
       case 'thesaurus':
-        return t('actionThesaurus', 'Thesaurus "$1$"', [text]);
+        return t('actionThesaurus', 'Thesaurus $1$', [text]);
       default:
         return t(`action${capitalize(action.id)}`, action.id);
     }

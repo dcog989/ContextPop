@@ -226,7 +226,7 @@
     "message": "Open link in background tab"
   },
   "actionDefine": {
-    "message": "Define \"$word$\"",
+    "message": "Define $word$",
     "placeholders": {
       "word": {
         "content": "$1",
@@ -235,7 +235,7 @@
     }
   },
   "actionThesaurus": {
-    "message": "Thesaurus \"$word$\"",
+    "message": "Thesaurus $word$",
     "placeholders": {
       "word": {
         "content": "$1",
