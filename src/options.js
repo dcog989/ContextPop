@@ -349,6 +349,7 @@ async function load() {
   renderSettings();
 }
 
+globalThis.__contextSmartTheme?.applyTokens(document.documentElement);
 localize();
 bindSettings();
 bindActions();

@@ -90,7 +90,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #e27207;
+  background: var(--accent);
   color: #ffffff;
   font-size: 13px;
   font-weight: 600;
@@ -311,6 +311,7 @@
     host.style.inset = '0';
     host.style.zIndex = '2147483647';
     host.style.pointerEvents = 'none';
+    globalThis.__contextSmartTheme?.applyTokens(host);
 
     const root = host.attachShadow({ mode: 'closed' });
 

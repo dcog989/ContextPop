@@ -11,6 +11,7 @@
 - `src/background.js` — stateless background (Firefox event page / Chrome service worker); storage seeding, tab opening, message routing.
 - `src/content.js` — selection detection and trigger handling.
 - `src/menu.js` — popup UI rendered in a closed shadow root.
+- `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextSmartTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
 - `src/storage.js` — shared storage schema and helpers (`api`, engines, settings).
 - `src/defaultEngines.js` — seed engines.
 - `src/options.html` / `src/options.js` / `src/options.css` — engine and settings management.
@@ -36,7 +37,8 @@
 
 - Add feature: extend `src/background.js` message handling and `src/menu.js` UI, then persist via `src/storage.js`.
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
-- Content scripts `menu.js` and `content.js` run in one isolated world but are wrapped in IIFEs; `menu.js` publishes a `globalThis.__contextSmartMenu` namespace that `content.js` consumes.
+- Content scripts `theme.js`, `menu.js`, and `content.js` run in one isolated world but are wrapped in IIFEs; `theme.js` publishes `globalThis.__contextSmartTheme` and `menu.js` publishes `globalThis.__contextSmartMenu`, which `content.js` consumes.
+- Colors: design tokens live only in `src/theme.js`; stylesheets consume `var(--accent)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access
 
