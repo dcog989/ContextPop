@@ -17,9 +17,6 @@
         <div class="section-head">
           <h2 data-i18n="actionsHeading">Actions</h2>
         </div>
-        <p class="hint" data-i18n="actionsHint">
-          Choose which built-in actions appear, which selections they apply to, and their order.
-        </p>
         <label class="inline-field">
           <span data-i18n="actionsPositionLabel">Action group position</span>
           <select id="setting-actions-position">
@@ -142,10 +139,8 @@
     <template id="action-row-template">
       <article class="action-row">
         <div class="action-main">
-          <label class="checkbox action-toggle">
-            <input type="checkbox" class="action-enabled">
-            <span class="action-name" data-i18n="actionFallbackName">Action</span>
-          </label>
+          <input type="checkbox" class="action-enabled">
+          <span class="action-name" data-i18n="actionFallbackName">Action</span>
           <label class="action-template-field" hidden>
             <input
               type="text"

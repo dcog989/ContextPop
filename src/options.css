@@ -142,18 +142,23 @@ button:disabled {
 }
 
 .action-main {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto minmax(110px, auto) minmax(140px, 1fr) auto auto;
   gap: 8px;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
-.action-main .action-toggle {
-  flex: 1 1 180px;
+.action-main input[type='checkbox'] {
+  margin: 0;
+}
+
+.action-main .action-template-field {
+  grid-column: 3;
+  min-width: 0;
 }
 
 .action-main .row-actions {
-  margin-left: auto;
+  grid-column: 4 / -1;
 }
 
 .engine-main {
@@ -290,16 +295,6 @@ select:focus {
   margin: 0;
 }
 
-.action-toggle {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-
-.action-toggle input {
-  width: auto;
-}
-
 .action-name {
   font-size: 14px;
   font-weight: 600;
@@ -307,12 +302,7 @@ select:focus {
 }
 
 .action-template-field {
-  display: flex;
-  align-items: center;
-  flex: 1 1 280px;
-  max-width: 380px;
-  font-size: 12px;
-  color: var(--muted);
+  min-width: 0;
 }
 
 .action-template-field[hidden] {

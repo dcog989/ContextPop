@@ -213,9 +213,6 @@
   "actionsHeading": {
     "message": "Actions"
   },
-  "actionsHint": {
-    "message": "Choose which built-in actions appear, which selections they apply to, and their order."
-  },
   "actionsPositionLabel": {
     "message": "Action group position"
   },
