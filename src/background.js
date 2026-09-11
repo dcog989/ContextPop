@@ -10,7 +10,12 @@ const MAX_ICON_BYTES = 256 * 1024;
 const MAX_MARKUP_BYTES = 512 * 1024;
 const ICON_FETCH_TIMEOUT_MS = 4000;
 const BASE64_CHUNK_SIZE = 0x8000;
-const WELL_KNOWN_ICON_PATHS = ['/apple-touch-icon.png', '/favicon-32x32.png', '/favicon.svg', '/favicon.ico'];
+const WELL_KNOWN_ICONS = [
+  { path: '/favicon.svg', vector: true, size: 0 },
+  { path: '/apple-touch-icon.png', vector: false, size: 180 },
+  { path: '/favicon-32x32.png', vector: false, size: 32 },
+  { path: '/favicon.ico', vector: false, size: 16 },
+];
 const ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-precomposed']);
 const LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
 const ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
@@ -273,7 +278,11 @@ function iconCandidates(markup, baseUrl) {
         const url = new URL(attributes.href, baseUrl).href;
         if (!seen.has(url)) {
           seen.add(url);
-          candidates.push({ url, vector: isVectorIcon(attributes, attributes.href), size: iconSize(attributes) });
+          candidates.push({
+            url,
+            vector: isVectorIcon(attributes, attributes.href),
+            size: iconSize(attributes),
+          });
         }
       } catch {
         // Ignore icons with unresolvable hrefs.
@@ -281,25 +290,92 @@ function iconCandidates(markup, baseUrl) {
     }
     match = LINK_TAG_PATTERN.exec(markup);
   }
-  candidates.sort((a, b) => (a.vector === b.vector ? b.size - a.size : a.vector ? -1 : 1));
-  return candidates.map((candidate) => candidate.url);
+  return candidates;
+}
+
+function findManifestUrl(markup, baseUrl) {
+  LINK_TAG_PATTERN.lastIndex = 0;
+  let match = LINK_TAG_PATTERN.exec(markup);
+  while (match) {
+    const attributes = parseAttributes(match[0]);
+    const relations = (attributes.rel || '').toLowerCase().split(/\s+/);
+    if (attributes.href && relations.includes('manifest')) {
+      try {
+        return new URL(attributes.href, baseUrl).href;
+      } catch {
+        return '';
+      }
+    }
+    match = LINK_TAG_PATTERN.exec(markup);
+  }
+  return '';
+}
+
+async function fetchManifestIcons(manifestUrl) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(manifestUrl, {
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal,
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    const icons = Array.isArray(data?.icons) ? data.icons : [];
+    const candidates = [];
+    for (const icon of icons) {
+      if (typeof icon?.src !== 'string' || !icon.src) continue;
+      try {
+        candidates.push({
+          url: new URL(icon.src, manifestUrl).href,
+          vector: isVectorIcon(icon, icon.src),
+          size: iconSize(icon),
+        });
+      } catch {
+        // Ignore icons with unresolvable src.
+      }
+    }
+    return candidates;
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function rankCandidates(candidates) {
+  const seen = new Set();
+  const unique = [];
+  for (const candidate of candidates) {
+    if (!candidate.url || seen.has(candidate.url)) continue;
+    seen.add(candidate.url);
+    unique.push(candidate);
+  }
+  unique.sort((a, b) => (a.vector === b.vector ? b.size - a.size : a.vector ? -1 : 1));
+  return unique;
 }
 
 async function fetchBestIcon(homeUrl) {
   const { markup, baseUrl, definitive: markupDefinitive } = await fetchMarkup(homeUrl);
   const candidates = markup ? iconCandidates(markup, baseUrl) : [];
-  for (const path of WELL_KNOWN_ICON_PATHS) {
+
+  if (markup && !candidates.some((candidate) => candidate.vector)) {
+    const manifestUrl = findManifestUrl(markup, baseUrl) || new URL('/manifest.json', homeUrl).href;
+    candidates.push(...(await fetchManifestIcons(manifestUrl)));
+  }
+
+  for (const icon of WELL_KNOWN_ICONS) {
     try {
-      const url = new URL(path, homeUrl).href;
-      if (!candidates.includes(url)) candidates.push(url);
+      candidates.push({ url: new URL(icon.path, homeUrl).href, vector: icon.vector, size: icon.size });
     } catch {
       // Ignore malformed home URLs.
     }
   }
 
   let definitive = markupDefinitive;
-  for (const url of candidates) {
-    const result = await fetchImage(url);
+  for (const candidate of rankCandidates(candidates)) {
+    const result = await fetchImage(candidate.url);
     if (result.dataUrl) return result;
     if (!result.definitive) definitive = false;
   }
