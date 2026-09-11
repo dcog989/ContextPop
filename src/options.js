@@ -386,44 +386,6 @@ function validate() {
   return null;
 }
 
-function addOrigin(origins, value) {
-  try {
-    const url = new URL(value);
-    if (url.protocol === 'http:' || url.protocol === 'https:') origins.add(`${url.protocol}//${url.host}/*`);
-  } catch {
-    // Malformed URLs are ignored; the icon falls back to a letter.
-  }
-}
-
-function collectIconOrigins(engines) {
-  const origins = new Set();
-  for (const engine of engines) {
-    const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
-    if (engine.source === 'browser') {
-      if (hasIcon && HTTP_URL_PATTERN.test(engine.icon)) {
-        addOrigin(origins, engine.icon);
-        continue;
-      }
-      const host = browserEngineHost(engine.name);
-      if (!host) continue;
-      origins.add(`https://${host}/*`);
-      if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
-      continue;
-    }
-    if (hasIcon) {
-      if (!engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
-      continue;
-    }
-    try {
-      const url = new URL(engine.template.replace(/\{searchTerms\}/g, 'x'));
-      origins.add(`${url.protocol}//${url.host}/*`);
-    } catch {
-      // Skip engines with unparseable templates.
-    }
-  }
-  return [...origins];
-}
-
 async function ensureIconPermission(engines) {
   const origins = collectIconOrigins(engines);
   if (!origins.length || !api.permissions?.request) return true;

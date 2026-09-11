@@ -437,6 +437,30 @@ function engineIconSource(engine) {
   return { key: `https://${host}/`, kind: 'markup' };
 }
 
+function engineIconOrigins(engine) {
+  const source = engineIconSource(engine);
+  if (!source || source.key.startsWith('data:')) return [];
+  try {
+    const url = new URL(source.key);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return [];
+    const origins = new Set([`${url.protocol}//${url.host}/*`]);
+    if (engine.source === 'browser' && source.kind === 'markup' && !url.host.startsWith('www.')) {
+      origins.add(`${url.protocol}//www.${url.host}/*`);
+    }
+    return [...origins];
+  } catch {
+    return [];
+  }
+}
+
+function collectIconOrigins(engines) {
+  const origins = new Set();
+  for (const engine of engines) {
+    for (const origin of engineIconOrigins(engine)) origins.add(origin);
+  }
+  return [...origins];
+}
+
 async function resolveEngineIcon(engine) {
   const source = engineIconSource(engine);
   if (!source) return { dataUrl: null, fetched: false };
