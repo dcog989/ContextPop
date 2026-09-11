@@ -485,7 +485,7 @@ function engineIconSource(engine, settings) {
   const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
   if (isBrowserLikeEngine(engine)) {
     if (provider === 'none') return null;
-    const host = engine.iconHost || hostFromIconUrl(engine.icon);
+    const host = engine.iconHost || browserEngineHost(engine.name) || hostFromIconUrl(engine.icon);
     if (!host) return null;
     return faviconSourceForHost(host, provider);
   }

@@ -484,7 +484,7 @@ function collectIconOrigins(engines, settings) {
         origins.add('https://icons.duckduckgo.com/*');
         continue;
       }
-      const host = engine.iconHost;
+      const host = engine.iconHost || browserEngineHost(engine.name);
       if (!host) continue;
       origins.add(`https://${host}/*`);
       if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
