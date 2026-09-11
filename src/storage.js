@@ -190,6 +190,10 @@ function matchesContext(item, context) {
   return contexts.includes(context);
 }
 
+function capitalize(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 function buildSearchUrl(template, terms) {
   return String(template).replace(/\{searchTerms\}/g, encodeURIComponent(terms));
 }

@@ -32,10 +32,6 @@ function msg(name, substitutions) {
   return api.i18n.getMessage(name, substitutions);
 }
 
-function capitalize(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
 function localize() {
   const attributeBindings = [
     {

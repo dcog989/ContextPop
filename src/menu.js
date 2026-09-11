@@ -181,10 +181,6 @@
     return fallback.replace(/\$(\d+)\$/g, (_match, index) => String(substitutions[Number(index) - 1] ?? ''));
   }
 
-  function capitalize(value) {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  }
-
   function listActions(settings) {
     return typeof globalThis.builtinActionList === 'function' ? globalThis.builtinActionList(settings) : [];
   }
