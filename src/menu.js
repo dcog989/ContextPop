@@ -42,14 +42,6 @@
   color: #f1f3f4;
   border-color: #ffffff29;
 }
-.cs-context {
-  padding: 0 4px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
 .cs-group {
   display: flex;
   flex-direction: column;
@@ -61,12 +53,6 @@
 }
 .cs-menu.dark .cs-group + .cs-group {
   border-top-color: #ffffff1f;
-}
-.cs-group-title {
-  padding: 0 4px;
-  font-size: 11px;
-  font-weight: 600;
-  opacity: 0.6;
 }
 .cs-tiles {
   display: grid;
@@ -473,18 +459,11 @@
     }
   }
 
-  function createTileGroup(title, items, kind, settings, iconSetters) {
+  function createTileGroup(items, kind, settings, iconSetters) {
     if (!items.length) return null;
 
     const group = document.createElement('div');
     group.className = 'cs-group';
-
-    if (settings.showGroupHeaders) {
-      const heading = document.createElement('div');
-      heading.className = 'cs-group-title';
-      heading.textContent = title;
-      group.appendChild(heading);
-    }
 
     const tiles = document.createElement('div');
     tiles.className = 'cs-tiles';
@@ -551,21 +530,8 @@
 
     const iconSetters = new Map();
 
-    if (settings.showGroupHeaders && context) {
-      const contextHeader = document.createElement('div');
-      contextHeader.className = 'cs-context';
-      contextHeader.textContent = t(`context${capitalize(context)}`, context);
-      menu.appendChild(contextHeader);
-    }
-
-    const actionGroup = createTileGroup(t('actionsGroup', 'Actions'), actions, 'actions', settings, iconSetters);
-    const engineGroup = createTileGroup(
-      t('enginesGroup', 'Search engines'),
-      visibleEngines,
-      'engines',
-      settings,
-      iconSetters,
-    );
+    const actionGroup = createTileGroup(actions, 'actions', settings, iconSetters);
+    const engineGroup = createTileGroup(visibleEngines, 'engines', settings, iconSetters);
 
     const groups = settings.actionsPosition === 'after' ? [engineGroup, actionGroup] : [actionGroup, engineGroup];
     for (const group of groups) {

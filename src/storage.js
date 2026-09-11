@@ -38,7 +38,6 @@ const DEFAULT_SETTINGS = Object.freeze({
   columns: 6,
   theme: 'auto',
   showLabels: false,
-  showGroupHeaders: true,
   faviconProvider: 'site',
   actionsPosition: 'before',
   iconSize: 'medium',

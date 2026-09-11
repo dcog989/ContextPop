@@ -23,7 +23,6 @@ const elements = {
   columns: document.getElementById('setting-columns'),
   theme: document.getElementById('setting-theme'),
   labels: document.getElementById('setting-labels'),
-  groupHeaders: document.getElementById('setting-group-headers'),
   faviconProvider: document.getElementById('setting-favicon-provider'),
   refreshIcons: document.getElementById('refresh-icons'),
   iconSize: document.getElementById('setting-icon-size'),
@@ -300,7 +299,6 @@ function renderSettings() {
   elements.columns.value = state.settings.columns;
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
-  elements.groupHeaders.checked = Boolean(state.settings.showGroupHeaders);
   elements.faviconProvider.value = state.settings.faviconProvider;
   elements.iconSize.value = state.settings.iconSize;
 }
@@ -573,10 +571,6 @@ function bindSettings() {
   });
   elements.labels.addEventListener('change', () => {
     state.settings.showLabels = elements.labels.checked;
-    markDirty();
-  });
-  elements.groupHeaders.addEventListener('change', () => {
-    state.settings.showGroupHeaders = elements.groupHeaders.checked;
     markDirty();
   });
   elements.faviconProvider.addEventListener('change', () => {

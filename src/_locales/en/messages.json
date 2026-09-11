@@ -201,12 +201,6 @@
   "menuNoActions": {
     "message": "Nothing available for this selection"
   },
-  "actionsGroup": {
-    "message": "Actions"
-  },
-  "enginesGroup": {
-    "message": "Search engines"
-  },
   "clipboardBlocked": {
     "message": "Clipboard access was not granted, so copy actions are hidden"
   },
@@ -255,21 +249,6 @@
   "actionFallbackName": {
     "message": "Action"
   },
-  "contextText": {
-    "message": "Text"
-  },
-  "contextWord": {
-    "message": "Word"
-  },
-  "contextLink": {
-    "message": "Link"
-  },
-  "contextImage": {
-    "message": "Image"
-  },
-  "contextPage": {
-    "message": "Page"
-  },
   "providerTemplateLabel": {
     "message": "Provider template"
   },
@@ -302,9 +281,6 @@
   },
   "refreshIcons": {
     "message": "Refresh icons"
-  },
-  "showGroupHeaders": {
-    "message": "Show group headers"
   },
   "errorTemplateScheme": {
     "message": "\"$name$\" template must use http or https.",
