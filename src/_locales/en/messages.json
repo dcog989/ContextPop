@@ -34,7 +34,7 @@
     "message": "Open the menu"
   },
   "triggerMouseup": {
-    "message": "Whenever text is selected"
+    "message": "When text is selected"
   },
   "triggerAlt": {
     "message": "Selection + hold Alt"
