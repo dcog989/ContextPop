@@ -1,20 +1,23 @@
-const api = globalThis.browser ?? globalThis.chrome;
+// var (not const) throughout this file: top-level bindings are shared, bare-name globals
+// across sibling content-script files, and must tolerate re-injection into the same
+// document without throwing a SyntaxError on redeclaration.
+var api = globalThis.browser ?? globalThis.chrome;
 
-const STORAGE_KEYS = Object.freeze({
+var STORAGE_KEYS = Object.freeze({
   engines: 'engines',
   settings: 'settings',
 });
 
-const CONTEXTS = Object.freeze(['text', 'word', 'link']);
-const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
-const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
-const POPUP_SIZES = Object.freeze(['compact', 'normal', 'large', 'luxury']);
-const POPUP_POSITIONS = Object.freeze(['below', 'under']);
-const LEGACY_POPUP_SIZES = Object.freeze({ small: 'compact', medium: 'normal', large: 'large' });
+var CONTEXTS = Object.freeze(['text', 'word', 'link']);
+var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
+var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
+var POPUP_SIZES = Object.freeze(['compact', 'normal', 'large', 'luxury']);
+var POPUP_POSITIONS = Object.freeze(['below', 'under']);
+var LEGACY_POPUP_SIZES = Object.freeze({ small: 'compact', medium: 'normal', large: 'large' });
 
-const THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
+var THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
 
-const ACTION_ICONS = Object.freeze({
+var ACTION_ICONS = Object.freeze({
   copyRich:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
   copyPlain:
@@ -27,7 +30,7 @@ const ACTION_ICONS = Object.freeze({
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>',
 });
 
-const BUILTIN_ACTION_DEFS = Object.freeze([
+var BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', location: 'content', contexts: ['text', 'word'], icon: ACTION_ICONS.copyRich },
   { id: 'copyPlain', location: 'content', contexts: ['text', 'word'], icon: ACTION_ICONS.copyPlain },
   { id: 'openLink', location: 'background', contexts: ['link'], icon: ACTION_ICONS.openLink },
@@ -49,14 +52,14 @@ const BUILTIN_ACTION_DEFS = Object.freeze([
   },
 ]);
 
-const LEGACY_ACTION_TEMPLATES = Object.freeze({
+var LEGACY_ACTION_TEMPLATES = Object.freeze({
   'https://www.merriam-webster.com/dictionary/{searchTerms}': 'https://en.wiktionary.org/wiki/{searchTerms}',
   'https://www.merriam-webster.com/thesaurus/{searchTerms}': THESAURUS_TEMPLATE,
   'https://en.wiktionary.org/wiki/Thesaurus:{searchTerms}': THESAURUS_TEMPLATE,
   'https://www.powerthesaurus.org/{searchTerms}/synonyms': THESAURUS_TEMPLATE,
 });
 
-const DEFAULT_SETTINGS = Object.freeze({
+var DEFAULT_SETTINGS = Object.freeze({
   trigger: 'mouseup',
   openMethod: 'newTab',
   columns: 6,

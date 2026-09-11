@@ -1,23 +1,26 @@
 // Shared favicon logic: engine host resolution, retrieval + caching, and rendering.
 
-const HTTP_URL_PATTERN = /^https?:\/\//i;
-const ICON_CACHE_PREFIX = 'icon:';
-const MAX_ICON_BYTES = 256 * 1024;
-const MAX_MARKUP_BYTES = 512 * 1024;
-const ICON_FETCH_TIMEOUT_MS = 4000;
-const BASE64_CHUNK_SIZE = 0x8000;
+// var (not const) throughout this file: top-level bindings are shared, bare-name globals
+// across sibling content-script files, and must tolerate re-injection into the same
+// document without throwing a SyntaxError on redeclaration.
+var HTTP_URL_PATTERN = /^https?:\/\//i;
+var ICON_CACHE_PREFIX = 'icon:';
+var MAX_ICON_BYTES = 256 * 1024;
+var MAX_MARKUP_BYTES = 512 * 1024;
+var ICON_FETCH_TIMEOUT_MS = 4000;
+var BASE64_CHUNK_SIZE = 0x8000;
 
-const WELL_KNOWN_ICONS = [
+var WELL_KNOWN_ICONS = [
   { path: '/favicon.svg', vector: true, size: 0 },
   { path: '/apple-touch-icon.png', vector: false, size: 180 },
   { path: '/favicon-32x32.png', vector: false, size: 32 },
   { path: '/favicon.ico', vector: false, size: 16 },
 ];
-const ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-precomposed']);
-const LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
-const ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
+var ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-precomposed']);
+var LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
+var ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
 
-const KNOWN_ENGINE_HOSTS = Object.freeze({
+var KNOWN_ENGINE_HOSTS = Object.freeze({
   google: 'www.google.com',
   duckduckgo: 'duckduckgo.com',
   bing: 'www.bing.com',
@@ -49,10 +52,10 @@ const KNOWN_ENGINE_HOSTS = Object.freeze({
   'stack overflow': 'stackoverflow.com',
 });
 
-const DOMAIN_ENGINE_NAME_PATTERN = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/;
+var DOMAIN_ENGINE_NAME_PATTERN = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/;
 
-const SVG_COLOR_PATTERN = /\b(?:fill|stroke|stop-color|color)\s*[:=]\s*["']?\s*([^"';\s>)]+)/gi;
-const MONOCHROME_SVG_COLORS = new Set([
+var SVG_COLOR_PATTERN = /\b(?:fill|stroke|stop-color|color)\s*[:=]\s*["']?\s*([^"';\s>)]+)/gi;
+var MONOCHROME_SVG_COLORS = new Set([
   'none',
   'transparent',
   'currentcolor',
@@ -65,7 +68,7 @@ const MONOCHROME_SVG_COLORS = new Set([
   'grey',
 ]);
 
-const iconMemoryCache = new Map();
+var iconMemoryCache = new Map();
 
 function normalizeEngineName(name) {
   return String(name ?? '')

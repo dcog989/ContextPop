@@ -1,4 +1,6 @@
-const DEFAULT_ENGINES = [
+// var (not const): top-level bindings must tolerate re-injection into the same document
+// without throwing a SyntaxError on redeclaration.
+var DEFAULT_ENGINES = [
   {
     id: 'default-duckduckgo',
     name: 'DuckDuckGo',
