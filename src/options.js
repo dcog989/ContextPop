@@ -193,43 +193,12 @@ function moveAction(index, offset) {
 }
 
 function createEngineIcon(engine) {
-  const icon = document.createElement('span');
-  icon.className = 'engine-icon';
-
-  const fallback = document.createElement('span');
-  fallback.className = 'engine-letter';
-  fallback.textContent = (engine.name || '?').trim().charAt(0).toUpperCase();
-
-  const mask = document.createElement('span');
-  mask.className = 'engine-mask';
-  mask.hidden = true;
-
-  const img = document.createElement('img');
-  img.alt = '';
-  img.referrerPolicy = 'no-referrer';
-  img.hidden = true;
-  img.addEventListener('error', () => {
-    img.hidden = true;
-    fallback.hidden = false;
+  const { element, setSource } = createFaviconIcon({
+    prefix: 'engine',
+    label: (engine.name || '?').trim().charAt(0).toUpperCase(),
   });
-
-  const setSource = (source) => {
-    if (!source) return;
-    if (svgDataUrlIsMonochrome(source)) {
-      mask.style.webkitMaskImage = `url("${source}")`;
-      mask.style.maskImage = `url("${source}")`;
-      mask.hidden = false;
-      img.hidden = true;
-    } else {
-      img.src = source;
-      img.hidden = false;
-      mask.hidden = true;
-    }
-    fallback.hidden = true;
-  };
-
-  icon.append(img, mask, fallback);
-  return { element: icon, setSource };
+  element.className = 'engine-icon';
+  return { element, setSource };
 }
 
 function createRow(engine, index) {
@@ -484,7 +453,7 @@ function collectIconOrigins(engines, settings) {
         origins.add('https://icons.duckduckgo.com/*');
         continue;
       }
-      const host = engine.iconHost || browserEngineHost(engine.name);
+      const host = browserEngineHost(engine.name);
       if (!host) continue;
       origins.add(`https://${host}/*`);
       if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);

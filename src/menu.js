@@ -223,43 +223,12 @@
   }
 
   function createIcon(engine) {
-    const wrapper = document.createElement('span');
-    wrapper.className = 'cs-icon';
-
-    const fallback = document.createElement('span');
-    fallback.className = 'cs-letter';
-    fallback.textContent = (engine.name || '?').trim().charAt(0).toUpperCase();
-
-    const mask = document.createElement('span');
-    mask.className = 'cs-mask';
-    mask.hidden = true;
-
-    const img = document.createElement('img');
-    img.alt = '';
-    img.referrerPolicy = 'no-referrer';
-    img.hidden = true;
-    img.addEventListener('error', () => {
-      img.hidden = true;
-      fallback.hidden = false;
+    const { element, setSource } = createFaviconIcon({
+      prefix: 'cs',
+      label: (engine.name || '?').trim().charAt(0).toUpperCase(),
     });
-
-    const setSource = (source) => {
-      if (!source || !wrapper.isConnected) return;
-      if (svgDataUrlIsMonochrome(source)) {
-        mask.style.webkitMaskImage = `url("${source}")`;
-        mask.style.maskImage = `url("${source}")`;
-        mask.hidden = false;
-        img.hidden = true;
-      } else {
-        img.src = source;
-        img.hidden = false;
-        mask.hidden = true;
-      }
-      fallback.hidden = true;
-    };
-
-    wrapper.append(img, mask, fallback);
-    return { element: wrapper, setSource };
+    element.className = 'cs-icon';
+    return { element, setSource };
   }
 
   function createBuiltinIcon(id) {
