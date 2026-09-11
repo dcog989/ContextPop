@@ -32,6 +32,12 @@ const BUILTIN_ACTION_DEFS = Object.freeze([
   },
 ]);
 
+const LEGACY_ACTION_TEMPLATES = Object.freeze({
+  'https://www.merriam-webster.com/dictionary/{searchTerms}': 'https://en.wiktionary.org/wiki/{searchTerms}',
+  'https://www.merriam-webster.com/thesaurus/{searchTerms}': 'https://www.powerthesaurus.org/{searchTerms}/synonyms',
+  'https://en.wiktionary.org/wiki/Thesaurus:{searchTerms}': 'https://www.powerthesaurus.org/{searchTerms}/synonyms',
+});
+
 const DEFAULT_SETTINGS = Object.freeze({
   trigger: 'mouseup',
   openMethod: 'newTab',
@@ -96,7 +102,11 @@ function normalizeBuiltinActions(stored, base) {
       const entry = {
         enabled: value.enabled !== false,
       };
-      if (def.template) entry.template = String(value.template ?? fallback.template ?? def.template);
+      if (def.template) {
+        const stored = value.template;
+        const template = typeof stored === 'string' ? stored : String(fallback.template ?? def.template);
+        entry.template = LEGACY_ACTION_TEMPLATES[template] ?? template;
+      }
       return [def.id, entry];
     }),
   );
