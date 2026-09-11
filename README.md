@@ -79,4 +79,4 @@ https://duckduckgo.com/?q={searchTerms}
 - Host access to all sites — needed to show the menu wherever you select text.
 - Optional host access — requested only when you configure remote icons or favicons.
 
-Remote icons are fetched by the background and cached for the session, without cookies or a referrer. See [PRIVACY.md](PRIVACY.md).
+Remote icons are fetched by the background, preferring the high-resolution icon each site declares, and cached on-device without cookies or a referrer. Use "Refresh icons" in settings to re-fetch them. See [PRIVACY.md](PRIVACY.md).

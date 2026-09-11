@@ -124,6 +124,18 @@ button:disabled {
   color: var(--muted);
 }
 
+.icon-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.icon-options .inline-field {
+  margin: 0;
+}
+
 .action-list,
 .engine-list {
   display: flex;

@@ -171,6 +171,21 @@
   "statusIconPermission": {
     "message": "Saved. Icon access was not granted, so remote icons fall back to letters."
   },
+  "statusIconsRefreshed": {
+    "message": "Icons refreshed"
+  },
+  "statusSaveFirst": {
+    "message": "Save your changes first."
+  },
+  "statusRefreshFailed": {
+    "message": "Refresh failed: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
   "backupHeading": {
     "message": "Backup"
   },
@@ -299,6 +314,9 @@
   },
   "faviconNone": {
     "message": "No remote icons"
+  },
+  "refreshIcons": {
+    "message": "Refresh icons"
   },
   "showGroupHeaders": {
     "message": "Show group headers"

@@ -47,14 +47,17 @@
         <p class="hint" id="browser-import-note" data-i18n="importUnavailable" hidden>
           This browser does not let extensions list installed search engines. Add them manually.
         </p>
-        <label class="inline-field">
-          <span data-i18n="faviconLabel">Engine icons</span>
-          <select id="setting-favicon-provider">
-            <option value="site" data-i18n="faviconSite">From the engine's own site</option>
-            <option value="duckduckgo" data-i18n="faviconDuckduckgo">DuckDuckGo icon service</option>
-            <option value="none" data-i18n="faviconNone">No remote icons</option>
-          </select>
-        </label>
+        <div class="icon-options">
+          <label class="inline-field">
+            <span data-i18n="faviconLabel">Engine icons</span>
+            <select id="setting-favicon-provider">
+              <option value="site" data-i18n="faviconSite">From the engine's own site</option>
+              <option value="duckduckgo" data-i18n="faviconDuckduckgo">DuckDuckGo icon service</option>
+              <option value="none" data-i18n="faviconNone">No remote icons</option>
+            </select>
+          </label>
+          <button id="refresh-icons" type="button" class="secondary" data-i18n="refreshIcons">Refresh icons</button>
+        </div>
         <div id="engine-list" class="engine-list"></div>
       </section>
 

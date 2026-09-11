@@ -156,6 +156,17 @@ async function pruneIconCache(referencedKeys) {
   }
 }
 
+async function clearIconCache() {
+  iconMemoryCache.clear();
+  try {
+    const all = await api.storage.local.get(null);
+    const keys = Object.keys(all).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
+    if (keys.length) await api.storage.local.remove(keys);
+  } catch {
+    // Non-fatal: a failed clear just means the next fetch reuses a cached value.
+  }
+}
+
 async function fetchImage(url) {
   if (!url) return { dataUrl: null, definitive: false };
   if (url.startsWith('data:')) return { dataUrl: url, definitive: true };
@@ -360,6 +371,11 @@ async function handleMessage(message, sender) {
       return loadSettings();
     case 'getIcons': {
       const [engines, settings] = await Promise.all([loadEngines(), loadSettings()]);
+      return loadIconMap(engines, settings);
+    }
+    case 'refreshIcons': {
+      const [engines, settings] = await Promise.all([loadEngines(), loadSettings()]);
+      await clearIconCache();
       return loadIconMap(engines, settings);
     }
     case 'hasClipboard':

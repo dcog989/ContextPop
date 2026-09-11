@@ -26,6 +26,7 @@ const elements = {
   labels: document.getElementById('setting-labels'),
   groupHeaders: document.getElementById('setting-group-headers'),
   faviconProvider: document.getElementById('setting-favicon-provider'),
+  refreshIcons: document.getElementById('refresh-icons'),
   iconSize: document.getElementById('setting-icon-size'),
 };
 
@@ -514,8 +515,31 @@ function configureBrowserImport() {
   elements.browserNote.hidden = available;
 }
 
-function refreshIcons() {
+function reloadIcons() {
   upgradeIcons(iconSetters);
+}
+
+async function handleRefreshIcons() {
+  if (state.dirty) {
+    setStatus(msg('statusSaveFirst'), true);
+    return;
+  }
+  elements.refreshIcons.disabled = true;
+  try {
+    const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
+    if (response?.error) throw new Error(response.error);
+    const icons = response?.data || {};
+    for (const engine of state.engines) {
+      const setIcon = iconSetters.get(engine.id);
+      if (setIcon) setIcon(icons[engine.id] || engine.icon);
+    }
+    setStatus(msg('statusIconsRefreshed'));
+    clearStatusSoon();
+  } catch (error) {
+    setStatus(msg('statusRefreshFailed', error.message), true);
+  } finally {
+    elements.refreshIcons.disabled = false;
+  }
 }
 
 function bindSettings() {
@@ -551,7 +575,7 @@ function bindSettings() {
   elements.faviconProvider.addEventListener('change', () => {
     state.settings.faviconProvider = elements.faviconProvider.value;
     markDirty();
-    refreshIcons();
+    reloadIcons();
   });
   elements.iconSize.addEventListener('change', () => {
     state.settings.iconSize = elements.iconSize.value;
@@ -562,6 +586,7 @@ function bindSettings() {
 function bindActions() {
   document.getElementById('add-engine').addEventListener('click', addEngine);
   document.getElementById('restore-defaults').addEventListener('click', restoreDefaults);
+  elements.refreshIcons.addEventListener('click', handleRefreshIcons);
   document.getElementById('export-engines').addEventListener('click', exportEngines);
   document.getElementById('import-engines').addEventListener('click', () => elements.importFile.click());
   elements.importBrowser.addEventListener('click', importBrowserEngines);
