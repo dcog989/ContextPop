@@ -182,7 +182,7 @@
       rect: info.rect,
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines,
-      settings: contentState.settings ?? {},
+      settings: contentState.settings ?? defaultSettings(),
       handlers: { copyRich, copyPlain },
     });
   }
