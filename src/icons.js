@@ -504,3 +504,21 @@ function createFaviconIcon({ prefix, label }) {
   wrapper.append(img, mask, fallback);
   return { element: wrapper, setSource };
 }
+
+async function applyEngineIcons(iconSetters, engines) {
+  if (!engines.length) return;
+
+  let icons = {};
+  try {
+    const response = await api.runtime.sendMessage({ type: 'getIcons' });
+    if (response?.error) throw new Error(response.error);
+    icons = response?.data || {};
+  } catch {
+    icons = {};
+  }
+
+  for (const engine of engines) {
+    const setIcon = iconSetters.get(engine.id);
+    if (setIcon) setIcon(icons[engine.id] || engine.icon);
+  }
+}

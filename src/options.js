@@ -222,21 +222,6 @@ function createRow(engine, index) {
   return { fragment, setIcon: icon.setSource };
 }
 
-async function upgradeIcons(iconSetters) {
-  let icons = {};
-  try {
-    const response = await api.runtime.sendMessage({ type: 'getIcons' });
-    if (response?.error) throw new Error(response.error);
-    icons = response?.data || {};
-  } catch {
-    icons = {};
-  }
-  for (const engine of state.engines) {
-    const setIcon = iconSetters.get(engine.id);
-    if (setIcon) setIcon(icons[engine.id] || engine.icon);
-  }
-}
-
 function renderEngines() {
   elements.list.replaceChildren();
   iconSetters = new Map();
@@ -245,7 +230,7 @@ function renderEngines() {
     elements.list.appendChild(fragment);
     iconSetters.set(engine.id, setIcon);
   });
-  upgradeIcons(iconSetters);
+  applyEngineIcons(iconSetters, state.engines);
 }
 
 function renderSettings() {

@@ -432,24 +432,6 @@
     menu.style.top = `${Math.round(top)}px`;
   }
 
-  async function upgradeIcons(iconSetters, engines) {
-    if (!engines.length) return;
-
-    let icons = {};
-    try {
-      const response = await api.runtime.sendMessage({ type: 'getIcons' });
-      if (response?.error) throw new Error(response.error);
-      icons = response?.data || {};
-    } catch {
-      icons = {};
-    }
-
-    for (const engine of engines) {
-      const setIcon = iconSetters.get(engine.id);
-      if (setIcon) setIcon(icons[engine.id] || engine.icon);
-    }
-  }
-
   function appendTiles(tiles, items, kind, settings, iconSetters) {
     for (const item of items) {
       if (kind === 'actions') {
@@ -549,7 +531,7 @@
     const firstTile = menu.querySelector('.cs-tile:not(:disabled)');
     if (firstTile) focusTile(firstTile);
 
-    upgradeIcons(iconSetters, engines);
+    applyEngineIcons(iconSetters, engines);
   }
 
   globalThis.__contextSmartMenu = { openMenu, closeMenu, isMenuOpen, menuState };
