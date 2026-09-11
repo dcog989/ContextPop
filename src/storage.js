@@ -8,7 +8,8 @@ const STORAGE_KEYS = Object.freeze({
 const CONTEXTS = Object.freeze(['text', 'word', 'link']);
 const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
-const ICON_SIZES = Object.freeze(['small', 'medium', 'large']);
+const POPUP_SIZES = Object.freeze(['compact', 'normal', 'large', 'luxury']);
+const LEGACY_POPUP_SIZES = Object.freeze({ small: 'compact', medium: 'normal', large: 'large' });
 
 const BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', location: 'content', contexts: ['text', 'word'] },
@@ -44,7 +45,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   theme: 'auto',
   showLabels: false,
   actionsPosition: 'before',
-  iconSize: 'medium',
+  popupSize: 'normal',
 });
 
 function defaultSettings() {
@@ -122,15 +123,18 @@ function normalizeActionOrder(order) {
 
 function normalizeSettings(stored) {
   const base = defaultSettings();
-  const settings = { ...base, ...(stored && typeof stored === 'object' ? stored : {}) };
+  const input = stored && typeof stored === 'object' ? stored : {};
+  const settings = { ...base, ...input };
   delete settings.faviconProvider;
+  delete settings.iconSize;
+  const legacyPopupSize = LEGACY_POPUP_SIZES[input.iconSize];
+  settings.popupSize = POPUP_SIZES.includes(input.popupSize)
+    ? input.popupSize
+    : legacyPopupSize || DEFAULT_SETTINGS.popupSize;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {
     settings.actionsPosition = DEFAULT_SETTINGS.actionsPosition;
-  }
-  if (!ICON_SIZES.includes(settings.iconSize)) {
-    settings.iconSize = DEFAULT_SETTINGS.iconSize;
   }
   return settings;
 }

@@ -60,17 +60,20 @@
   "columnsLabel": {
     "message": "Columns"
   },
-  "iconSizeLabel": {
-    "message": "Icon size"
+  "popupSizeLabel": {
+    "message": "Popup size"
   },
-  "iconSizeSmall": {
-    "message": "Small"
+  "popupSizeCompact": {
+    "message": "Compact"
   },
-  "iconSizeMedium": {
-    "message": "Medium"
+  "popupSizeNormal": {
+    "message": "Normal"
   },
-  "iconSizeLarge": {
+  "popupSizeLarge": {
     "message": "Large"
+  },
+  "popupSizeLuxury": {
+    "message": "Luxury"
   },
   "themeLabel": {
     "message": "Theme"
@@ -150,8 +153,8 @@
       }
     }
   },
-  "statusIconPermission": {
-    "message": "Saved. Icon access was not granted, so remote icons fall back to letters."
+  "statusIconAccessDenied": {
+    "message": "Icon access was not granted, so engine icons fall back to letters."
   },
   "statusIconsRefreshed": {
     "message": "Icons refreshed"

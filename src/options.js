@@ -24,7 +24,7 @@ const elements = {
   theme: document.getElementById('setting-theme'),
   labels: document.getElementById('setting-labels'),
   refreshIcons: document.getElementById('refresh-icons'),
-  iconSize: document.getElementById('setting-icon-size'),
+  popupSize: document.getElementById('setting-popup-size'),
 };
 
 function msg(name, substitutions) {
@@ -253,7 +253,7 @@ function renderSettings() {
   elements.columns.value = state.settings.columns;
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
-  elements.iconSize.value = state.settings.iconSize;
+  elements.popupSize.value = state.settings.popupSize;
 }
 
 function moveEngine(index, offset) {
@@ -457,8 +457,6 @@ async function save() {
   state.settings = normalizeSettings(state.settings);
   state.settings.columns = clamp(Number(state.settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
-  const iconAccess = await ensureIconPermission(state.engines);
-
   try {
     await Promise.all([saveEngines(state.engines), saveSettings(state.settings)]);
   } catch (error) {
@@ -467,7 +465,7 @@ async function save() {
   }
 
   state.dirty = false;
-  setStatus(iconAccess ? msg('statusSaved') : msg('statusIconPermission'));
+  setStatus(msg('statusSaved'));
   clearStatusSoon();
 }
 
@@ -485,7 +483,11 @@ async function handleRefreshIcons() {
   elements.refreshIcons.disabled = true;
   elements.refreshIcons.classList.add('is-loading');
   try {
-    await ensureIconPermission(state.engines);
+    const granted = await ensureIconPermission(state.engines);
+    if (!granted) {
+      setStatus(msg('statusIconAccessDenied'), true);
+      return;
+    }
 
     const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
     if (response?.error) throw new Error(response.error);
@@ -530,8 +532,8 @@ function bindSettings() {
     state.settings.showLabels = elements.labels.checked;
     markDirty();
   });
-  elements.iconSize.addEventListener('change', () => {
-    state.settings.iconSize = elements.iconSize.value;
+  elements.popupSize.addEventListener('change', () => {
+    state.settings.popupSize = elements.popupSize.value;
     markDirty();
   });
 }

@@ -24,18 +24,36 @@
   z-index: 2147483647;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 8px;
-  max-width: min(92vw, 560px);
+  gap: 0.57em;
+  padding: 0.57em;
+  max-width: min(92vw, 40em);
   max-height: 70vh;
   overflow: auto;
   background: #ffffff;
   color: #1a1a1a;
   border: 1px solid #00000029;
-  border-radius: 10px;
+  border-radius: 0.71em;
   box-shadow: 0 10px 32px #00000047;
   pointer-events: auto;
   font-family: var(--font-family);
+  font-size: 14px;
+  --icon-size: 28px;
+  --tile-size: 52px;
+}
+.cs-menu.size-compact {
+  font-size: 12px;
+  --icon-size: 24px;
+  --tile-size: 44px;
+}
+.cs-menu.size-large {
+  font-size: 16px;
+  --icon-size: 32px;
+  --tile-size: 60px;
+}
+.cs-menu.size-luxury {
+  font-size: 18px;
+  --icon-size: 36px;
+  --tile-size: 68px;
 }
 .cs-menu.dark {
   background: #202124;
@@ -44,31 +62,19 @@
 }
 .cs-tiles {
   display: grid;
-  gap: 4px;
-}
-.cs-menu {
-  --icon-size: 28px;
-  --tile-size: 52px;
-}
-.cs-menu.icon-sm {
-  --icon-size: 22px;
-  --tile-size: 44px;
-}
-.cs-menu.icon-lg {
-  --icon-size: 36px;
-  --tile-size: 64px;
+  gap: 0.29em;
 }
 .cs-tile {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0.14em;
   width: var(--tile-size);
   height: var(--tile-size);
-  padding: 2px;
+  padding: 0.14em;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 0.57em;
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -89,9 +95,9 @@
 }
 .cs-menu.has-labels .cs-tile {
   width: auto;
-  min-width: 68px;
+  min-width: 4.86em;
   height: auto;
-  padding: 6px 8px;
+  padding: 0.43em 0.57em;
 }
 .cs-tile:disabled {
   opacity: 0.35;
@@ -130,8 +136,8 @@
   pointer-events: none;
 }
 .cs-icon svg {
-  width: calc(var(--icon-size) - 2px);
-  height: calc(var(--icon-size) - 2px);
+  width: calc(var(--icon-size) - 0.14em);
+  height: calc(var(--icon-size) - 0.14em);
 }
 .cs-letter {
   display: flex;
@@ -146,16 +152,16 @@
   font-weight: 600;
 }
 .cs-label {
-  max-width: 84px;
+  max-width: 7.6em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: 0.79em;
   line-height: 1.2;
 }
 .cs-empty {
-  padding: 8px 12px;
-  font-size: 12px;
+  padding: 0.67em 1em;
+  font-size: 0.86em;
   opacity: 0.72;
 }
 `;
@@ -502,9 +508,7 @@
     menu.style.visibility = 'hidden';
 
     if (settings.showLabels) menu.classList.add('has-labels');
-    if (settings.iconSize === 'small' || settings.iconSize === 'large') {
-      menu.classList.add(`icon-${settings.iconSize}`);
-    }
+    menu.classList.add(`size-${settings.popupSize || 'normal'}`);
     applyTheme(menu, settings.theme);
 
     const iconSetters = new Map();
