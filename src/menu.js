@@ -315,7 +315,7 @@
   function moveFocus(menu, delta) {
     const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
     if (!tiles.length) return;
-    const current = tiles.indexOf(document.activeElement);
+    const current = tiles.indexOf(menu.querySelector('.cs-tile:focus'));
     let next = current + delta;
     if (next < 0) next = tiles.length - 1;
     if (next >= tiles.length) next = 0;
