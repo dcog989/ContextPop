@@ -99,34 +99,16 @@
     };
   }
 
-  function classify(info, target) {
-    if (!info) return target?.tagName === 'IMG' ? 'image' : 'page';
+  function classify(info) {
     if (info.href) return 'link';
     if (/^\S+$/.test(info.text)) return 'word';
     return 'text';
   }
 
-  function buildActivation(event) {
+  function buildActivation() {
     const info = readSelection();
-    const context = classify(info, event.target);
-    if (info) return { ...info, context };
-    if (context !== 'image') return null;
-
-    const image = event.target?.closest?.('img') || (event.target?.tagName === 'IMG' ? event.target : null);
-    const source = image?.currentSrc || image?.src || '';
-    if (!image || !source) return null;
-
-    const rect = image.getBoundingClientRect();
-    if (!rect || (rect.width === 0 && rect.height === 0)) return null;
-
-    return {
-      text: image.alt?.trim() || source,
-      rect,
-      html: '',
-      href: '',
-      linkText: '',
-      context: 'image',
-    };
+    if (!info) return null;
+    return { ...info, context: classify(info) };
   }
 
   function fallbackCopy(text) {
@@ -221,7 +203,7 @@
     if (event.composedPath().includes(menuState.host)) return;
     if (isEditableElement(event.target)) return;
 
-    const info = buildActivation(event);
+    const info = buildActivation();
     if (info) showMenu(info);
   }
 
@@ -234,7 +216,7 @@
     if (event.button !== 2) return;
     if ((contentState.settings?.trigger ?? 'mouseup') !== 'rightHold') return;
 
-    const info = buildActivation(event);
+    const info = buildActivation();
     if (!info) return;
     contentState.rightHoldTimer = setTimeout(() => showMenu(info), 300);
   }
