@@ -406,12 +406,12 @@ async function save() {
     return;
   }
 
-  state.engines = state.engines.map((engine) => normalizeEngine(engine));
-  state.settings = normalizeSettings(state.settings);
-  state.settings.columns = clamp(Number(state.settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
+  const engines = state.engines.map((engine) => normalizeEngine(engine));
+  const settings = normalizeSettings(state.settings);
+  settings.columns = clamp(Number(settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
   try {
-    await Promise.all([saveEngines(state.engines), saveSettings(state.settings)]);
+    await Promise.all([saveEngines(engines), saveSettings(settings)]);
   } catch (error) {
     setStatus(msg('statusSaveFailed', error.message), true);
     return;
