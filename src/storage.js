@@ -31,21 +31,17 @@ var ACTION_ICONS = Object.freeze({
 });
 
 var BUILTIN_ACTION_DEFS = Object.freeze([
-  { id: 'copyRich', location: 'content', contexts: ['text', 'word'], icon: ACTION_ICONS.copyRich },
-  { id: 'copyPlain', location: 'content', contexts: ['text', 'word'], icon: ACTION_ICONS.copyPlain },
-  { id: 'openLink', location: 'background', contexts: ['link'], icon: ACTION_ICONS.openLink },
+  { id: 'copyRich', contexts: ['text', 'word'], icon: ACTION_ICONS.copyRich },
+  { id: 'copyPlain', contexts: ['text', 'word'], icon: ACTION_ICONS.copyPlain },
+  { id: 'openLink', contexts: ['link'], icon: ACTION_ICONS.openLink },
   {
     id: 'define',
-    location: 'background',
-    resultView: 'popup',
     contexts: ['word'],
     template: 'https://en.wiktionary.org/wiki/{searchTerms}',
     icon: ACTION_ICONS.define,
   },
   {
     id: 'thesaurus',
-    location: 'background',
-    resultView: 'popup',
     contexts: ['word'],
     template: THESAURUS_TEMPLATE,
     icon: ACTION_ICONS.thesaurus,
@@ -174,9 +170,6 @@ function builtinActionList(settings) {
       const value = normalized.builtinActions[def.id];
       return {
         id: def.id,
-        kind: 'builtin',
-        location: def.location,
-        resultView: def.resultView || 'tab',
         template: value.template ?? def.template ?? '',
         enabled: value.enabled,
         contexts: [...def.contexts],
