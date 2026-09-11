@@ -78,10 +78,6 @@ h2 {
   margin-bottom: 12px;
 }
 
-.section-head + .hint {
-  margin-top: 0;
-}
-
 .actions {
   display: flex;
   gap: 8px;
@@ -92,6 +88,10 @@ h2 {
   margin: 8px 0 16px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.section-head + .hint {
+  margin-top: 0;
 }
 
 code {
@@ -197,15 +197,6 @@ button.is-loading::before {
 .action-icon svg {
   width: 18px;
   height: 18px;
-}
-
-.action-main .action-template-field {
-  grid-column: 4;
-  min-width: 0;
-}
-
-.action-main .row-actions {
-  grid-column: 5 / -1;
 }
 
 .engine-main {
@@ -317,6 +308,15 @@ select:focus {
 
 .action-template-field[hidden] {
   display: none;
+}
+
+.action-main .action-template-field {
+  grid-column: 4;
+  min-width: 0;
+}
+
+.action-main .row-actions {
+  grid-column: 5 / -1;
 }
 
 .settings-grid {

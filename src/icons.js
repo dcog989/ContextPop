@@ -90,17 +90,19 @@ function svgColorIsMonochrome(value) {
   let red;
   let green;
   let blue;
-  let match = color.match(/^#([0-9a-f]{3})$/);
-  if (match) {
-    red = Number.parseInt(match[1][0] + match[1][0], 16);
-    green = Number.parseInt(match[1][1] + match[1][1], 16);
-    blue = Number.parseInt(match[1][2] + match[1][2], 16);
-  } else if ((match = color.match(/^#([0-9a-f]{6})$/))) {
-    red = Number.parseInt(match[1].slice(0, 2), 16);
-    green = Number.parseInt(match[1].slice(2, 4), 16);
-    blue = Number.parseInt(match[1].slice(4, 6), 16);
-  } else if ((match = color.match(/^rgba?\(([^)]+)\)$/))) {
-    [red, green, blue] = match[1].split(',').map((part) => Number.parseFloat(part));
+  const shortHex = color.match(/^#([0-9a-f]{3})$/);
+  const longHex = color.match(/^#([0-9a-f]{6})$/);
+  const rgb = color.match(/^rgba?\(([^)]+)\)$/);
+  if (shortHex) {
+    red = Number.parseInt(shortHex[1][0] + shortHex[1][0], 16);
+    green = Number.parseInt(shortHex[1][1] + shortHex[1][1], 16);
+    blue = Number.parseInt(shortHex[1][2] + shortHex[1][2], 16);
+  } else if (longHex) {
+    red = Number.parseInt(longHex[1].slice(0, 2), 16);
+    green = Number.parseInt(longHex[1].slice(2, 4), 16);
+    blue = Number.parseInt(longHex[1].slice(4, 6), 16);
+  } else if (rgb) {
+    [red, green, blue] = rgb[1].split(',').map((part) => Number.parseFloat(part));
   } else {
     return false;
   }
