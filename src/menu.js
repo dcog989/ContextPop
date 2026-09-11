@@ -185,12 +185,6 @@
     return typeof globalThis.builtinActionList === 'function' ? globalThis.builtinActionList(settings) : [];
   }
 
-  function contextMatches(item, context) {
-    if (typeof globalThis.matchesContext === 'function') return globalThis.matchesContext(item, context);
-    const contexts = Array.isArray(item?.contexts) ? item.contexts : ['text', 'word', 'link'];
-    return contexts.includes(context);
-  }
-
   function isMenuOpen() {
     return menuState.open;
   }
@@ -465,7 +459,7 @@
     const allActions = listActions(settings);
     const actions = allActions
       .filter((action) => action.enabled)
-      .map((action) => ({ ...action, disabled: !contextMatches(action, context) }));
+      .map((action) => ({ ...action, disabled: !matchesContext(action, context) }));
 
     const host = document.createElement('div');
     host.style.position = 'fixed';
