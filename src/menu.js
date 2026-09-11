@@ -174,19 +174,6 @@
 }
 `;
 
-  const BUILTIN_ICON_SVG = Object.freeze({
-    copyRich:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
-    copyPlain:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="18" y1="18" y2="12"/><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
-    openLink:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
-    define:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 22H5.5a1 1 0 0 1 0-5h4.501"/><path d="m21 22-1.879-1.878"/><path d="M3 19.5v-15A2.5 2.5 0 0 1 5.5 2H18a1 1 0 0 1 1 1v8"/><circle cx="17" cy="18" r="3"/></svg>',
-    thesaurus:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>',
-  });
-
   function t(name, fallback, substitutions) {
     const value = api.i18n?.getMessage(name, substitutions);
     if (value) return value;
@@ -243,10 +230,10 @@
     return { element, setSource };
   }
 
-  function createBuiltinIcon(id) {
+  function createBuiltinIcon(action) {
     const wrapper = document.createElement('span');
     wrapper.className = 'cs-icon';
-    wrapper.innerHTML = BUILTIN_ICON_SVG[id] || BUILTIN_ICON_SVG.copyRich;
+    wrapper.innerHTML = action.icon || '';
     return wrapper;
   }
 
@@ -402,7 +389,7 @@
     decorateTile(tile, label, showLabels, actionTooltip(action, text));
     tile.dataset.actionId = action.id;
     if (action.disabled) tile.disabled = true;
-    tile.prepend(createBuiltinIcon(action.id));
+    tile.prepend(createBuiltinIcon(action));
     tile.addEventListener('click', handleActionClick);
     return tile;
   }

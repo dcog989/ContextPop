@@ -176,7 +176,7 @@ button.is-loading::before {
 
 .action-main {
   display: grid;
-  grid-template-columns: auto minmax(110px, auto) minmax(140px, 1fr) auto auto;
+  grid-template-columns: auto auto minmax(110px, auto) minmax(140px, 1fr) auto;
   gap: 8px;
   align-items: center;
 }
@@ -185,13 +185,27 @@ button.is-loading::before {
   margin: 0;
 }
 
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--muted);
+}
+
+.action-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 .action-main .action-template-field {
-  grid-column: 3;
+  grid-column: 4;
   min-width: 0;
 }
 
 .action-main .row-actions {
-  grid-column: 4 / -1;
+  grid-column: 5 / -1;
 }
 
 .engine-main {

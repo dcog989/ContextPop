@@ -104,6 +104,7 @@ function createActionRow(actionId, index) {
     markDirty();
   });
 
+  fragment.querySelector('.action-icon').innerHTML = def?.icon || '';
   fragment.querySelector('.action-name').textContent = msg(`action${capitalize(actionId)}`);
 
   const templateField = fragment.querySelector('.action-template-field');
