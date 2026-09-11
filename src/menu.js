@@ -411,14 +411,21 @@
     menu.classList.toggle('dark', dark);
   }
 
-  function positionMenu(menu, anchorRect) {
+  function positionMenu(menu, anchor) {
     const margin = 8;
-    const rect = anchorRect || { left: margin, top: margin, right: margin, bottom: margin };
+    const rect = anchor.rect || { left: margin, top: margin, right: margin, bottom: margin };
     const size = menu.getBoundingClientRect();
 
     let left = rect.left;
     let top = rect.bottom + margin;
-    if (top + size.height > window.innerHeight - margin) {
+
+    if (anchor.position === 'under' && anchor.point) {
+      const tileRect = menu.querySelector('.cs-tile:not(:disabled)')?.getBoundingClientRect();
+      const offsetX = tileRect ? tileRect.left - size.left + tileRect.width / 2 : 0;
+      const offsetY = tileRect ? tileRect.top - size.top + tileRect.height / 2 : 0;
+      left = anchor.point.x - offsetX;
+      top = anchor.point.y - offsetY;
+    } else if (top + size.height > window.innerHeight - margin) {
       top = rect.top - size.height - margin;
     }
 
@@ -459,7 +466,19 @@
     }
   }
 
-  function openMenu({ text, html, context, href, linkText, rect, engines, settings, clipboardAllowed, handlers }) {
+  function openMenu({
+    text,
+    html,
+    context,
+    href,
+    linkText,
+    rect,
+    point,
+    engines,
+    settings,
+    clipboardAllowed,
+    handlers,
+  }) {
     closeMenu();
 
     menuState.text = text;
@@ -539,7 +558,7 @@
     menuState.host = host;
     menuState.root = root;
 
-    positionMenu(menu, rect);
+    positionMenu(menu, { rect, point, position: settings.popupPosition });
     menu.style.visibility = '';
 
     const firstTile = menu.querySelector('.cs-tile:not(:disabled)');

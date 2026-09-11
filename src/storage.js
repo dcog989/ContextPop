@@ -9,6 +9,7 @@ const CONTEXTS = Object.freeze(['text', 'word', 'link']);
 const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 const POPUP_SIZES = Object.freeze(['compact', 'normal', 'large', 'luxury']);
+const POPUP_POSITIONS = Object.freeze(['below', 'under']);
 const LEGACY_POPUP_SIZES = Object.freeze({ small: 'compact', medium: 'normal', large: 'large' });
 
 const THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
@@ -63,6 +64,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   showLabels: false,
   actionsPosition: 'before',
   popupSize: 'normal',
+  popupPosition: 'below',
 });
 
 function defaultSettings() {
@@ -152,6 +154,9 @@ function normalizeSettings(stored) {
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {
     settings.actionsPosition = DEFAULT_SETTINGS.actionsPosition;
+  }
+  if (!POPUP_POSITIONS.includes(settings.popupPosition)) {
+    settings.popupPosition = DEFAULT_SETTINGS.popupPosition;
   }
   return settings;
 }

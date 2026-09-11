@@ -25,6 +25,7 @@ const elements = {
   labels: document.getElementById('setting-labels'),
   refreshIcons: document.getElementById('refresh-icons'),
   popupSize: document.getElementById('setting-popup-size'),
+  popupPosition: document.getElementById('setting-popup-position'),
 };
 
 function msg(name, substitutions) {
@@ -255,6 +256,7 @@ function renderSettings() {
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
   elements.popupSize.value = state.settings.popupSize;
+  elements.popupPosition.value = state.settings.popupPosition;
 }
 
 function moveEngine(index, offset) {
@@ -540,6 +542,10 @@ function bindSettings() {
   });
   elements.popupSize.addEventListener('change', () => {
     state.settings.popupSize = elements.popupSize.value;
+    markDirty();
+  });
+  elements.popupPosition.addEventListener('change', () => {
+    state.settings.popupPosition = elements.popupPosition.value;
     markDirty();
   });
 }

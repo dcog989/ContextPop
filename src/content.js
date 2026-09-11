@@ -172,7 +172,7 @@
     }
   }
 
-  function showMenu(info) {
+  function showMenu(info, event) {
     contentState.selection = info;
     openMenu({
       text: info.text,
@@ -181,6 +181,7 @@
       href: info.href,
       linkText: info.linkText,
       rect: info.rect,
+      point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines,
       settings: contentState.settings ?? {},
       clipboardAllowed: contentState.clipboardAllowed,
@@ -202,7 +203,7 @@
     if (isEditableElement(event.target)) return;
 
     const info = buildActivation();
-    if (info) showMenu(info);
+    if (info) showMenu(info, event);
   }
 
   function handleMouseDown(event) {

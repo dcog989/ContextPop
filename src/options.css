@@ -130,7 +130,7 @@ button.is-loading {
 }
 
 button.is-loading::before {
-  content: '';
+  content: "";
   width: 12px;
   height: 12px;
   border: 2px solid currentColor;
@@ -181,7 +181,7 @@ button.is-loading::before {
   align-items: center;
 }
 
-.action-main input[type='checkbox'] {
+.action-main input[type="checkbox"] {
   margin: 0;
 }
 

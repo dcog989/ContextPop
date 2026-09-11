@@ -75,6 +75,15 @@
   "popupSizeLuxury": {
     "message": "Luxury"
   },
+  "popupPositionLabel": {
+    "message": "Popup position"
+  },
+  "popupPositionBelow": {
+    "message": "Below cursor"
+  },
+  "popupPositionUnder": {
+    "message": "Focused on cursor"
+  },
   "themeLabel": {
     "message": "Theme"
   },
