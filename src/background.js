@@ -7,7 +7,13 @@ const OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'ne
 const HTTP_URL_PATTERN = /^https?:\/\//i;
 const ICON_CACHE_PREFIX = 'icon:';
 const MAX_ICON_BYTES = 256 * 1024;
+const MAX_MARKUP_BYTES = 512 * 1024;
+const ICON_FETCH_TIMEOUT_MS = 4000;
 const BASE64_CHUNK_SIZE = 0x8000;
+const WELL_KNOWN_ICON_PATHS = ['/apple-touch-icon.png', '/favicon-32x32.png', '/favicon.svg', '/favicon.ico'];
+const ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-precomposed']);
+const LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
+const ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
 const POPUP_WIDTH = 520;
 const POPUP_HEIGHT = 720;
 
@@ -114,56 +120,179 @@ function arrayBufferToDataUrl(buffer, contentType) {
   return `data:${contentType};base64,${btoa(binary)}`;
 }
 
-async function readIconCache(url) {
-  if (iconMemoryCache.has(url)) return iconMemoryCache.get(url);
-  if (!api.storage.session) return undefined;
+async function readIconCache(key) {
+  if (iconMemoryCache.has(key)) return iconMemoryCache.get(key);
   try {
-    const key = ICON_CACHE_PREFIX + url;
-    const stored = await api.storage.session.get(key);
-    if (stored[key] !== undefined) {
-      iconMemoryCache.set(url, stored[key]);
-      return stored[key];
+    const storageKey = ICON_CACHE_PREFIX + key;
+    const stored = await api.storage.local.get(storageKey);
+    if (stored[storageKey] !== undefined) {
+      iconMemoryCache.set(key, stored[storageKey]);
+      return stored[storageKey];
     }
   } catch {
-    // Session storage unavailable or over quota; fall back to memory-only caching.
+    // Storage read failed; fall back to memory-only caching.
   }
   return undefined;
 }
 
-async function writeIconCache(url, dataUrl) {
-  iconMemoryCache.set(url, dataUrl);
-  if (!api.storage.session) return;
+async function writeIconCache(key, dataUrl) {
+  iconMemoryCache.set(key, dataUrl);
   try {
-    await api.storage.session.set({ [ICON_CACHE_PREFIX + url]: dataUrl });
+    await api.storage.local.set({ [ICON_CACHE_PREFIX + key]: dataUrl });
   } catch {
     // Non-fatal: the in-memory cache still holds the value for this worker lifetime.
   }
 }
 
-async function resolveIcon(url) {
-  if (!url) return null;
-  if (url.startsWith('data:')) return url;
-  if (!HTTP_URL_PATTERN.test(url)) return null;
-
-  const cached = await readIconCache(url);
-  if (cached !== undefined) return cached;
-
-  let dataUrl = null;
+async function pruneIconCache(referencedKeys) {
   try {
-    const response = await fetch(url, { credentials: 'omit', referrerPolicy: 'no-referrer' });
+    const all = await api.storage.local.get(null);
+    const stale = Object.keys(all).filter(
+      (key) => key.startsWith(ICON_CACHE_PREFIX) && !referencedKeys.has(key.slice(ICON_CACHE_PREFIX.length)),
+    );
+    if (stale.length) await api.storage.local.remove(stale);
+  } catch {
+    // Non-fatal: stale entries linger until the next prune.
+  }
+}
+
+async function fetchImage(url) {
+  if (!url) return { dataUrl: null, definitive: false };
+  if (url.startsWith('data:')) return { dataUrl: url, definitive: true };
+  if (!HTTP_URL_PATTERN.test(url)) return { dataUrl: null, definitive: true };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal,
+    });
     const contentType = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
     const declaredLength = Number(response.headers.get('content-length') || 0);
     const withinLimit = !declaredLength || declaredLength <= MAX_ICON_BYTES;
     if (response.ok && contentType.startsWith('image/') && withinLimit) {
       const buffer = await response.arrayBuffer();
-      if (buffer.byteLength <= MAX_ICON_BYTES) dataUrl = arrayBufferToDataUrl(buffer, contentType);
+      if (buffer.byteLength <= MAX_ICON_BYTES) {
+        return { dataUrl: arrayBufferToDataUrl(buffer, contentType), definitive: true };
+      }
+      return { dataUrl: null, definitive: true };
     }
+    return { dataUrl: null, definitive: response.status >= 400 && response.status < 500 };
   } catch {
-    dataUrl = null;
+    return { dataUrl: null, definitive: false };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fetchMarkup(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal,
+    });
+    if (!response.ok) {
+      return { markup: null, baseUrl: url, definitive: response.status >= 400 && response.status < 500 };
+    }
+    const reader = response.body?.getReader();
+    if (!reader) {
+      const text = await response.text();
+      return { markup: text.slice(0, MAX_MARKUP_BYTES), baseUrl: response.url || url, definitive: true };
+    }
+    const decoder = new TextDecoder();
+    let received = 0;
+    let markup = '';
+    while (received < MAX_MARKUP_BYTES) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      received += value.byteLength;
+      markup += decoder.decode(value, { stream: true });
+      if (markup.includes('</head>')) break;
+    }
+    reader.cancel().catch(() => {});
+    return { markup, baseUrl: response.url || url, definitive: true };
+  } catch {
+    return { markup: null, baseUrl: url, definitive: false };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function parseAttributes(tag) {
+  const attributes = {};
+  ATTRIBUTE_PATTERN.lastIndex = 0;
+  let match = ATTRIBUTE_PATTERN.exec(tag);
+  while (match) {
+    attributes[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? '';
+    match = ATTRIBUTE_PATTERN.exec(tag);
+  }
+  return attributes;
+}
+
+function iconSize(attributes) {
+  if ((attributes.sizes || '').trim().toLowerCase() === 'any') return Number.POSITIVE_INFINITY;
+  let best = 0;
+  for (const token of (attributes.sizes || '').split(/\s+/)) {
+    const value = Number.parseInt(token.toLowerCase().split('x')[0], 10);
+    if (Number.isFinite(value) && value > best) best = value;
+  }
+  if (!best && (attributes.rel || '').toLowerCase().includes('apple-touch-icon')) best = 180;
+  return best;
+}
+
+function isVectorIcon(attributes, href) {
+  return (attributes.type || '').toLowerCase() === 'image/svg+xml' || /\.svg($|[?#])/i.test(href);
+}
+
+function iconCandidates(markup, baseUrl) {
+  const candidates = [];
+  const seen = new Set();
+  LINK_TAG_PATTERN.lastIndex = 0;
+  let match = LINK_TAG_PATTERN.exec(markup);
+  while (match) {
+    const attributes = parseAttributes(match[0]);
+    const relations = (attributes.rel || '').toLowerCase().split(/\s+/);
+    if (attributes.href && relations.some((relation) => ICON_RELATIONS.has(relation))) {
+      try {
+        const url = new URL(attributes.href, baseUrl).href;
+        if (!seen.has(url)) {
+          seen.add(url);
+          candidates.push({ url, vector: isVectorIcon(attributes, attributes.href), size: iconSize(attributes) });
+        }
+      } catch {
+        // Ignore icons with unresolvable hrefs.
+      }
+    }
+    match = LINK_TAG_PATTERN.exec(markup);
+  }
+  candidates.sort((a, b) => (a.vector === b.vector ? b.size - a.size : a.vector ? -1 : 1));
+  return candidates.map((candidate) => candidate.url);
+}
+
+async function fetchBestIcon(homeUrl) {
+  const { markup, baseUrl, definitive: markupDefinitive } = await fetchMarkup(homeUrl);
+  const candidates = markup ? iconCandidates(markup, baseUrl) : [];
+  for (const path of WELL_KNOWN_ICON_PATHS) {
+    try {
+      const url = new URL(path, homeUrl).href;
+      if (!candidates.includes(url)) candidates.push(url);
+    } catch {
+      // Ignore malformed home URLs.
+    }
   }
 
-  await writeIconCache(url, dataUrl);
-  return dataUrl;
+  let definitive = markupDefinitive;
+  for (const url of candidates) {
+    const result = await fetchImage(url);
+    if (result.dataUrl) return result;
+    if (!result.definitive) definitive = false;
+  }
+  return { dataUrl: null, definitive: definitive && candidates.length > 0 };
 }
 
 function templateHost(template) {
@@ -175,26 +304,45 @@ function templateHost(template) {
 }
 
 function engineIconSource(engine, settings) {
-  if (engine.icon) return engine.icon;
-  if (engine.source === 'browser') return '';
+  if (engine.source === 'browser') return null;
+  if (engine.icon) return { key: engine.icon, kind: 'image' };
   const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
-  if (provider === 'none') return '';
+  if (provider === 'none') return null;
   const host = templateHost(engine.template);
-  if (!host) return '';
-  if (provider === 'duckduckgo') return `https://icons.duckduckgo.com/ip3/${host}.ico`;
-  return `https://${host}/favicon.ico`;
+  if (!host) return null;
+  if (provider === 'duckduckgo') return { key: `https://icons.duckduckgo.com/ip3/${host}.ico`, kind: 'image' };
+  return { key: `https://${host}/`, kind: 'markup' };
+}
+
+async function resolveEngineIcon(engine, settings) {
+  const source = engineIconSource(engine, settings);
+  if (!source) return { dataUrl: null, fetched: false };
+  if (source.key.startsWith('data:')) return { dataUrl: source.key, fetched: false };
+
+  const cached = await readIconCache(source.key);
+  if (cached !== undefined) return { dataUrl: cached, fetched: false };
+
+  const result = source.kind === 'markup' ? await fetchBestIcon(source.key) : await fetchImage(source.key);
+  if (result.dataUrl || result.definitive) await writeIconCache(source.key, result.dataUrl);
+  else iconMemoryCache.set(source.key, null);
+  return { dataUrl: result.dataUrl, fetched: true };
 }
 
 async function loadIconMap(engines, settings) {
   const icons = {};
-  await Promise.all(
+  const referenced = new Set();
+  for (const engine of engines) {
+    const source = engineIconSource(engine, settings);
+    if (source) referenced.add(source.key);
+  }
+  const outcomes = await Promise.all(
     engines.map(async (engine) => {
-      const source = engineIconSource(engine, settings);
-      if (!source) return;
-      const dataUrl = await resolveIcon(source);
+      const { dataUrl, fetched } = await resolveEngineIcon(engine, settings);
       if (dataUrl) icons[engine.id] = dataUrl;
+      return fetched;
     }),
   );
+  if (outcomes.some(Boolean)) await pruneIconCache(referenced);
   return icons;
 }
 

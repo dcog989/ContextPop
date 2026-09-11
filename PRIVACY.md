@@ -7,7 +7,7 @@ Context Smart does not collect, store, or transmit any personal data to the deve
 - **Selected text.** When you trigger the menu and pick an engine, the selected text is inserted into that engine's URL and opened in your browser. It is sent directly to the search engine you chose, not to the developer. The same applies to the Define and Thesaurus actions, which open the lookup in a popup window at the provider you configured.
 - **Clipboard.** Copy actions write the selected text to your system clipboard. This happens entirely on your device; nothing is transmitted.
 - **Settings and engines.** Your engine list and preferences are stored only in your browser via `storage.local`. They are never uploaded. Engines imported from the browser stay on-device.
-- **Icons and favicons.** To show an engine icon, the extension fetches the site's favicon. Depending on the favicon source setting, the request goes either to the engine's own site (`site`), to DuckDuckGo's icon service (`duckduckgo`), or not at all (`none`). Requests are cached for the browser session and sent without cookies or a referrer, so they are not tied to the page you are viewing. Icons are optional; engines without one display a letter.
+- **Icons and favicons.** To show an engine icon, the extension fetches a favicon. Depending on the favicon source setting, the request goes either to the engine's own site (`site`, which reads the icon the site declares and prefers a high-resolution one), to DuckDuckGo's icon service (`duckduckgo`), or not at all (`none`). Fetched icons are cached in `storage.local` on your device and sent without cookies or a referrer, so they are not tied to the page you are viewing. Icons are optional; engines without one display a letter.
 
 ## Permissions
 
