@@ -154,14 +154,6 @@ button.is-loading::before {
   color: var(--muted);
 }
 
-.icon-options {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 12px 0;
-}
-
 .action-list,
 .engine-list {
   display: flex;

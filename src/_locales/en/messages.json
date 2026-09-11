@@ -24,9 +24,6 @@
   "restoreDefaults": {
     "message": "Restore defaults"
   },
-  "templateHint": {
-    "message": "The {searchTerms} placeholder is replaced with the selected text. Changes are saved automatically."
-  },
   "behaviorHeading": {
     "message": "Behavior"
   },
