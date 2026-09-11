@@ -173,12 +173,19 @@ async function writeIconCache(key, dataUrl) {
   }
 }
 
+async function iconCacheKeys() {
+  const area = api.storage.local;
+  if (typeof area.getKeys === 'function') {
+    return (await area.getKeys()).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
+  }
+  const all = await area.get(null);
+  return Object.keys(all).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
+}
+
 async function pruneIconCache(referencedKeys) {
   try {
-    const all = await api.storage.local.get(null);
-    const stale = Object.keys(all).filter(
-      (key) => key.startsWith(ICON_CACHE_PREFIX) && !referencedKeys.has(key.slice(ICON_CACHE_PREFIX.length)),
-    );
+    const keys = await iconCacheKeys();
+    const stale = keys.filter((key) => !referencedKeys.has(key.slice(ICON_CACHE_PREFIX.length)));
     if (stale.length) await api.storage.local.remove(stale);
   } catch {
     // Non-fatal: stale entries linger until the next prune.
@@ -188,8 +195,7 @@ async function pruneIconCache(referencedKeys) {
 async function clearIconCache() {
   iconMemoryCache.clear();
   try {
-    const all = await api.storage.local.get(null);
-    const keys = Object.keys(all).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
+    const keys = await iconCacheKeys();
     if (keys.length) await api.storage.local.remove(keys);
   } catch {
     // Non-fatal: a failed clear just means the next fetch reuses a cached value.
