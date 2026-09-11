@@ -210,9 +210,6 @@
   "menuNoActions": {
     "message": "Nothing available for this selection"
   },
-  "clipboardBlocked": {
-    "message": "Clipboard access was not granted, so copy actions are hidden"
-  },
   "actionsHeading": {
     "message": "Actions"
   },

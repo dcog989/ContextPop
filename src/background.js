@@ -90,15 +90,6 @@ async function openLink({ url, method }, sender) {
   await openUrl(value, method, sender);
 }
 
-async function hasClipboardPermission() {
-  if (!api.permissions?.contains) return true;
-  try {
-    return await api.permissions.contains({ permissions: ['clipboardWrite'] });
-  } catch {
-    return true;
-  }
-}
-
 async function handleMessage(message, sender) {
   switch (message?.type) {
     case 'getEngines': {
@@ -120,8 +111,6 @@ async function handleMessage(message, sender) {
       await clearIconCache();
       return loadIconMap(engines);
     }
-    case 'hasClipboard':
-      return hasClipboardPermission();
     case 'search': {
       const engines = await loadEngines();
       const engine = engines.find((item) => item.id === message.engineId);

@@ -195,10 +195,6 @@
     return contexts.includes(context);
   }
 
-  function isCopyAction(id) {
-    return id === 'copyRich' || id === 'copyPlain';
-  }
-
   function isMenuOpen() {
     return menuState.open;
   }
@@ -476,7 +472,6 @@
     point,
     engines,
     settings,
-    clipboardAllowed,
     handlers,
   }) {
     closeMenu();
@@ -491,11 +486,8 @@
 
     const allActions = listActions(settings);
     const actions = allActions
-      .filter((action) => action.enabled && (clipboardAllowed || !isCopyAction(action.id)))
+      .filter((action) => action.enabled)
       .map((action) => ({ ...action, disabled: !contextMatches(action, context) }));
-    const copyBlocked =
-      !clipboardAllowed &&
-      allActions.some((action) => action.enabled && isCopyAction(action.id) && contextMatches(action, context));
 
     const host = document.createElement('div');
     host.style.position = 'fixed';
@@ -533,14 +525,7 @@
 
     if (tiles.childElementCount) menu.appendChild(tiles);
 
-    if (copyBlocked) {
-      const notice = document.createElement('div');
-      notice.className = 'cs-empty';
-      notice.textContent = t('clipboardBlocked', 'Clipboard access was not granted');
-      menu.appendChild(notice);
-    }
-
-    if (!menu.querySelector('.cs-tile:not(:disabled)') && !copyBlocked) {
+    if (!menu.querySelector('.cs-tile:not(:disabled)')) {
       const empty = document.createElement('div');
       empty.className = 'cs-empty';
       empty.textContent = t('menuNoActions', 'Nothing available for this selection');

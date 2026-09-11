@@ -14,7 +14,6 @@
   const contentState = {
     settings: null,
     engines: [],
-    clipboardAllowed: true,
     selection: null,
     suppressMouseUp: false,
   };
@@ -28,14 +27,12 @@
 
   async function loadConfig() {
     try {
-      const [settings, engines, clipboardAllowed] = await Promise.all([
+      const [settings, engines] = await Promise.all([
         request({ type: 'getSettings' }),
         request({ type: 'getEngines' }),
-        request({ type: 'hasClipboard' }),
       ]);
       contentState.settings = settings;
       contentState.engines = engines;
-      contentState.clipboardAllowed = clipboardAllowed !== false;
     } catch (error) {
       console.error('Context Smart: failed to load config', error);
     }
@@ -184,7 +181,6 @@
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines,
       settings: contentState.settings ?? {},
-      clipboardAllowed: contentState.clipboardAllowed,
       handlers: { copyRich, copyPlain },
     });
   }
