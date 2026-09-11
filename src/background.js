@@ -390,19 +390,56 @@ function templateHost(template) {
   }
 }
 
-function engineIconSource(engine, settings) {
-  if (engine.source === 'browser') return null;
-  if (engine.icon) return { key: engine.icon, kind: 'image' };
-  const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
-  if (provider === 'none') return null;
-  const host = templateHost(engine.template);
-  if (!host) return null;
+function normalizeEngineName(name) {
+  return String(name ?? '')
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function hostFromIconUrl(icon) {
+  if (typeof icon !== 'string' || !HTTP_URL_PATTERN.test(icon)) return '';
+  try {
+    return new URL(icon).host;
+  } catch {
+    return '';
+  }
+}
+
+function buildHostIndex(engines) {
+  const hosts = new Map();
+  for (const engine of engines) {
+    const host = templateHost(engine.template);
+    if (!host) continue;
+    const name = normalizeEngineName(engine.name);
+    if (name && !hosts.has(name)) hosts.set(name, host);
+  }
+  return hosts;
+}
+
+function faviconSourceForHost(host, provider) {
   if (provider === 'duckduckgo') return { key: `https://icons.duckduckgo.com/ip3/${host}.ico`, kind: 'image' };
   return { key: `https://${host}/`, kind: 'markup' };
 }
 
-async function resolveEngineIcon(engine, settings) {
-  const source = engineIconSource(engine, settings);
+function engineIconSource(engine, settings, hosts) {
+  const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
+  if (engine.source === 'browser') {
+    if (provider === 'none') return null;
+    const host = hosts.get(normalizeEngineName(engine.name)) || hostFromIconUrl(engine.icon);
+    if (!host) return null;
+    return faviconSourceForHost(host, provider);
+  }
+  if (engine.icon) return { key: engine.icon, kind: 'image' };
+  if (provider === 'none') return null;
+  const host = templateHost(engine.template);
+  if (!host) return null;
+  return faviconSourceForHost(host, provider);
+}
+
+async function resolveEngineIcon(engine, settings, hosts) {
+  const source = engineIconSource(engine, settings, hosts);
   if (!source) return { dataUrl: null, fetched: false };
   if (source.key.startsWith('data:')) return { dataUrl: source.key, fetched: false };
 
@@ -418,13 +455,14 @@ async function resolveEngineIcon(engine, settings) {
 async function loadIconMap(engines, settings) {
   const icons = {};
   const referenced = new Set();
+  const hosts = buildHostIndex(engines);
   for (const engine of engines) {
-    const source = engineIconSource(engine, settings);
+    const source = engineIconSource(engine, settings, hosts);
     if (source) referenced.add(source.key);
   }
   const outcomes = await Promise.all(
     engines.map(async (engine) => {
-      const { dataUrl, fetched } = await resolveEngineIcon(engine, settings);
+      const { dataUrl, fetched } = await resolveEngineIcon(engine, settings, hosts);
       if (dataUrl) icons[engine.id] = dataUrl;
       return fetched;
     }),
