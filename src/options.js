@@ -559,15 +559,7 @@ async function handleRefreshIcons() {
   }
   elements.refreshIcons.disabled = true;
   try {
-    const discovered = await api.runtime.sendMessage({ type: 'discoverHosts' });
-    if (discovered?.error) throw new Error(discovered.error);
-    if (Array.isArray(discovered?.data)) state.engines = discovered.data;
-
-    const granted = await ensureIconPermission(state.engines, state.settings);
-    if (!granted) {
-      setStatus(msg('statusIconPermission'), true);
-      return;
-    }
+    await ensureIconPermission(state.engines, state.settings);
 
     const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
     if (response?.error) throw new Error(response.error);

@@ -86,9 +86,7 @@ async function openSearch({ engine, terms, method }, sender) {
 }
 
 const pendingEngineHost = new Map();
-const pendingResolvers = new Map();
 const PENDING_ENGINE_TTL_MS = 60000;
-const ICON_DISCOVERY_TIMEOUT_MS = 8000;
 
 function urlHost(value) {
   try {
@@ -158,55 +156,6 @@ async function openBrowserSearch(engine, query, method, sender) {
 
   await rememberPendingEngine(tabId, engine.id);
   await api.search.search({ engine: engine.browserEngineName, query, tabId });
-}
-
-async function discoverEngineHost(engine) {
-  if (typeof api.tabs?.create !== 'function') return '';
-  let tabId = null;
-  try {
-    const tab = await api.tabs.create({ url: 'about:blank', active: false });
-    tabId = tab?.id ?? null;
-  } catch {
-    return '';
-  }
-  if (tabId == null) return '';
-
-  const hostPromise = new Promise((resolve) => pendingResolvers.set(tabId, resolve));
-  try {
-    await rememberPendingEngine(tabId, engine.id);
-    await api.search.search({ engine: engine.browserEngineName, query: ' ', tabId });
-    const host = await Promise.race([
-      hostPromise,
-      new Promise((resolve) => setTimeout(() => resolve(''), ICON_DISCOVERY_TIMEOUT_MS)),
-    ]);
-    return host || '';
-  } catch {
-    return '';
-  } finally {
-    pendingResolvers.delete(tabId);
-    await clearPendingEngine(tabId);
-    try {
-      await api.tabs.remove(tabId);
-    } catch {
-      // Tab may already be closed.
-    }
-  }
-}
-
-async function discoverMissingHosts(engines) {
-  if (typeof api.search?.search !== 'function') return false;
-  let changed = false;
-  for (const engine of engines) {
-    if (!isBrowserLikeEngine(engine) || engine.iconHost) continue;
-    if (!engine.browserEngineName || hostFromIconUrl(engine.icon)) continue;
-    const host = await discoverEngineHost(engine);
-    if (host) {
-      engine.iconHost = host;
-      changed = true;
-    }
-  }
-  if (changed) await saveEngines(engines);
-  return changed;
 }
 
 async function openReference({ template, terms }) {
@@ -600,11 +549,6 @@ async function handleMessage(message, sender) {
       await clearIconCache();
       return loadIconMap(engines, settings);
     }
-    case 'discoverHosts': {
-      const engines = await loadEngines();
-      await discoverMissingHosts(engines);
-      return engines;
-    }
     case 'hasClipboard':
       return hasClipboardPermission();
     case 'pageHost': {
@@ -621,8 +565,6 @@ async function handleMessage(message, sender) {
         engine.iconHost = host;
         await saveEngines(engines);
       }
-      const resolve = pendingResolvers.get(tabId);
-      if (resolve) resolve(host);
       return { ok: true };
     }
     case 'search': {
