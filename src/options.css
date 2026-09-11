@@ -367,17 +367,10 @@ select:focus {
   width: auto;
 }
 
-footer {
-  margin: 0 -24px;
-  padding: 0 24px;
-  background: var(--panel);
-  border-top: 1px solid var(--border);
-}
-
 .footer-inner {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 16px;
   max-width: 960px;
   margin: 0 auto;
@@ -385,7 +378,6 @@ footer {
 }
 
 .repo-link {
-  margin-right: auto;
   color: var(--accent);
   font-size: 13px;
   text-decoration: none;
