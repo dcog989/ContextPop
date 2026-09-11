@@ -37,8 +37,8 @@
   pointer-events: auto;
   font-family: var(--font-family);
   font-size: 14px;
-  --icon-size: 27px;
-  --tile-size: 44px;
+  --icon-size: 26px;
+  --tile-size: 38px;
 }
 .cs-menu.size-compact {
   font-size: 12px;
@@ -55,13 +55,13 @@
 }
 .cs-menu.size-large {
   font-size: 16px;
-  --icon-size: 31px;
-  --tile-size: 56px;
+  --icon-size: 30px;
+  --tile-size: 44px;
 }
 .cs-menu.size-luxury {
   font-size: 18px;
-  --icon-size: 36px;
-  --tile-size: 68px;
+  --icon-size: 34px;
+  --tile-size: 50px;
 }
 .cs-menu.dark {
   background: #202124;
