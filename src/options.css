@@ -162,10 +162,6 @@ button.is-loading::before {
   margin: 12px 0;
 }
 
-.icon-options .inline-field {
-  margin: 0;
-}
-
 .action-list,
 .engine-list {
   display: flex;

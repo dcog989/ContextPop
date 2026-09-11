@@ -10,7 +10,7 @@ Launches a customizable popup when text is selected. Provides instant access to 
 - Context-aware actions: copy, open link, define, and thesaurus apply to the selections they suit (`text`, `word`, `link`)
 - Manage engines (name, template, result view, optional icon); engines are offered for any selection
 - Import the engines already installed in Firefox; search them through the browser
-- Favicon source: the engine's own site, DuckDuckGo's icon service, or none, with a letter fallback
+- Engine icons fetched from each engine's own site (or a custom icon URL), with a letter fallback
 - Open results in a new tab, background tab, current tab, new window, or a popup window
 - Shift-click opens a new window; Ctrl/Cmd-click or middle-click opens a background tab
 - Light, dark, or system theme
@@ -77,6 +77,6 @@ https://duckduckgo.com/?q={searchTerms}
 - `search` — enumerate and use the browser's installed engines (Firefox import/search, Chrome default search).
 - `clipboardWrite` — copy actions.
 - Host access to all sites — needed to show the menu wherever you select text.
-- Optional host access — requested only when you configure remote icons or favicons.
+- Optional host access — requested only when engine icons need to be fetched from a site.
 
 Remote icons are fetched by the background, preferring the high-resolution icon each site declares, and cached on-device without cookies or a referrer. Use "Refresh icons" in settings to re-fetch them. See [PRIVACY.md](PRIVACY.md).

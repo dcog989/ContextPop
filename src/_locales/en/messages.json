@@ -282,18 +282,6 @@
   "importUnavailable": {
     "message": "This browser does not let extensions list installed search engines. Add them manually."
   },
-  "faviconLabel": {
-    "message": "Engine icons"
-  },
-  "faviconSite": {
-    "message": "From the engine's own site"
-  },
-  "faviconDuckduckgo": {
-    "message": "DuckDuckGo icon service"
-  },
-  "faviconNone": {
-    "message": "No remote icons"
-  },
   "refreshIcons": {
     "message": "Refresh icons"
   },

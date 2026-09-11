@@ -112,13 +112,13 @@ async function handleMessage(message, sender) {
     case 'getSettings':
       return loadSettings();
     case 'getIcons': {
-      const [engines, settings] = await Promise.all([loadEngines(), loadSettings()]);
-      return loadIconMap(engines, settings);
+      const engines = await loadEngines();
+      return loadIconMap(engines);
     }
     case 'refreshIcons': {
-      const [engines, settings] = await Promise.all([loadEngines(), loadSettings()]);
+      const engines = await loadEngines();
       await clearIconCache();
-      return loadIconMap(engines, settings);
+      return loadIconMap(engines);
     }
     case 'hasClipboard':
       return hasClipboardPermission();

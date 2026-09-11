@@ -7,7 +7,6 @@ const STORAGE_KEYS = Object.freeze({
 
 const CONTEXTS = Object.freeze(['text', 'word', 'link']);
 const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
-const FAVICON_PROVIDERS = Object.freeze(['site', 'duckduckgo', 'none']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 const ICON_SIZES = Object.freeze(['small', 'medium', 'large']);
 
@@ -44,7 +43,6 @@ const DEFAULT_SETTINGS = Object.freeze({
   columns: 6,
   theme: 'auto',
   showLabels: false,
-  faviconProvider: 'site',
   actionsPosition: 'before',
   iconSize: 'medium',
 });
@@ -125,11 +123,9 @@ function normalizeActionOrder(order) {
 function normalizeSettings(stored) {
   const base = defaultSettings();
   const settings = { ...base, ...(stored && typeof stored === 'object' ? stored : {}) };
+  delete settings.faviconProvider;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
-  if (!FAVICON_PROVIDERS.includes(settings.faviconProvider)) {
-    settings.faviconProvider = DEFAULT_SETTINGS.faviconProvider;
-  }
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {
     settings.actionsPosition = DEFAULT_SETTINGS.actionsPosition;
   }

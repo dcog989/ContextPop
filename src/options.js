@@ -23,7 +23,6 @@ const elements = {
   columns: document.getElementById('setting-columns'),
   theme: document.getElementById('setting-theme'),
   labels: document.getElementById('setting-labels'),
-  faviconProvider: document.getElementById('setting-favicon-provider'),
   refreshIcons: document.getElementById('refresh-icons'),
   iconSize: document.getElementById('setting-icon-size'),
 };
@@ -254,7 +253,6 @@ function renderSettings() {
   elements.columns.value = state.settings.columns;
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
-  elements.faviconProvider.value = state.settings.faviconProvider;
   elements.iconSize.value = state.settings.iconSize;
 }
 
@@ -413,30 +411,18 @@ function addOrigin(origins, value) {
   }
 }
 
-function collectIconOrigins(engines, settings) {
+function collectIconOrigins(engines) {
   const origins = new Set();
-  const provider = settings.faviconProvider;
   for (const engine of engines) {
-    if (engine.icon && !engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
-    if (provider === 'none') continue;
-
-    const embedded = typeof engine.icon === 'string' && engine.icon.startsWith('data:');
-    const browserLike = engine.source === 'browser' || embedded;
-    if (browserLike) {
-      if (provider === 'duckduckgo') {
-        origins.add('https://icons.duckduckgo.com/*');
-        continue;
-      }
+    if (typeof engine.icon === 'string' && engine.icon) {
+      if (!engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
+      continue;
+    }
+    if (engine.source === 'browser') {
       const host = browserEngineHost(engine.name);
       if (!host) continue;
       origins.add(`https://${host}/*`);
       if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
-      continue;
-    }
-
-    if (engine.icon) continue;
-    if (provider === 'duckduckgo') {
-      origins.add('https://icons.duckduckgo.com/*');
       continue;
     }
     try {
@@ -449,8 +435,8 @@ function collectIconOrigins(engines, settings) {
   return [...origins];
 }
 
-async function ensureIconPermission(engines, settings) {
-  const origins = collectIconOrigins(engines, settings);
+async function ensureIconPermission(engines) {
+  const origins = collectIconOrigins(engines);
   if (!origins.length || !api.permissions?.request) return true;
   try {
     return await api.permissions.request({ origins });
@@ -471,7 +457,7 @@ async function save() {
   state.settings = normalizeSettings(state.settings);
   state.settings.columns = clamp(Number(state.settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
-  const iconAccess = await ensureIconPermission(state.engines, state.settings);
+  const iconAccess = await ensureIconPermission(state.engines);
 
   try {
     await Promise.all([saveEngines(state.engines), saveSettings(state.settings)]);
@@ -491,10 +477,6 @@ function configureBrowserImport() {
   elements.browserNote.hidden = available;
 }
 
-function reloadIcons() {
-  upgradeIcons(iconSetters);
-}
-
 async function handleRefreshIcons() {
   if (state.dirty) {
     setStatus(msg('statusSaveFirst'), true);
@@ -503,7 +485,7 @@ async function handleRefreshIcons() {
   elements.refreshIcons.disabled = true;
   elements.refreshIcons.classList.add('is-loading');
   try {
-    await ensureIconPermission(state.engines, state.settings);
+    await ensureIconPermission(state.engines);
 
     const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
     if (response?.error) throw new Error(response.error);
@@ -547,11 +529,6 @@ function bindSettings() {
   elements.labels.addEventListener('change', () => {
     state.settings.showLabels = elements.labels.checked;
     markDirty();
-  });
-  elements.faviconProvider.addEventListener('change', () => {
-    state.settings.faviconProvider = elements.faviconProvider.value;
-    markDirty();
-    reloadIcons();
   });
   elements.iconSize.addEventListener('change', () => {
     state.settings.iconSize = elements.iconSize.value;

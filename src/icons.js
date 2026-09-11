@@ -411,41 +411,17 @@ function templateHost(template) {
   }
 }
 
-function hostFromIconUrl(icon) {
-  if (typeof icon !== 'string' || !HTTP_URL_PATTERN.test(icon)) return '';
-  try {
-    return new URL(icon).host;
-  } catch {
-    return '';
+function engineIconSource(engine) {
+  if (typeof engine.icon === 'string' && engine.icon) {
+    return { key: engine.icon, kind: 'image' };
   }
-}
-
-function isBrowserLikeEngine(engine) {
-  return engine.source === 'browser' || (typeof engine.icon === 'string' && engine.icon.startsWith('data:'));
-}
-
-function faviconSourceForHost(host, provider) {
-  if (provider === 'duckduckgo') return { key: `https://icons.duckduckgo.com/ip3/${host}.ico`, kind: 'image' };
+  const host = engine.source === 'browser' ? browserEngineHost(engine.name) : templateHost(engine.template);
+  if (!host) return null;
   return { key: `https://${host}/`, kind: 'markup' };
 }
 
-function engineIconSource(engine, settings) {
-  const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
-  if (isBrowserLikeEngine(engine)) {
-    if (provider === 'none') return null;
-    const host = browserEngineHost(engine.name) || hostFromIconUrl(engine.icon);
-    if (!host) return null;
-    return faviconSourceForHost(host, provider);
-  }
-  if (engine.icon) return { key: engine.icon, kind: 'image' };
-  if (provider === 'none') return null;
-  const host = templateHost(engine.template);
-  if (!host) return null;
-  return faviconSourceForHost(host, provider);
-}
-
-async function resolveEngineIcon(engine, settings) {
-  const source = engineIconSource(engine, settings);
+async function resolveEngineIcon(engine) {
+  const source = engineIconSource(engine);
   if (!source) return { dataUrl: null, fetched: false };
   if (source.key.startsWith('data:')) return { dataUrl: source.key, fetched: false };
 
@@ -458,16 +434,16 @@ async function resolveEngineIcon(engine, settings) {
   return { dataUrl: result.dataUrl, fetched: true };
 }
 
-async function loadIconMap(engines, settings) {
+async function loadIconMap(engines) {
   const icons = {};
   const referenced = new Set();
   for (const engine of engines) {
-    const source = engineIconSource(engine, settings);
+    const source = engineIconSource(engine);
     if (source) referenced.add(source.key);
   }
   const outcomes = await Promise.all(
     engines.map(async (engine) => {
-      const { dataUrl, fetched } = await resolveEngineIcon(engine, settings);
+      const { dataUrl, fetched } = await resolveEngineIcon(engine);
       if (dataUrl) icons[engine.id] = dataUrl;
       return fetched;
     }),
