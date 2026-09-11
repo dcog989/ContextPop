@@ -316,10 +316,31 @@ function moveEngine(index, offset) {
   markDirty();
 }
 
-function deleteEngine(index) {
+function removeEngine(index) {
   state.engines.splice(index, 1);
   renderEngines();
   markDirty();
+}
+
+function deleteEngine(index) {
+  const row = elements.list.children[index];
+  if (!row || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    removeEngine(index);
+    return;
+  }
+
+  const first = captureRowPositions(elements.list);
+  let settled = false;
+  const finish = () => {
+    if (settled) return;
+    settled = true;
+    removeEngine(index);
+    playRowReorder(elements.list, first);
+  };
+
+  row.classList.add('row-removing');
+  row.addEventListener('animationend', finish, { once: true });
+  setTimeout(finish, 400);
 }
 
 function addEngine() {

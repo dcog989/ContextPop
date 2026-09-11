@@ -153,6 +153,18 @@ button:disabled {
   border-radius: 10px;
 }
 
+.engine-row.row-removing {
+  animation: row-remove 160ms ease forwards;
+  pointer-events: none;
+}
+
+@keyframes row-remove {
+  to {
+    opacity: 0;
+    transform: translateX(16px) scale(0.97);
+  }
+}
+
 .action-main {
   display: grid;
   grid-template-columns: auto minmax(110px, auto) minmax(140px, 1fr) auto auto;
