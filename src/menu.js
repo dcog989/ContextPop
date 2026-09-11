@@ -181,10 +181,6 @@
     return fallback.replace(/\$(\d+)\$/g, (_match, index) => String(substitutions[Number(index) - 1] ?? ''));
   }
 
-  function listActions(settings) {
-    return typeof globalThis.builtinActionList === 'function' ? globalThis.builtinActionList(settings) : [];
-  }
-
   function isMenuOpen() {
     return menuState.open;
   }
@@ -422,15 +418,17 @@
     menu.style.top = `${Math.round(top)}px`;
   }
 
-  function appendTiles(tiles, items, kind, settings, iconSetters) {
-    for (const item of items) {
-      if (kind === 'actions') {
-        tiles.appendChild(createActionTile(item, menuState.text, settings.showLabels));
-      } else {
-        const { tile, setIcon } = createEngineTile(item, settings.showLabels);
-        tiles.appendChild(tile);
-        iconSetters.set(item.id, setIcon);
-      }
+  function appendActionTiles(tiles, actions, settings) {
+    for (const action of actions) {
+      tiles.appendChild(createActionTile(action, menuState.text, settings.showLabels));
+    }
+  }
+
+  function appendEngineTiles(tiles, engines, settings, iconSetters) {
+    for (const engine of engines) {
+      const { tile, setIcon } = createEngineTile(engine, settings.showLabels);
+      tiles.appendChild(tile);
+      iconSetters.set(engine.id, setIcon);
     }
   }
 
@@ -456,7 +454,7 @@
     menuState.handlers = handlers;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
-    const allActions = listActions(settings);
+    const allActions = builtinActionList(settings);
     const actions = allActions
       .filter((action) => action.enabled)
       .map((action) => ({ ...action, disabled: !matchesContext(action, context) }));
@@ -491,9 +489,9 @@
     tiles.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
 
     const actionsFirst = settings.actionsPosition !== 'after';
-    if (actionsFirst) appendTiles(tiles, actions, 'actions', settings, iconSetters);
-    appendTiles(tiles, engines, 'engines', settings, iconSetters);
-    if (!actionsFirst) appendTiles(tiles, actions, 'actions', settings, iconSetters);
+    if (actionsFirst) appendActionTiles(tiles, actions, settings);
+    appendEngineTiles(tiles, engines, settings, iconSetters);
+    if (!actionsFirst) appendActionTiles(tiles, actions, settings);
 
     if (tiles.childElementCount) menu.appendChild(tiles);
 
