@@ -37,18 +37,26 @@
   pointer-events: auto;
   font-family: var(--font-family);
   font-size: 14px;
-  --icon-size: 28px;
-  --tile-size: 52px;
+  --icon-size: 27px;
+  --tile-size: 44px;
 }
 .cs-menu.size-compact {
   font-size: 12px;
-  --icon-size: 24px;
-  --tile-size: 44px;
+  --icon-size: 22px;
+  --tile-size: 32px;
+  gap: 4px;
+  padding: 4px;
+}
+.cs-menu.size-compact .cs-tiles {
+  gap: 2px;
+}
+.cs-menu.size-compact .cs-tile {
+  padding: 1px;
 }
 .cs-menu.size-large {
   font-size: 16px;
-  --icon-size: 32px;
-  --tile-size: 60px;
+  --icon-size: 31px;
+  --tile-size: 56px;
 }
 .cs-menu.size-luxury {
   font-size: 18px;
