@@ -42,18 +42,6 @@
   color: #f1f3f4;
   border-color: #ffffff29;
 }
-.cs-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.cs-group + .cs-group {
-  border-top: 1px solid #00000014;
-  padding-top: 8px;
-}
-.cs-menu.dark .cs-group + .cs-group {
-  border-top-color: #ffffff1f;
-}
 .cs-tiles {
   display: grid;
   gap: 4px;
@@ -459,16 +447,7 @@
     }
   }
 
-  function createTileGroup(items, kind, settings, iconSetters) {
-    if (!items.length) return null;
-
-    const group = document.createElement('div');
-    group.className = 'cs-group';
-
-    const tiles = document.createElement('div');
-    tiles.className = 'cs-tiles';
-    tiles.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
-
+  function appendTiles(tiles, items, kind, settings, iconSetters) {
     for (const item of items) {
       if (kind === 'actions') {
         tiles.appendChild(createActionTile(item, menuState.text, settings.showLabels));
@@ -478,9 +457,6 @@
         iconSetters.set(item.id, setIcon);
       }
     }
-
-    group.appendChild(tiles);
-    return group;
   }
 
   function openMenu({ text, html, context, href, linkText, rect, engines, settings, clipboardAllowed, handlers }) {
@@ -530,13 +506,16 @@
 
     const iconSetters = new Map();
 
-    const actionGroup = createTileGroup(actions, 'actions', settings, iconSetters);
-    const engineGroup = createTileGroup(visibleEngines, 'engines', settings, iconSetters);
+    const tiles = document.createElement('div');
+    tiles.className = 'cs-tiles';
+    tiles.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
 
-    const groups = settings.actionsPosition === 'after' ? [engineGroup, actionGroup] : [actionGroup, engineGroup];
-    for (const group of groups) {
-      if (group) menu.appendChild(group);
-    }
+    const actionsFirst = settings.actionsPosition !== 'after';
+    if (actionsFirst) appendTiles(tiles, actions, 'actions', settings, iconSetters);
+    appendTiles(tiles, visibleEngines, 'engines', settings, iconSetters);
+    if (!actionsFirst) appendTiles(tiles, actions, 'actions', settings, iconSetters);
+
+    if (tiles.childElementCount) menu.appendChild(tiles);
 
     if (copyBlocked) {
       const notice = document.createElement('div');
