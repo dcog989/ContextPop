@@ -21,14 +21,14 @@ const BUILTIN_ACTION_DEFS = Object.freeze([
     location: 'background',
     resultView: 'popup',
     contexts: ['word'],
-    template: 'https://www.merriam-webster.com/dictionary/{searchTerms}',
+    template: 'https://en.wiktionary.org/wiki/{searchTerms}',
   },
   {
     id: 'thesaurus',
     location: 'background',
     resultView: 'popup',
     contexts: ['word'],
-    template: 'https://www.merriam-webster.com/thesaurus/{searchTerms}',
+    template: 'https://www.powerthesaurus.org/{searchTerms}/synonyms',
   },
 ]);
 
