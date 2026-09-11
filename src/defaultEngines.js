@@ -7,17 +7,17 @@ const DEFAULT_ENGINES = [
     icon: '',
   },
   {
-    id: 'default-google',
-    name: 'Google',
+    id: 'default-startpage',
+    name: 'Startpage',
     source: 'template',
-    template: 'https://www.google.com/search?q={searchTerms}',
+    template: 'https://www.startpage.com/sp/search?query={searchTerms}',
     icon: '',
   },
   {
-    id: 'default-bing',
-    name: 'Bing',
+    id: 'default-openstreetmap',
+    name: 'OpenStreetMap',
     source: 'template',
-    template: 'https://www.bing.com/search?q={searchTerms}',
+    template: 'https://www.openstreetmap.org/search?query={searchTerms}',
     icon: '',
   },
   {
