@@ -484,7 +484,7 @@ function collectIconOrigins(engines, settings) {
         origins.add('https://icons.duckduckgo.com/*');
         continue;
       }
-      const host = engine.iconHost || browserEngineHost(engine.name);
+      const host = engine.iconHost;
       if (!host) continue;
       origins.add(`https://${host}/*`);
       if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
@@ -559,11 +559,16 @@ async function handleRefreshIcons() {
   }
   elements.refreshIcons.disabled = true;
   try {
+    const discovered = await api.runtime.sendMessage({ type: 'discoverHosts' });
+    if (discovered?.error) throw new Error(discovered.error);
+    if (Array.isArray(discovered?.data)) state.engines = discovered.data;
+
     const granted = await ensureIconPermission(state.engines, state.settings);
     if (!granted) {
       setStatus(msg('statusIconPermission'), true);
       return;
     }
+
     const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
     if (response?.error) throw new Error(response.error);
     const icons = response?.data || {};
