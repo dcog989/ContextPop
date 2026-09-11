@@ -223,8 +223,9 @@
     window.addEventListener('blur', () => closeMenu());
 
     loadConfig();
-    api.storage.onChanged.addListener((_changes, area) => {
-      if (area === 'local') loadConfig();
+    api.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'local') return;
+      if (changes[STORAGE_KEYS.settings] || changes[STORAGE_KEYS.engines]) loadConfig();
     });
   }
 
