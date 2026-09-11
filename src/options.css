@@ -25,7 +25,7 @@
 
 body {
   margin: 0;
-  padding: 0 24px 96px;
+  padding: 0 24px 24px;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-family);
@@ -33,12 +33,16 @@ body {
 }
 
 header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 12px;
   max-width: 960px;
   margin: 0 auto;
   padding: 20px 0;
+  background: var(--bg);
 }
 
 header h1 {
@@ -364,10 +368,8 @@ select:focus {
 }
 
 footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  margin: 0 -24px;
+  padding: 0 24px;
   background: var(--panel);
   border-top: 1px solid var(--border);
 }
