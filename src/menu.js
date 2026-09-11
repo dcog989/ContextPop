@@ -117,6 +117,18 @@
   object-fit: contain;
   pointer-events: none;
 }
+.cs-icon .cs-mask {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  pointer-events: none;
+}
 .cs-icon svg {
   width: calc(var(--icon-size) - 2px);
   height: calc(var(--icon-size) - 2px);
@@ -218,6 +230,10 @@
     fallback.className = 'cs-letter';
     fallback.textContent = (engine.name || '?').trim().charAt(0).toUpperCase();
 
+    const mask = document.createElement('span');
+    mask.className = 'cs-mask';
+    mask.hidden = true;
+
     const img = document.createElement('img');
     img.alt = '';
     img.referrerPolicy = 'no-referrer';
@@ -229,12 +245,20 @@
 
     const setSource = (source) => {
       if (!source || !wrapper.isConnected) return;
-      img.src = source;
-      img.hidden = false;
+      if (svgDataUrlIsMonochrome(source)) {
+        mask.style.webkitMaskImage = `url("${source}")`;
+        mask.style.maskImage = `url("${source}")`;
+        mask.hidden = false;
+        img.hidden = true;
+      } else {
+        img.src = source;
+        img.hidden = false;
+        mask.hidden = true;
+      }
       fallback.hidden = true;
     };
 
-    wrapper.append(img, fallback);
+    wrapper.append(img, mask, fallback);
     return { element: wrapper, setSource };
   }
 

@@ -6,6 +6,7 @@ if (typeof DEFAULT_ENGINES === 'undefined' && typeof importScripts === 'function
 const OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'newWindow']);
 const HTTP_URL_PATTERN = /^https?:\/\//i;
 const ICON_CACHE_PREFIX = 'icon:';
+const PENDING_ENGINE_PREFIX = 'pendingHost:';
 const MAX_ICON_BYTES = 256 * 1024;
 const MAX_MARKUP_BYTES = 512 * 1024;
 const ICON_FETCH_TIMEOUT_MS = 4000;
@@ -73,12 +74,7 @@ async function openSearch({ engine, terms, method }, sender) {
   const query = String(terms ?? '');
 
   if (engine.source === 'browser') {
-    if (typeof api.search?.search !== 'function') throw new Error('Browser engine search is unavailable');
-    await api.search.search({
-      engine: engine.browserEngineName,
-      query,
-      disposition: dispositionFor(method),
-    });
+    await openBrowserSearch(engine, query, method, sender);
     return;
   }
 
@@ -87,6 +83,79 @@ async function openSearch({ engine, terms, method }, sender) {
 
   const url = buildSearchUrl(engine.template, query);
   await openUrl(url, method, sender);
+}
+
+const pendingEngineHost = new Map();
+const PENDING_ENGINE_TTL_MS = 60000;
+
+function urlHost(value) {
+  try {
+    const url = new URL(String(value));
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.hostname : '';
+  } catch {
+    return '';
+  }
+}
+
+async function rememberPendingEngine(tabId, engineId) {
+  const entry = { engineId, at: Date.now() };
+  pendingEngineHost.set(tabId, entry);
+  if (!api.storage.session) return;
+  try {
+    await api.storage.session.set({ [PENDING_ENGINE_PREFIX + tabId]: entry });
+  } catch {
+    // Non-fatal: the in-memory entry still works while the worker is alive.
+  }
+}
+
+async function pendingEngineFor(tabId) {
+  let entry = pendingEngineHost.get(tabId);
+  if (!entry && api.storage.session) {
+    try {
+      const key = PENDING_ENGINE_PREFIX + tabId;
+      const stored = await api.storage.session.get(key);
+      entry = stored[key] || null;
+    } catch {
+      entry = null;
+    }
+  }
+  if (!entry) return null;
+  if (!entry.at || Date.now() - entry.at > PENDING_ENGINE_TTL_MS) {
+    await clearPendingEngine(tabId);
+    return null;
+  }
+  return entry;
+}
+
+async function clearPendingEngine(tabId) {
+  pendingEngineHost.delete(tabId);
+  if (!api.storage.session) return;
+  try {
+    await api.storage.session.remove(PENDING_ENGINE_PREFIX + tabId);
+  } catch {
+    // Non-fatal.
+  }
+}
+
+async function openBrowserSearch(engine, query, method, sender) {
+  if (typeof api.search?.search !== 'function') throw new Error('Browser engine search is unavailable');
+  const resolved = resolveOpenMethod(method, sender);
+
+  let tabId = null;
+  if (resolved === 'currentTab') {
+    tabId = sender?.tab?.id ?? null;
+  } else if (resolved === 'newTab' || resolved === 'backgroundTab') {
+    const tab = await api.tabs.create({ active: resolved === 'newTab', openerTabId: sender?.tab?.id });
+    tabId = tab?.id ?? null;
+  }
+
+  if (tabId == null) {
+    await api.search.search({ engine: engine.browserEngineName, query, disposition: dispositionFor(resolved) });
+    return;
+  }
+
+  await rememberPendingEngine(tabId, engine.id);
+  await api.search.search({ engine: engine.browserEngineName, query, tabId });
 }
 
 async function openReference({ template, terms }) {
@@ -326,6 +395,8 @@ async function fetchManifestIcons(manifestUrl) {
     const candidates = [];
     for (const icon of icons) {
       if (typeof icon?.src !== 'string' || !icon.src) continue;
+      const purpose = String(icon.purpose || '').toLowerCase();
+      if (purpose.includes('monochrome') || purpose.includes('maskable')) continue;
       try {
         candidates.push({
           url: new URL(icon.src, manifestUrl).href,
@@ -417,10 +488,14 @@ function faviconSourceForHost(host, provider) {
 
 function engineIconSource(engine, settings, hosts) {
   const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
-  if (engine.source === 'browser') {
+  const embeddedIcon = typeof engine.icon === 'string' && engine.icon.startsWith('data:');
+  if (engine.source === 'browser' || embeddedIcon) {
     if (provider === 'none') return null;
     const host =
-      hosts.get(normalizeEngineName(engine.name)) || browserEngineHost(engine.name) || hostFromIconUrl(engine.icon);
+      engine.iconHost ||
+      hosts.get(normalizeEngineName(engine.name)) ||
+      browserEngineHost(engine.name) ||
+      hostFromIconUrl(engine.icon);
     if (!host) return null;
     return faviconSourceForHost(host, provider);
   }
@@ -487,6 +562,22 @@ async function handleMessage(message, sender) {
     }
     case 'hasClipboard':
       return hasClipboardPermission();
+    case 'pageHost': {
+      const tabId = sender?.tab?.id;
+      if (tabId == null) return { ok: true };
+      const host = urlHost(sender?.url);
+      if (!host) return { ok: true };
+      const pending = await pendingEngineFor(tabId);
+      if (!pending) return { ok: true };
+      await clearPendingEngine(tabId);
+      const engines = await loadEngines();
+      const engine = engines.find((item) => item.id === pending.engineId);
+      if (engine && engine.iconHost !== host) {
+        engine.iconHost = host;
+        await saveEngines(engines);
+      }
+      return { ok: true };
+    }
     case 'search': {
       const engines = await loadEngines();
       const engine = engines.find((item) => item.id === message.engineId);

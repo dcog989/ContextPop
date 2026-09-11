@@ -218,6 +218,18 @@ button:disabled {
   object-fit: contain;
 }
 
+.engine-icon .engine-mask {
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
 .engine-icon .engine-letter {
   display: flex;
   align-items: center;

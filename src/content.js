@@ -242,6 +242,9 @@
     window.addEventListener('blur', () => closeMenu());
 
     loadConfig();
+    if (window.top === window) {
+      api.runtime.sendMessage({ type: 'pageHost' }).catch(() => {});
+    }
     api.storage.onChanged.addListener((_changes, area) => {
       if (area === 'local') loadConfig();
     });

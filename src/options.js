@@ -200,6 +200,10 @@ function createEngineIcon(engine) {
   fallback.className = 'engine-letter';
   fallback.textContent = (engine.name || '?').trim().charAt(0).toUpperCase();
 
+  const mask = document.createElement('span');
+  mask.className = 'engine-mask';
+  mask.hidden = true;
+
   const img = document.createElement('img');
   img.alt = '';
   img.referrerPolicy = 'no-referrer';
@@ -211,12 +215,20 @@ function createEngineIcon(engine) {
 
   const setSource = (source) => {
     if (!source) return;
-    img.src = source;
-    img.hidden = false;
+    if (svgDataUrlIsMonochrome(source)) {
+      mask.style.webkitMaskImage = `url("${source}")`;
+      mask.style.maskImage = `url("${source}")`;
+      mask.hidden = false;
+      img.hidden = true;
+    } else {
+      img.src = source;
+      img.hidden = false;
+      mask.hidden = true;
+    }
     fallback.hidden = true;
   };
 
-  icon.append(img, fallback);
+  icon.append(img, mask, fallback);
   return { element: icon, setSource };
 }
 
@@ -465,12 +477,14 @@ function collectIconOrigins(engines, settings) {
     if (engine.icon && !engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
     if (provider === 'none') continue;
 
-    if (engine.source === 'browser') {
+    const embedded = typeof engine.icon === 'string' && engine.icon.startsWith('data:');
+    const browserLike = engine.source === 'browser' || embedded;
+    if (browserLike) {
       if (provider === 'duckduckgo') {
         origins.add('https://icons.duckduckgo.com/*');
         continue;
       }
-      const host = browserEngineHost(engine.name);
+      const host = engine.iconHost || browserEngineHost(engine.name);
       if (!host) continue;
       origins.add(`https://${host}/*`);
       if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
