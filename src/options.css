@@ -33,9 +33,6 @@ body {
 }
 
 header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -78,6 +75,11 @@ h2 {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.section-head + .hint {
+  margin-top: 0;
 }
 
 .actions {
@@ -99,19 +101,17 @@ code {
 }
 
 button {
-  border: 1px solid transparent;
+  border: 1px solid var(--accent);
   border-radius: 8px;
-  background: var(--accent);
-  color: #ffffff;
+  background: transparent;
+  color: var(--text);
   padding: 7px 12px;
   font-size: 13px;
   cursor: pointer;
 }
 
 button.secondary {
-  background: transparent;
   border-color: var(--border);
-  color: var(--text);
 }
 
 button:hover {
@@ -143,15 +143,6 @@ button.is-loading::before {
   to {
     transform: rotate(360deg);
   }
-}
-
-.inline-field {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 12px 0;
-  font-size: 13px;
-  color: var(--muted);
 }
 
 .action-list,
@@ -272,11 +263,6 @@ input:focus,
 select:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
-}
-
-.inline-field select {
-  width: auto;
-  min-width: 220px;
 }
 
 .row-actions {

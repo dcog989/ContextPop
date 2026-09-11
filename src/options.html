@@ -37,13 +37,6 @@
         <div class="section-head">
           <h2 data-i18n="actionsHeading">Actions</h2>
         </div>
-        <label class="inline-field">
-          <span data-i18n="actionsPositionLabel">Action group position</span>
-          <select id="setting-actions-position">
-            <option value="before" data-i18n="actionsBefore">Before search engines</option>
-            <option value="after" data-i18n="actionsAfter">After search engines</option>
-          </select>
-        </label>
         <div id="action-list" class="action-list"></div>
       </section>
 
@@ -51,8 +44,8 @@
         <div class="section-head">
           <h2 data-i18n="enginesHeading">Search engines</h2>
           <div class="actions">
-            <button id="import-browser-engines" type="button" data-i18n="importFromBrowser">Import from browser</button>
             <button id="add-engine" type="button" data-i18n="addEngine">Add engine</button>
+            <button id="import-browser-engines" type="button" data-i18n="importFromBrowser">Import from browser</button>
             <button id="refresh-icons" type="button" class="secondary" data-i18n="refreshIcons">Refresh icons</button>
             <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults">
               Restore defaults
@@ -69,20 +62,26 @@
         <h2 data-i18n="behaviorHeading">Behavior</h2>
         <div class="settings-grid">
           <label>
+            <span data-i18n="actionsPositionLabel">Action group position</span>
+            <select id="setting-actions-position">
+              <option value="before" data-i18n="actionsBefore">Before search engines</option>
+              <option value="after" data-i18n="actionsAfter">After search engines</option>
+            </select>
+          </label>
+          <label>
             <span data-i18n="triggerLabel">Open the menu</span>
             <select id="setting-trigger">
               <option value="mouseup" data-i18n="triggerMouseup">When text is selected</option>
               <option value="alt" data-i18n="triggerAlt">Selection + hold Alt</option>
               <option value="ctrl" data-i18n="triggerCtrl">Selection + hold Ctrl/Cmd</option>
               <option value="shift" data-i18n="triggerShift">Selection + hold Shift</option>
-              <option value="rightHold" data-i18n="triggerRightHold">Hold right mouse after selecting</option>
             </select>
           </label>
           <label>
             <span data-i18n="openInLabel">Open results in</span>
             <select id="setting-open-method">
-              <option value="newTab" data-i18n="openNewTab">New tab</option>
-              <option value="backgroundTab" data-i18n="openBackgroundTab">Background tab</option>
+              <option value="newTab" data-i18n="openNewTab">New focused tab</option>
+              <option value="backgroundTab" data-i18n="openBackgroundTab">New background tab</option>
               <option value="currentTab" data-i18n="openCurrentTab">Current tab</option>
               <option value="newWindow" data-i18n="openNewWindow">New window</option>
             </select>

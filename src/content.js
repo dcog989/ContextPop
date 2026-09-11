@@ -16,7 +16,6 @@
     engines: [],
     clipboardAllowed: true,
     selection: null,
-    rightHoldTimer: null,
     suppressMouseUp: false,
   };
 
@@ -198,7 +197,6 @@
     }
 
     if (isMenuOpen()) return;
-    if ((contentState.settings?.trigger ?? 'mouseup') === 'rightHold') return;
     if (!triggerMatches(event)) return;
     if (event.composedPath().includes(menuState.host)) return;
     if (isEditableElement(event.target)) return;
@@ -212,25 +210,11 @@
       closeMenu();
       contentState.suppressMouseUp = true;
     }
-
-    if (event.button !== 2) return;
-    if ((contentState.settings?.trigger ?? 'mouseup') !== 'rightHold') return;
-
-    const info = buildActivation();
-    if (!info) return;
-    contentState.rightHoldTimer = setTimeout(() => showMenu(info), 300);
-  }
-
-  function clearRightHold() {
-    clearTimeout(contentState.rightHoldTimer);
-    contentState.rightHoldTimer = null;
   }
 
   function init() {
     document.addEventListener('mouseup', handleMouseUp, true);
     document.addEventListener('mousedown', handleMouseDown, true);
-    document.addEventListener('mouseup', clearRightHold, true);
-    document.addEventListener('selectionchange', clearRightHold);
     document.addEventListener(
       'keydown',
       (event) => {

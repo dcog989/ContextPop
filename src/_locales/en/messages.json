@@ -42,17 +42,14 @@
   "triggerShift": {
     "message": "Selection + hold Shift"
   },
-  "triggerRightHold": {
-    "message": "Hold right mouse after selecting"
-  },
   "openInLabel": {
     "message": "Open results in"
   },
   "openNewTab": {
-    "message": "New tab"
+    "message": "New focused tab"
   },
   "openBackgroundTab": {
-    "message": "Background tab"
+    "message": "New background tab"
   },
   "openCurrentTab": {
     "message": "Current tab"
