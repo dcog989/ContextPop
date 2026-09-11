@@ -8,7 +8,7 @@ Launches a customizable popup when text is selected. Provides instant access to 
 - Built-in actions: copy (rich or plain), open link, define, thesaurus, and search with the browser default
 - Search engines, with a configurable Actions-before/after-engines group order
 - Context-aware: actions and engines declare which selections (`text`, `word`, `link`, `image`, `page`) they apply to
-- Manage engines (name, template, contexts, result view, optional icon) with import/export
+- Manage engines (name, template, contexts, result view, optional icon)
 - Import the engines already installed in Firefox; search them through the browser
 - Favicon source: the engine's own site, DuckDuckGo's icon service, or none, with a letter fallback
 - Open results in a new tab, background tab, current tab, new window, or a popup window

@@ -13,7 +13,6 @@ const elements = {
   actionRowTemplate: document.getElementById('action-row-template'),
   list: document.getElementById('engine-list'),
   status: document.getElementById('status'),
-  importFile: document.getElementById('import-file'),
   importConfigFile: document.getElementById('import-config-file'),
   importBrowser: document.getElementById('import-browser-engines'),
   browserNote: document.getElementById('browser-import-note'),
@@ -400,19 +399,6 @@ function readConfigFile(file, apply) {
   reader.readAsText(file);
 }
 
-function importEngines(file) {
-  readConfigFile(file, (_parsed, incoming) => {
-    state.engines = incoming.map(normalizeEngine);
-    renderEngines();
-    markDirty();
-    setStatus(msg('statusImported', String(state.engines.length)));
-  });
-}
-
-function exportEngines() {
-  downloadJson('context-smart-engines.json', { engines: state.engines });
-}
-
 function importConfig(file) {
   readConfigFile(file, (parsed, incoming) => {
     state.engines = incoming.map(normalizeEngine);
@@ -587,16 +573,9 @@ function bindActions() {
   document.getElementById('add-engine').addEventListener('click', addEngine);
   document.getElementById('restore-defaults').addEventListener('click', restoreDefaults);
   elements.refreshIcons.addEventListener('click', handleRefreshIcons);
-  document.getElementById('export-engines').addEventListener('click', exportEngines);
-  document.getElementById('import-engines').addEventListener('click', () => elements.importFile.click());
   elements.importBrowser.addEventListener('click', importBrowserEngines);
   document.getElementById('export-config').addEventListener('click', exportConfig);
   document.getElementById('import-config').addEventListener('click', () => elements.importConfigFile.click());
-  elements.importFile.addEventListener('change', () => {
-    const [file] = elements.importFile.files;
-    elements.importFile.value = '';
-    if (file) importEngines(file);
-  });
   elements.importConfigFile.addEventListener('change', () => {
     const [file] = elements.importConfigFile.files;
     elements.importConfigFile.value = '';

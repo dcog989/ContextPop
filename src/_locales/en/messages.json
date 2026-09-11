@@ -24,12 +24,6 @@
   "restoreDefaults": {
     "message": "Restore defaults"
   },
-  "import": {
-    "message": "Import"
-  },
-  "export": {
-    "message": "Export"
-  },
   "templateHint": {
     "message": "The {searchTerms} placeholder is replaced with the selected text. Changes are saved automatically."
   },
@@ -125,15 +119,6 @@
   },
   "statusDefaultsRestored": {
     "message": "Defaults restored"
-  },
-  "statusImported": {
-    "message": "Imported $count$ engines",
-    "placeholders": {
-      "count": {
-        "content": "$1",
-        "example": "4"
-      }
-    }
   },
   "statusImportFailed": {
     "message": "Import failed: $error$",
