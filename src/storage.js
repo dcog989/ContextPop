@@ -195,10 +195,17 @@ function defaultEngineList() {
   return DEFAULT_ENGINES.map((engine) => normalizeEngine(engine));
 }
 
+function supportsBrowserEngineSearch() {
+  return typeof api.search?.search === 'function';
+}
+
 async function loadEngines() {
   const result = await api.storage.local.get(STORAGE_KEYS.engines);
   const engines = result[STORAGE_KEYS.engines];
-  return Array.isArray(engines) ? engines.map(normalizeEngine) : [];
+  if (!Array.isArray(engines)) return [];
+  return engines
+    .map(normalizeEngine)
+    .filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
 }
 
 async function saveEngines(engines) {

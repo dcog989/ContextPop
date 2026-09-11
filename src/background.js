@@ -56,7 +56,7 @@ async function openSearch({ engine, terms, method }, sender) {
   const query = String(terms ?? '');
 
   if (engine.source === 'browser') {
-    if (typeof api.search?.search !== 'function') throw new Error('Browser engine search is unavailable');
+    if (!supportsBrowserEngineSearch()) throw new Error('Browser engine search is unavailable');
     await api.search.search({
       engine: engine.browserEngineName,
       query,
