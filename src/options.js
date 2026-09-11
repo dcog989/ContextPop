@@ -527,6 +527,7 @@ async function handleRefreshIcons() {
     return;
   }
   elements.refreshIcons.disabled = true;
+  elements.refreshIcons.classList.add('is-loading');
   try {
     await ensureIconPermission(state.engines, state.settings);
 
@@ -543,6 +544,7 @@ async function handleRefreshIcons() {
     setStatus(msg('statusRefreshFailed', error.message), true);
   } finally {
     elements.refreshIcons.disabled = false;
+    elements.refreshIcons.classList.remove('is-loading');
   }
 }
 
