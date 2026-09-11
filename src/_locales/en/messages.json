@@ -237,8 +237,26 @@
       }
     }
   },
+  "actionDefineTooltip": {
+    "message": "Define \"$word$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
   "actionThesaurus": {
     "message": "Thesaurus $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurusTooltip": {
+    "message": "Thesaurus \"$word$\"",
     "placeholders": {
       "word": {
         "content": "$1",

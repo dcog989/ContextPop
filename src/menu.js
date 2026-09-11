@@ -262,6 +262,17 @@
     }
   }
 
+  function actionTooltip(action, text) {
+    switch (action.id) {
+      case 'define':
+        return t('actionDefineTooltip', 'Define "$1$"', [text]);
+      case 'thesaurus':
+        return t('actionThesaurusTooltip', 'Thesaurus "$1$"', [text]);
+      default:
+        return actionLabel(action, text);
+    }
+  }
+
   function dispatchAction(id, event) {
     const action = menuState.actions.find((item) => item.id === id);
     if (!action) return;
@@ -366,10 +377,10 @@
     }
   }
 
-  function decorateTile(tile, label, showLabels) {
+  function decorateTile(tile, label, showLabels, tooltip = label) {
     tile.type = 'button';
     tile.className = 'cs-tile';
-    tile.title = label;
+    tile.title = tooltip;
     tile.setAttribute('aria-label', label);
     tile.setAttribute('role', 'menuitem');
     tile.tabIndex = -1;
@@ -386,7 +397,7 @@
   function createActionTile(action, text, showLabels) {
     const label = actionLabel(action, text);
     const tile = document.createElement('button');
-    decorateTile(tile, label, showLabels);
+    decorateTile(tile, label, showLabels, actionTooltip(action, text));
     tile.dataset.actionId = action.id;
     if (action.disabled) tile.disabled = true;
     tile.prepend(createBuiltinIcon(action.id));
