@@ -223,10 +223,7 @@
     "message": "Copy as plain text"
   },
   "actionOpenLink": {
-    "message": "Open link in new tab"
-  },
-  "actionOpenLinkBackground": {
-    "message": "Open link in background tab"
+    "message": "Open link"
   },
   "actionDefine": {
     "message": "Define $word$",

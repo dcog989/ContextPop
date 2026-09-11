@@ -15,7 +15,6 @@ const BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', location: 'content', contexts: ['text', 'word'] },
   { id: 'copyPlain', location: 'content', contexts: ['text', 'word'] },
   { id: 'openLink', location: 'background', contexts: ['link'] },
-  { id: 'openLinkBackground', location: 'background', contexts: ['link'] },
   {
     id: 'define',
     location: 'background',
