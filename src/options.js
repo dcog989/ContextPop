@@ -92,26 +92,6 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function buildContextChips(contexts, onChange) {
-  const container = document.createElement('div');
-  for (const context of CONTEXTS) {
-    const label = document.createElement('label');
-    label.className = 'chip';
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.checked = contexts.includes(context);
-    input.addEventListener('change', () => onChange(context, input.checked));
-
-    const span = document.createElement('span');
-    span.textContent = msg(`context${capitalize(context)}`);
-
-    label.append(input, span);
-    container.appendChild(label);
-  }
-  return container;
-}
-
 function createActionRow(actionId, index) {
   const def = BUILTIN_ACTION_DEFS.find((item) => item.id === actionId);
   const value = state.settings.builtinActions[actionId];
@@ -231,14 +211,6 @@ function createRow(engine, index) {
   });
 
   if (engine.source === 'browser') fragment.querySelector('.engine-badge').hidden = false;
-
-  const contextHost = fragment.querySelector('.engine-contexts');
-  contextHost.replaceChildren(
-    buildContextChips(engine.contexts, (context, checked) => {
-      engine.contexts = CONTEXTS.filter((item) => (item === context ? checked : engine.contexts.includes(item)));
-      markDirty();
-    }),
-  );
 
   fragment.querySelector('.move-up').addEventListener('click', () => moveEngine(index, -1));
   fragment.querySelector('.move-down').addEventListener('click', () => moveEngine(index, 1));

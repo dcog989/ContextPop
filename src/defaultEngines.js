@@ -5,7 +5,6 @@ const DEFAULT_ENGINES = [
     source: 'template',
     template: 'https://duckduckgo.com/?q={searchTerms}',
     icon: '',
-    contexts: ['text', 'word', 'link', 'image', 'page'],
   },
   {
     id: 'default-google',
@@ -13,7 +12,6 @@ const DEFAULT_ENGINES = [
     source: 'template',
     template: 'https://www.google.com/search?q={searchTerms}',
     icon: '',
-    contexts: ['text', 'word', 'link', 'image', 'page'],
   },
   {
     id: 'default-bing',
@@ -21,7 +19,6 @@ const DEFAULT_ENGINES = [
     source: 'template',
     template: 'https://www.bing.com/search?q={searchTerms}',
     icon: '',
-    contexts: ['text', 'word', 'link', 'image', 'page'],
   },
   {
     id: 'default-wikipedia',
@@ -29,6 +26,5 @@ const DEFAULT_ENGINES = [
     source: 'template',
     template: 'https://en.wikipedia.org/w/index.php?search={searchTerms}',
     icon: '',
-    contexts: ['text', 'word', 'link', 'image', 'page'],
   },
 ];

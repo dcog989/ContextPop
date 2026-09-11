@@ -267,21 +267,6 @@
   "actionFallbackName": {
     "message": "Action"
   },
-  "contextText": {
-    "message": "Text"
-  },
-  "contextWord": {
-    "message": "Word"
-  },
-  "contextLink": {
-    "message": "Link"
-  },
-  "contextImage": {
-    "message": "Image"
-  },
-  "contextPage": {
-    "message": "Page"
-  },
   "providerTemplateLabel": {
     "message": "Provider template"
   },
@@ -296,9 +281,6 @@
   },
   "engineSourceBrowser": {
     "message": "From browser"
-  },
-  "engineContextsLabel": {
-    "message": "Show for"
   },
   "faviconLabel": {
     "message": "Engine icons"

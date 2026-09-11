@@ -7,8 +7,8 @@ Launches a customizable popup when text is selected. Provides instant access to 
 - Popup tile grid on text selection, keyboard navigable (arrows, Home/End, Tab, Escape)
 - Built-in actions: copy (rich or plain), open link, define, thesaurus, and search with the browser default
 - Search engines, with a configurable Actions-before/after-engines group order
-- Context-aware: actions and engines declare which selections (`text`, `word`, `link`, `image`, `page`) they apply to
-- Manage engines (name, template, contexts, result view, optional icon)
+- Context-aware actions: copy, open link, define, and thesaurus apply to the selections they suit (`text`, `word`, `link`)
+- Manage engines (name, template, result view, optional icon); engines are offered for any selection
 - Import the engines already installed in Firefox; search them through the browser
 - Favicon source: the engine's own site, DuckDuckGo's icon service, or none, with a letter fallback
 - Open results in a new tab, background tab, current tab, new window, or a popup window

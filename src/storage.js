@@ -5,7 +5,7 @@ const STORAGE_KEYS = Object.freeze({
   settings: 'settings',
 });
 
-const CONTEXTS = Object.freeze(['text', 'word', 'link', 'image', 'page']);
+const CONTEXTS = Object.freeze(['text', 'word', 'link']);
 const ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 const FAVICON_PROVIDERS = Object.freeze(['site', 'duckduckgo', 'none']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
@@ -70,11 +70,6 @@ function generateId() {
   return `engine-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function normalizeContexts(contexts, fallback) {
-  if (Array.isArray(contexts)) return contexts.filter((context) => CONTEXTS.includes(context));
-  return [...(Array.isArray(fallback) ? fallback : CONTEXTS)];
-}
-
 function normalizeEngine(engine) {
   const source = ENGINE_SOURCES.includes(engine?.source) ? engine.source : 'template';
   return {
@@ -84,7 +79,6 @@ function normalizeEngine(engine) {
     template: String(engine?.template ?? ''),
     browserEngineName: String(engine?.browserEngineName ?? ''),
     icon: typeof engine?.icon === 'string' ? engine.icon : '',
-    contexts: normalizeContexts(engine?.contexts, CONTEXTS),
   };
 }
 

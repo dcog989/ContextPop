@@ -192,7 +192,7 @@
 
   function contextMatches(item, context) {
     if (typeof globalThis.matchesContext === 'function') return globalThis.matchesContext(item, context);
-    const contexts = Array.isArray(item?.contexts) ? item.contexts : ['text', 'word', 'link', 'image', 'page'];
+    const contexts = Array.isArray(item?.contexts) ? item.contexts : ['text', 'word', 'link'];
     return contexts.includes(context);
   }
 
@@ -478,7 +478,6 @@
     const actions = allActions
       .filter((action) => action.enabled && (clipboardAllowed || !isCopyAction(action.id)))
       .map((action) => ({ ...action, disabled: !contextMatches(action, context) }));
-    const visibleEngines = engines.filter((engine) => contextMatches(engine, context));
     const copyBlocked =
       !clipboardAllowed &&
       allActions.some((action) => action.enabled && isCopyAction(action.id) && contextMatches(action, context));
@@ -516,7 +515,7 @@
 
     const actionsFirst = settings.actionsPosition !== 'after';
     if (actionsFirst) appendTiles(tiles, actions, 'actions', settings, iconSetters);
-    appendTiles(tiles, visibleEngines, 'engines', settings, iconSetters);
+    appendTiles(tiles, engines, 'engines', settings, iconSetters);
     if (!actionsFirst) appendTiles(tiles, actions, 'actions', settings, iconSetters);
 
     if (tiles.childElementCount) menu.appendChild(tiles);
@@ -552,7 +551,7 @@
     const firstTile = menu.querySelector('.cs-tile:not(:disabled)');
     if (firstTile) focusTile(firstTile);
 
-    upgradeIcons(iconSetters, visibleEngines);
+    upgradeIcons(iconSetters, engines);
   }
 
   globalThis.__contextSmartMenu = { openMenu, closeMenu, isMenuOpen, menuState };
