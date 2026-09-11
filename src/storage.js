@@ -11,6 +11,8 @@ const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 const POPUP_SIZES = Object.freeze(['compact', 'normal', 'large', 'luxury']);
 const LEGACY_POPUP_SIZES = Object.freeze({ small: 'compact', medium: 'normal', large: 'large' });
 
+const THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
+
 const BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', location: 'content', contexts: ['text', 'word'] },
   { id: 'copyPlain', location: 'content', contexts: ['text', 'word'] },
@@ -27,14 +29,15 @@ const BUILTIN_ACTION_DEFS = Object.freeze([
     location: 'background',
     resultView: 'popup',
     contexts: ['word'],
-    template: 'https://www.powerthesaurus.org/{searchTerms}/synonyms',
+    template: THESAURUS_TEMPLATE,
   },
 ]);
 
 const LEGACY_ACTION_TEMPLATES = Object.freeze({
   'https://www.merriam-webster.com/dictionary/{searchTerms}': 'https://en.wiktionary.org/wiki/{searchTerms}',
-  'https://www.merriam-webster.com/thesaurus/{searchTerms}': 'https://www.powerthesaurus.org/{searchTerms}/synonyms',
-  'https://en.wiktionary.org/wiki/Thesaurus:{searchTerms}': 'https://www.powerthesaurus.org/{searchTerms}/synonyms',
+  'https://www.merriam-webster.com/thesaurus/{searchTerms}': THESAURUS_TEMPLATE,
+  'https://en.wiktionary.org/wiki/Thesaurus:{searchTerms}': THESAURUS_TEMPLATE,
+  'https://www.powerthesaurus.org/{searchTerms}/synonyms': THESAURUS_TEMPLATE,
 });
 
 const DEFAULT_SETTINGS = Object.freeze({
