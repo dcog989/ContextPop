@@ -414,15 +414,20 @@ function addOrigin(origins, value) {
 function collectIconOrigins(engines) {
   const origins = new Set();
   for (const engine of engines) {
-    if (typeof engine.icon === 'string' && engine.icon) {
-      if (!engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
-      continue;
-    }
+    const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
     if (engine.source === 'browser') {
+      if (hasIcon && HTTP_URL_PATTERN.test(engine.icon)) {
+        addOrigin(origins, engine.icon);
+        continue;
+      }
       const host = browserEngineHost(engine.name);
       if (!host) continue;
       origins.add(`https://${host}/*`);
       if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
+      continue;
+    }
+    if (hasIcon) {
+      if (!engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
       continue;
     }
     try {

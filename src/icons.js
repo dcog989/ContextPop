@@ -412,10 +412,16 @@ function templateHost(template) {
 }
 
 function engineIconSource(engine) {
-  if (typeof engine.icon === 'string' && engine.icon) {
-    return { key: engine.icon, kind: 'image' };
+  const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
+  if (engine.source === 'browser') {
+    if (hasIcon && HTTP_URL_PATTERN.test(engine.icon)) return { key: engine.icon, kind: 'image' };
+    const host = browserEngineHost(engine.name);
+    if (host) return { key: `https://${host}/`, kind: 'markup' };
+    if (hasIcon) return { key: engine.icon, kind: 'image' };
+    return null;
   }
-  const host = engine.source === 'browser' ? browserEngineHost(engine.name) : templateHost(engine.template);
+  if (hasIcon) return { key: engine.icon, kind: 'image' };
+  const host = templateHost(engine.template);
   if (!host) return null;
   return { key: `https://${host}/`, kind: 'markup' };
 }
