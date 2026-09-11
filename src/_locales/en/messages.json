@@ -99,6 +99,9 @@
   "templatePlaceholder": {
     "message": "https://example.com/search?q={searchTerms}"
   },
+  "templatePlaceholderBrowser": {
+    "message": "imported from browser..."
+  },
   "iconUrlPlaceholder": {
     "message": "Icon URL (optional)"
   },
@@ -278,9 +281,6 @@
   },
   "importUnavailable": {
     "message": "This browser does not let extensions list installed search engines. Add them manually."
-  },
-  "engineSourceBrowser": {
-    "message": "From browser"
   },
   "faviconLabel": {
     "message": "Engine icons"

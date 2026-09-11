@@ -197,7 +197,11 @@ function createRow(engine, index) {
 
   const template = fragment.querySelector('.engine-template');
   template.value = engine.template;
-  template.disabled = engine.source === 'browser';
+  if (engine.source === 'browser') {
+    template.disabled = true;
+    template.dataset.i18nPlaceholder = 'templatePlaceholderBrowser';
+    template.placeholder = msg('templatePlaceholderBrowser');
+  }
   template.addEventListener('input', () => {
     engine.template = template.value;
     markDirty();
@@ -209,8 +213,6 @@ function createRow(engine, index) {
     engine.icon = iconUrl.value.trim();
     markDirty();
   });
-
-  if (engine.source === 'browser') fragment.querySelector('.engine-badge').hidden = false;
 
   fragment.querySelector('.move-up').addEventListener('click', () => moveEngine(index, -1));
   fragment.querySelector('.move-down').addEventListener('click', () => moveEngine(index, 1));
