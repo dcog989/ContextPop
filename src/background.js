@@ -390,14 +390,6 @@ function templateHost(template) {
   }
 }
 
-function normalizeEngineName(name) {
-  return String(name ?? '')
-    .toLowerCase()
-    .replace(/\([^)]*\)/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 function hostFromIconUrl(icon) {
   if (typeof icon !== 'string' || !HTTP_URL_PATTERN.test(icon)) return '';
   try {
@@ -427,7 +419,8 @@ function engineIconSource(engine, settings, hosts) {
   const provider = settings?.faviconProvider || DEFAULT_SETTINGS.faviconProvider;
   if (engine.source === 'browser') {
     if (provider === 'none') return null;
-    const host = hosts.get(normalizeEngineName(engine.name)) || hostFromIconUrl(engine.icon);
+    const host =
+      hosts.get(normalizeEngineName(engine.name)) || browserEngineHost(engine.name) || hostFromIconUrl(engine.icon);
     if (!host) return null;
     return faviconSourceForHost(host, provider);
   }

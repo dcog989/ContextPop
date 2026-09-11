@@ -460,11 +460,25 @@ function addOrigin(origins, value) {
 
 function collectIconOrigins(engines, settings) {
   const origins = new Set();
+  const provider = settings.faviconProvider;
   for (const engine of engines) {
     if (engine.icon && !engine.icon.startsWith('data:')) addOrigin(origins, engine.icon);
-    if (engine.source === 'browser' || engine.icon) continue;
-    if (settings.faviconProvider === 'none') continue;
-    if (settings.faviconProvider === 'duckduckgo') {
+    if (provider === 'none') continue;
+
+    if (engine.source === 'browser') {
+      if (provider === 'duckduckgo') {
+        origins.add('https://icons.duckduckgo.com/*');
+        continue;
+      }
+      const host = browserEngineHost(engine.name);
+      if (!host) continue;
+      origins.add(`https://${host}/*`);
+      if (!host.startsWith('www.')) origins.add(`https://www.${host}/*`);
+      continue;
+    }
+
+    if (engine.icon) continue;
+    if (provider === 'duckduckgo') {
       origins.add('https://icons.duckduckgo.com/*');
       continue;
     }
@@ -531,6 +545,11 @@ async function handleRefreshIcons() {
   }
   elements.refreshIcons.disabled = true;
   try {
+    const granted = await ensureIconPermission(state.engines, state.settings);
+    if (!granted) {
+      setStatus(msg('statusIconPermission'), true);
+      return;
+    }
     const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
     if (response?.error) throw new Error(response.error);
     const icons = response?.data || {};

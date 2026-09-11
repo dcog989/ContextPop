@@ -11,6 +11,27 @@ const FAVICON_PROVIDERS = Object.freeze(['site', 'duckduckgo', 'none']);
 const ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 const ICON_SIZES = Object.freeze(['small', 'medium', 'large']);
 
+const KNOWN_ENGINE_HOSTS = Object.freeze({
+  google: 'www.google.com',
+  duckduckgo: 'duckduckgo.com',
+  bing: 'www.bing.com',
+  wikipedia: 'en.wikipedia.org',
+  amazon: 'www.amazon.com',
+  ebay: 'www.ebay.com',
+  ecosia: 'www.ecosia.org',
+  qwant: 'www.qwant.com',
+  startpage: 'www.startpage.com',
+  brave: 'search.brave.com',
+  'brave search': 'search.brave.com',
+  yahoo: 'search.yahoo.com',
+  yandex: 'yandex.com',
+  baidu: 'www.baidu.com',
+  mojeek: 'www.mojeek.com',
+  searx: 'searx.be',
+});
+
+const DOMAIN_ENGINE_NAME_PATTERN = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/;
+
 const BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', location: 'content', contexts: ['text', 'word'] },
   { id: 'copyPlain', location: 'content', contexts: ['text', 'word'] },
@@ -168,6 +189,23 @@ function builtinActionList(settings) {
 function matchesContext(item, context) {
   const contexts = Array.isArray(item?.contexts) ? item.contexts : CONTEXTS;
   return contexts.includes(context);
+}
+
+function normalizeEngineName(name) {
+  return String(name ?? '')
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function browserEngineHost(name) {
+  const raw = String(name ?? '').trim();
+  const wikipedia = raw.match(/^wikipedia\s*\(([a-z-]+)\)/i);
+  if (wikipedia) return `${wikipedia[1].toLowerCase()}.wikipedia.org`;
+  const normalized = normalizeEngineName(raw);
+  if (DOMAIN_ENGINE_NAME_PATTERN.test(normalized)) return normalized;
+  return KNOWN_ENGINE_HOSTS[normalized] || '';
 }
 
 function buildSearchUrl(template, terms) {
