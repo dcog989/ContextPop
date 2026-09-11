@@ -432,18 +432,7 @@
     }
   }
 
-  function openMenu({
-    text,
-    html,
-    context,
-    href,
-    linkText,
-    rect,
-    point,
-    engines,
-    settings,
-    handlers,
-  }) {
+  function openMenu({ text, html, context, href, linkText, rect, point, engines, settings, handlers }) {
     closeMenu();
 
     menuState.text = text;

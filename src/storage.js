@@ -203,9 +203,7 @@ async function loadEngines() {
   const result = await api.storage.local.get(STORAGE_KEYS.engines);
   const engines = result[STORAGE_KEYS.engines];
   if (!Array.isArray(engines)) return [];
-  return engines
-    .map(normalizeEngine)
-    .filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
+  return engines.map(normalizeEngine).filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
 }
 
 async function saveEngines(engines) {
