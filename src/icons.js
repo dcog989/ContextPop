@@ -20,6 +20,11 @@ var ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-prec
 var LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
 var ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
 
+// Best-effort mapping from browser search-engine display names to their
+// host, used only to fetch a favicon for browser-native engines. Not
+// exhaustive - engines not listed here (and not shaped like a domain) get
+// no icon, just the fallback letter. Expect this to go stale as browsers
+// add/rename default engines; update opportunistically, not proactively.
 var KNOWN_ENGINE_HOSTS = Object.freeze({
   google: 'www.google.com',
   duckduckgo: 'duckduckgo.com',
