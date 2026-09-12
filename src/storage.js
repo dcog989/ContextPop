@@ -67,6 +67,7 @@ var DEFAULT_SETTINGS = Object.freeze({
   actionsPosition: 'before',
   popupSize: 'standard',
   popupPosition: 'below',
+  accentBorder: false,
 });
 
 function defaultSettings() {

@@ -95,6 +95,9 @@
   "showLabels": {
     "message": "Namen der Suchmaschinen anzeigen"
   },
+  "accentBorder": {
+    "message": "Rahmen in Akzentfarbe"
+  },
   "namePlaceholder": {
     "message": "Name"
   },

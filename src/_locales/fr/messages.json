@@ -95,6 +95,9 @@
   "showLabels": {
     "message": "Afficher le nom des moteurs"
   },
+  "accentBorder": {
+    "message": "Bordure de couleur d'accent"
+  },
   "namePlaceholder": {
     "message": "Nom"
   },

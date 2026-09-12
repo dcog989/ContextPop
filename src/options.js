@@ -23,6 +23,7 @@ const elements = {
   columns: document.getElementById('setting-columns'),
   theme: document.getElementById('setting-theme'),
   labels: document.getElementById('setting-labels'),
+  accentBorder: document.getElementById('setting-accent-border'),
   refreshIcons: document.getElementById('refresh-icons'),
   popupSize: document.getElementById('setting-popup-size'),
   popupPosition: document.getElementById('setting-popup-position'),
@@ -237,6 +238,7 @@ function renderSettings() {
   elements.columns.value = state.settings.columns;
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
+  elements.accentBorder.checked = Boolean(state.settings.accentBorder);
   elements.popupSize.value = state.settings.popupSize;
   elements.popupPosition.value = state.settings.popupPosition;
 }
@@ -493,6 +495,10 @@ function bindSettings() {
   });
   elements.labels.addEventListener('change', () => {
     state.settings.showLabels = elements.labels.checked;
+    markDirty();
+  });
+  elements.accentBorder.addEventListener('change', () => {
+    state.settings.accentBorder = elements.accentBorder.checked;
     markDirty();
   });
   elements.popupSize.addEventListener('change', () => {

@@ -99,6 +99,9 @@
   "showLabels": {
     "message": "Show engine names"
   },
+  "accentBorder": {
+    "message": "Accent color border"
+  },
   "namePlaceholder": {
     "message": "Name"
   },

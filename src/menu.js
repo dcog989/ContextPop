@@ -68,6 +68,9 @@
   color: #f1f3f4;
   border-color: #ffffff29;
 }
+.cs-menu.accent-border {
+  border-color: var(--accent);
+}
 .cs-tiles {
   display: grid;
   gap: 0.29em;
@@ -477,6 +480,7 @@
 
     if (settings.showLabels) menu.classList.add('has-labels');
     menu.classList.add(`size-${settings.popupSize || 'standard'}`);
+    if (settings.accentBorder) menu.classList.add('accent-border');
     applyTheme(menu, settings.theme);
 
     const iconSetters = new Map();
