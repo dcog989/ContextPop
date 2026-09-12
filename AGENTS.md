@@ -13,6 +13,7 @@
 - `src/menu.js` — popup UI rendered in a closed shadow root.
 - `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
 - `src/storage.js` — shared storage schema and helpers (`api`, engines, settings).
+- `src/icons.js` — favicon resolution, fetch/cache, and rendering; exposes `HTTP_URL_PATTERN` (used by the background), `createFaviconIcon`, and `applyEngineIcons`.
 - `src/defaultEngines.js` — seed engines.
 - `src/options.html` / `src/options.js` / `src/options.css` — engine and settings management.
 - `src/manifest.json` — Firefox MV3 manifest.
@@ -37,7 +38,8 @@
 
 - Add feature: extend `src/background.js` message handling and `src/menu.js` UI, then persist via `src/storage.js`.
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
-- Content scripts `theme.js`, `menu.js`, and `content.js` run in one isolated world but are wrapped in IIFEs; `theme.js` publishes `globalThis.__contextPopTheme` and `menu.js` publishes `globalThis.__contextPopMenu`, which `content.js` consumes.
+- Content scripts share one isolated world per frame. `storage.js`, `icons.js`, and `defaultEngines.js` are deliberately unwrapped and declare top-level `var`, so their bare-name globals are shared with siblings — do not wrap them in an IIFE. `theme.js`, `menu.js`, and `content.js` are IIFEs: `theme.js` publishes `globalThis.__contextPopTheme`, `menu.js` publishes `globalThis.__contextPopMenu`, and `content.js` consumes both.
+- Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('defaultEngines.js', 'storage.js', 'icons.js')` before `background.js` runs.
 - Design tokens (accent, font family) live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access
