@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.4.0 - 2026-09-12
+
+#### Features
+
+- (3cba297) show extension version next to the repo link - dcog989
+
+#### Bug Fixes
+
+- (eb12da9) open browser-engine results in a background tab via tabId - dcog989
+
+- (e91faed) request full host access on save for icons and site access - dcog989
+
+- - -
+
 ## v0.3.1 - 2026-09-12
 
 #### Bug Fixes
