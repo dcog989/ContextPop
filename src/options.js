@@ -8,6 +8,9 @@ let saveTimer = null;
 let statusTimer = null;
 let iconSetters = new Map();
 
+const HOST_ORIGINS = ['http://*/*', 'https://*/*'];
+let hostAccessAttempted = false;
+
 const elements = {
   actionList: document.getElementById('action-list'),
   actionRowTemplate: document.getElementById('action-row-template'),
@@ -401,10 +404,11 @@ function validate() {
   return null;
 }
 
-async function ensureHostAccess() {
+async function requestHostAccess() {
   if (!api.permissions?.request) return true;
   try {
-    return await api.permissions.request({ origins: ['http://*/*', 'https://*/*'] });
+    if (api.permissions.contains && (await api.permissions.contains({ origins: HOST_ORIGINS }))) return true;
+    return await api.permissions.request({ origins: HOST_ORIGINS });
   } catch {
     return false;
   }
@@ -422,7 +426,10 @@ async function save() {
   const settings = normalizeSettings(state.settings);
   settings.columns = clamp(Number(settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
-  const hostAccess = await ensureHostAccess();
+  if (!hostAccessAttempted) {
+    hostAccessAttempted = true;
+    await requestHostAccess();
+  }
 
   try {
     await Promise.all([saveEngines(engines), saveSettings(settings)]);
@@ -432,7 +439,7 @@ async function save() {
   }
 
   state.dirty = false;
-  setStatus(hostAccess ? msg('statusSaved') : msg('statusIconAccessDenied'), !hostAccess);
+  setStatus(msg('statusSaved'));
   clearStatusSoon();
 }
 
@@ -450,7 +457,7 @@ async function handleRefreshIcons() {
   elements.refreshIcons.disabled = true;
   elements.refreshIcons.classList.add('is-loading');
   try {
-    const granted = await ensureHostAccess();
+    const granted = await requestHostAccess();
     if (!granted) {
       setStatus(msg('statusIconAccessDenied'), true);
       return;
