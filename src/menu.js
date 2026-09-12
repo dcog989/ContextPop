@@ -215,7 +215,8 @@
   function createBuiltinIcon(action) {
     const wrapper = document.createElement('span');
     wrapper.className = 'cs-icon';
-    wrapper.innerHTML = action.icon || '';
+    const icon = createSvgIcon(action.icon);
+    if (icon) wrapper.appendChild(icon);
     return wrapper;
   }
 

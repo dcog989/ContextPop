@@ -101,7 +101,8 @@ function createActionRow(actionId, index) {
     markDirty();
   });
 
-  fragment.querySelector('.action-icon').innerHTML = def?.icon || '';
+  const icon = createSvgIcon(def?.icon);
+  if (icon) fragment.querySelector('.action-icon').appendChild(icon);
   fragment.querySelector('.action-name').textContent = msg(`action${capitalize(actionId)}`);
 
   const templateField = fragment.querySelector('.action-template-field');

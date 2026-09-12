@@ -493,6 +493,14 @@ async function loadIconMap(engines) {
   return icons;
 }
 
+function createSvgIcon(markup) {
+  if (typeof markup !== 'string' || markup.length === 0) return null;
+  const parsed = new DOMParser().parseFromString(markup, 'image/svg+xml');
+  const root = parsed.documentElement;
+  if (!root || root.nodeName !== 'svg') return null;
+  return document.importNode(root, true);
+}
+
 function createFaviconIcon({ prefix, label }) {
   const wrapper = document.createElement('span');
   const mask = document.createElement('span');
