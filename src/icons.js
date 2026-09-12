@@ -118,11 +118,8 @@ function svgColorIsMonochrome(value) {
 }
 
 function isMonochromeSvgText(text) {
-  SVG_COLOR_PATTERN.lastIndex = 0;
-  let match = SVG_COLOR_PATTERN.exec(text);
-  while (match) {
+  for (const match of text.matchAll(SVG_COLOR_PATTERN)) {
     if (!svgColorIsMonochrome(match[1])) return false;
-    match = SVG_COLOR_PATTERN.exec(text);
   }
   return true;
 }
@@ -271,11 +268,8 @@ async function fetchMarkup(url) {
 
 function parseAttributes(tag) {
   const attributes = {};
-  ATTRIBUTE_PATTERN.lastIndex = 0;
-  let match = ATTRIBUTE_PATTERN.exec(tag);
-  while (match) {
+  for (const match of tag.matchAll(ATTRIBUTE_PATTERN)) {
     attributes[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? '';
-    match = ATTRIBUTE_PATTERN.exec(tag);
   }
   return attributes;
 }
@@ -298,9 +292,7 @@ function isVectorIcon(attributes, href) {
 function iconCandidates(markup, baseUrl) {
   const candidates = [];
   const seen = new Set();
-  LINK_TAG_PATTERN.lastIndex = 0;
-  let match = LINK_TAG_PATTERN.exec(markup);
-  while (match) {
+  for (const match of markup.matchAll(LINK_TAG_PATTERN)) {
     const attributes = parseAttributes(match[0]);
     const relations = (attributes.rel || '').toLowerCase().split(/\s+/);
     if (attributes.href && relations.some((relation) => ICON_RELATIONS.has(relation))) {
@@ -318,15 +310,12 @@ function iconCandidates(markup, baseUrl) {
         // Ignore icons with unresolvable hrefs.
       }
     }
-    match = LINK_TAG_PATTERN.exec(markup);
   }
   return candidates;
 }
 
 function findManifestUrl(markup, baseUrl) {
-  LINK_TAG_PATTERN.lastIndex = 0;
-  let match = LINK_TAG_PATTERN.exec(markup);
-  while (match) {
+  for (const match of markup.matchAll(LINK_TAG_PATTERN)) {
     const attributes = parseAttributes(match[0]);
     const relations = (attributes.rel || '').toLowerCase().split(/\s+/);
     if (attributes.href && relations.includes('manifest')) {
@@ -336,7 +325,6 @@ function findManifestUrl(markup, baseUrl) {
         return '';
       }
     }
-    match = LINK_TAG_PATTERN.exec(markup);
   }
   return '';
 }
