@@ -53,17 +53,10 @@ var BUILTIN_ACTION_DEFS = Object.freeze([
   {
     id: 'translate',
     contexts: ['text', 'word'],
-    template: 'https://www.deepl.com/translator#auto/en/{searchTerms}',
+    template: 'https://translate.google.com/?sl=auto&tl=en&text={searchTerms}&op=translate',
     icon: ACTION_ICONS.translate,
   },
 ]);
-
-var LEGACY_ACTION_TEMPLATES = Object.freeze({
-  'https://www.merriam-webster.com/dictionary/{searchTerms}': 'https://en.wiktionary.org/wiki/{searchTerms}',
-  'https://www.merriam-webster.com/thesaurus/{searchTerms}': THESAURUS_TEMPLATE,
-  'https://en.wiktionary.org/wiki/Thesaurus:{searchTerms}': THESAURUS_TEMPLATE,
-  'https://www.powerthesaurus.org/{searchTerms}/synonyms': THESAURUS_TEMPLATE,
-});
 
 var DEFAULT_SETTINGS = Object.freeze({
   trigger: 'mouseup',
@@ -125,8 +118,7 @@ function normalizeBuiltinActions(stored, base) {
       };
       if (def.template) {
         const stored = value.template;
-        const template = typeof stored === 'string' ? stored : String(fallback.template ?? def.template);
-        entry.template = LEGACY_ACTION_TEMPLATES[template] ?? template;
+        entry.template = typeof stored === 'string' ? stored : String(fallback.template ?? def.template);
       }
       return [def.id, entry];
     }),
