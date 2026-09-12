@@ -1,0 +1,302 @@
+{
+  "extName": {
+    "message": "ContextPop"
+  },
+  "extDescription": {
+    "message": "Öffnet bei Textauswahl ein anpassbares Popup für sofortige Suche, Kopieren in die Zwischenablage, Wörterbuch, Thesaurus und Links."
+  },
+  "actionTitle": {
+    "message": "ContextPop - Einstellungen öffnen"
+  },
+  "optionsPageTitle": {
+    "message": "ContextPop - Optionen"
+  },
+  "enginesHeading": {
+    "message": "Suchmaschinen"
+  },
+  "addEngine": {
+    "message": "Suchmaschine hinzufügen"
+  },
+  "restoreDefaults": {
+    "message": "Standard wiederherstellen"
+  },
+  "behaviorHeading": {
+    "message": "Verhalten"
+  },
+  "triggerLabel": {
+    "message": "Menü öffnen"
+  },
+  "triggerMouseup": {
+    "message": "Bei Textauswahl"
+  },
+  "triggerAlt": {
+    "message": "Auswahl + Alt halten"
+  },
+  "triggerCtrl": {
+    "message": "Auswahl + Strg/Cmd halten"
+  },
+  "triggerShift": {
+    "message": "Auswahl + Umschalt halten"
+  },
+  "openInLabel": {
+    "message": "Ergebnisse öffnen in"
+  },
+  "openNewTab": {
+    "message": "Neuer Tab (fokussiert)"
+  },
+  "openBackgroundTab": {
+    "message": "Neuer Tab (Hintergrund)"
+  },
+  "openCurrentTab": {
+    "message": "Aktueller Tab"
+  },
+  "openNewWindow": {
+    "message": "Neues Fenster"
+  },
+  "columnsLabel": {
+    "message": "Spalten"
+  },
+  "popupSizeLabel": {
+    "message": "Popup-Größe"
+  },
+  "popupSizeCompact": {
+    "message": "Kompakt"
+  },
+  "popupSizeStandard": {
+    "message": "Standard"
+  },
+  "popupSizeLarge": {
+    "message": "Groß"
+  },
+  "popupSizeLuxury": {
+    "message": "Extra groß"
+  },
+  "popupPositionLabel": {
+    "message": "Popup-Position"
+  },
+  "popupPositionBelow": {
+    "message": "Unter dem Cursor"
+  },
+  "popupPositionUnder": {
+    "message": "Auf den Cursor zentriert"
+  },
+  "themeLabel": {
+    "message": "Design"
+  },
+  "themeAuto": {
+    "message": "System"
+  },
+  "themeLight": {
+    "message": "Hell"
+  },
+  "themeDark": {
+    "message": "Dunkel"
+  },
+  "showLabels": {
+    "message": "Namen der Suchmaschinen anzeigen"
+  },
+  "namePlaceholder": {
+    "message": "Name"
+  },
+  "templatePlaceholder": {
+    "message": "https://example.com/search?q={searchTerms}"
+  },
+  "templatePlaceholderBrowser": {
+    "message": "aus dem Browser importiert..."
+  },
+  "iconUrlPlaceholder": {
+    "message": "Icon-URL (optional)"
+  },
+  "moveUp": {
+    "message": "Nach oben"
+  },
+  "moveDown": {
+    "message": "Nach unten"
+  },
+  "delete": {
+    "message": "Löschen"
+  },
+  "statusSaving": {
+    "message": "Speichern..."
+  },
+  "statusSaved": {
+    "message": "Gespeichert"
+  },
+  "statusDefaultsRestored": {
+    "message": "Standard wiederhergestellt"
+  },
+  "statusImportFailed": {
+    "message": "Import fehlgeschlagen: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "No engine array found"
+      }
+    }
+  },
+  "statusImportReadFailed": {
+    "message": "Import fehlgeschlagen: Datei konnte nicht gelesen werden"
+  },
+  "errorNameRequired": {
+    "message": "Jede Suchmaschine braucht einen Namen."
+  },
+  "errorTemplateTerms": {
+    "message": "Die Vorlage von „$name$“ muss {searchTerms} enthalten.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusSaveFailed": {
+    "message": "Speichern fehlgeschlagen: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Quota exceeded"
+      }
+    }
+  },
+  "statusIconAccessDenied": {
+    "message": "Der Icon-Zugriff wurde nicht gewährt, daher werden für Suchmaschinen Buchstaben angezeigt."
+  },
+  "statusIconsRefreshed": {
+    "message": "Icons aktualisiert"
+  },
+  "statusSaveFirst": {
+    "message": "Speichere zuerst deine Änderungen."
+  },
+  "statusRefreshFailed": {
+    "message": "Aktualisierung fehlgeschlagen: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
+  "backupHeading": {
+    "message": "Sicherung"
+  },
+  "exportConfig": {
+    "message": "Einstellungen exportieren"
+  },
+  "importConfig": {
+    "message": "Einstellungen importieren"
+  },
+  "statusConfigImported": {
+    "message": "Einstellungen importiert."
+  },
+  "errorConfigInvalid": {
+    "message": "Keine Suchmaschinen in der Datei gefunden."
+  },
+  "repositoryLink": {
+    "message": "Projekt auf GitHub"
+  },
+  "menuLabel": {
+    "message": "Auswahlaktionen"
+  },
+  "menuNoActions": {
+    "message": "Für diese Auswahl ist nichts verfügbar"
+  },
+  "actionsHeading": {
+    "message": "Aktionen"
+  },
+  "actionsPositionLabel": {
+    "message": "Position der Aktionen"
+  },
+  "actionsBefore": {
+    "message": "Vor den Suchmaschinen"
+  },
+  "actionsAfter": {
+    "message": "Nach den Suchmaschinen"
+  },
+  "actionCopyRich": {
+    "message": "In die Zwischenablage kopieren"
+  },
+  "actionCopyPlain": {
+    "message": "Als reinen Text kopieren"
+  },
+  "actionCopyLink": {
+    "message": "Linkadresse kopieren"
+  },
+  "actionOpenLink": {
+    "message": "Link öffnen"
+  },
+  "actionDefine": {
+    "message": "Wörterbuch $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionDefineTooltip": {
+    "message": "Wörterbuch „$word$“",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurus": {
+    "message": "Thesaurus $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurusTooltip": {
+    "message": "Thesaurus „$word$“",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionTranslate": {
+    "message": "Übersetzen"
+  },
+  "actionFallbackName": {
+    "message": "Aktion"
+  },
+  "providerTemplateLabel": {
+    "message": "Anbieter-Vorlage"
+  },
+  "providerTemplatePlaceholder": {
+    "message": "https://example.com/lookup/{searchTerms}"
+  },
+  "importFromBrowser": {
+    "message": "Aus Browser importieren"
+  },
+  "importUnavailable": {
+    "message": "Dieser Browser erlaubt es Erweiterungen nicht, installierte Suchmaschinen aufzulisten. Füge sie manuell hinzu."
+  },
+  "refreshIcons": {
+    "message": "Icons aktualisieren"
+  },
+  "errorTemplateScheme": {
+    "message": "Die Vorlage von „$name$“ muss http oder https verwenden.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusBrowserImported": {
+    "message": "$count$ Suchmaschinen aus dem Browser importiert",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  }
+}

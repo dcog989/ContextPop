@@ -18,7 +18,7 @@
 - `src/options.html` / `src/options.js` / `src/options.css` — engine and settings management.
 - `src/manifest.json` — Firefox MV3 manifest.
 - `src/chrome_manifest.json` — Chrome MV3 manifest.
-- `src/_locales/en/messages.json` — UI strings; the manifests and pages use these via `__MSG_*__` / `api.i18n`.
+- `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr); the manifests and pages use these via `__MSG_*__` / `api.i18n`.
 - `biome.json` / `lefthook.yml` / `cog.toml` / `changelog.tpl` — dev tooling config.
 - `scripts/package.sh` — validates manifest drift, then writes both store zips to `dist/`.
 - `scripts/sync_version.sh` — updates the version in both manifests (called by cog).

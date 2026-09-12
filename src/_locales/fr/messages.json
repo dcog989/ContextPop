@@ -1,0 +1,302 @@
+{
+  "extName": {
+    "message": "ContextPop"
+  },
+  "extDescription": {
+    "message": "Ouvre un menu contextuel personnalisable lors de la sélection de texte pour rechercher, copier dans le presse-papiers, consulter un dictionnaire, un thésaurus et des liens."
+  },
+  "actionTitle": {
+    "message": "ContextPop - ouvrir les paramètres"
+  },
+  "optionsPageTitle": {
+    "message": "ContextPop - Options"
+  },
+  "enginesHeading": {
+    "message": "Moteurs de recherche"
+  },
+  "addEngine": {
+    "message": "Ajouter un moteur"
+  },
+  "restoreDefaults": {
+    "message": "Rétablir les valeurs par défaut"
+  },
+  "behaviorHeading": {
+    "message": "Comportement"
+  },
+  "triggerLabel": {
+    "message": "Ouvrir le menu"
+  },
+  "triggerMouseup": {
+    "message": "Lors de la sélection de texte"
+  },
+  "triggerAlt": {
+    "message": "Sélection + maintenir Alt"
+  },
+  "triggerCtrl": {
+    "message": "Sélection + maintenir Ctrl/Cmd"
+  },
+  "triggerShift": {
+    "message": "Sélection + maintenir Maj"
+  },
+  "openInLabel": {
+    "message": "Ouvrir les résultats dans"
+  },
+  "openNewTab": {
+    "message": "Nouvel onglet au premier plan"
+  },
+  "openBackgroundTab": {
+    "message": "Nouvel onglet en arrière-plan"
+  },
+  "openCurrentTab": {
+    "message": "Onglet actuel"
+  },
+  "openNewWindow": {
+    "message": "Nouvelle fenêtre"
+  },
+  "columnsLabel": {
+    "message": "Colonnes"
+  },
+  "popupSizeLabel": {
+    "message": "Taille du menu"
+  },
+  "popupSizeCompact": {
+    "message": "Compacte"
+  },
+  "popupSizeStandard": {
+    "message": "Standard"
+  },
+  "popupSizeLarge": {
+    "message": "Grande"
+  },
+  "popupSizeLuxury": {
+    "message": "Très grande"
+  },
+  "popupPositionLabel": {
+    "message": "Position du menu"
+  },
+  "popupPositionBelow": {
+    "message": "Sous le curseur"
+  },
+  "popupPositionUnder": {
+    "message": "Centré sur le curseur"
+  },
+  "themeLabel": {
+    "message": "Thème"
+  },
+  "themeAuto": {
+    "message": "Système"
+  },
+  "themeLight": {
+    "message": "Clair"
+  },
+  "themeDark": {
+    "message": "Sombre"
+  },
+  "showLabels": {
+    "message": "Afficher le nom des moteurs"
+  },
+  "namePlaceholder": {
+    "message": "Nom"
+  },
+  "templatePlaceholder": {
+    "message": "https://example.com/search?q={searchTerms}"
+  },
+  "templatePlaceholderBrowser": {
+    "message": "importé du navigateur..."
+  },
+  "iconUrlPlaceholder": {
+    "message": "URL de l'icône (facultatif)"
+  },
+  "moveUp": {
+    "message": "Monter"
+  },
+  "moveDown": {
+    "message": "Descendre"
+  },
+  "delete": {
+    "message": "Supprimer"
+  },
+  "statusSaving": {
+    "message": "Enregistrement..."
+  },
+  "statusSaved": {
+    "message": "Enregistré"
+  },
+  "statusDefaultsRestored": {
+    "message": "Valeurs par défaut rétablies"
+  },
+  "statusImportFailed": {
+    "message": "Échec de l'importation : $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "No engine array found"
+      }
+    }
+  },
+  "statusImportReadFailed": {
+    "message": "Échec de l'importation : impossible de lire le fichier"
+  },
+  "errorNameRequired": {
+    "message": "Chaque moteur doit avoir un nom."
+  },
+  "errorTemplateTerms": {
+    "message": "Le modèle de « $name$ » doit contenir {searchTerms}.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusSaveFailed": {
+    "message": "Échec de l'enregistrement : $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Quota exceeded"
+      }
+    }
+  },
+  "statusIconAccessDenied": {
+    "message": "L'accès aux icônes n'a pas été accordé, les icônes des moteurs sont donc remplacées par des lettres."
+  },
+  "statusIconsRefreshed": {
+    "message": "Icônes actualisées"
+  },
+  "statusSaveFirst": {
+    "message": "Enregistrez d'abord vos modifications."
+  },
+  "statusRefreshFailed": {
+    "message": "Échec de l'actualisation : $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
+  "backupHeading": {
+    "message": "Sauvegarde"
+  },
+  "exportConfig": {
+    "message": "Exporter les paramètres"
+  },
+  "importConfig": {
+    "message": "Importer les paramètres"
+  },
+  "statusConfigImported": {
+    "message": "Paramètres importés."
+  },
+  "errorConfigInvalid": {
+    "message": "Aucun moteur trouvé dans le fichier."
+  },
+  "repositoryLink": {
+    "message": "Projet sur GitHub"
+  },
+  "menuLabel": {
+    "message": "Actions de sélection"
+  },
+  "menuNoActions": {
+    "message": "Rien n'est disponible pour cette sélection"
+  },
+  "actionsHeading": {
+    "message": "Actions"
+  },
+  "actionsPositionLabel": {
+    "message": "Position des actions"
+  },
+  "actionsBefore": {
+    "message": "Avant les moteurs de recherche"
+  },
+  "actionsAfter": {
+    "message": "Après les moteurs de recherche"
+  },
+  "actionCopyRich": {
+    "message": "Copier dans le presse-papiers"
+  },
+  "actionCopyPlain": {
+    "message": "Copier en texte brut"
+  },
+  "actionCopyLink": {
+    "message": "Copier l'adresse du lien"
+  },
+  "actionOpenLink": {
+    "message": "Ouvrir le lien"
+  },
+  "actionDefine": {
+    "message": "Dictionnaire $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionDefineTooltip": {
+    "message": "Dictionnaire « $word$ »",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurus": {
+    "message": "Thésaurus $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurusTooltip": {
+    "message": "Thésaurus « $word$ »",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionTranslate": {
+    "message": "Traduire"
+  },
+  "actionFallbackName": {
+    "message": "Action"
+  },
+  "providerTemplateLabel": {
+    "message": "Modèle du fournisseur"
+  },
+  "providerTemplatePlaceholder": {
+    "message": "https://example.com/lookup/{searchTerms}"
+  },
+  "importFromBrowser": {
+    "message": "Importer depuis le navigateur"
+  },
+  "importUnavailable": {
+    "message": "Ce navigateur ne permet pas aux extensions de lister les moteurs installés. Ajoutez-les manuellement."
+  },
+  "refreshIcons": {
+    "message": "Actualiser les icônes"
+  },
+  "errorTemplateScheme": {
+    "message": "Le modèle de « $name$ » doit utiliser http ou https.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusBrowserImported": {
+    "message": "$count$ moteurs importés depuis le navigateur",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  }
+}
