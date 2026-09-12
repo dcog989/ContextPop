@@ -9,7 +9,6 @@ const POPUP_HEIGHT = 720;
 
 const DISPOSITIONS = Object.freeze({
   newTab: 'NEW_TAB',
-  backgroundTab: 'NEW_TAB',
   currentTab: 'CURRENT_TAB',
   newWindow: 'NEW_WINDOW',
 });
@@ -28,7 +27,7 @@ function resolveOpenMethod(method, sender) {
 }
 
 function dispositionFor(method) {
-  return DISPOSITIONS[OPEN_METHODS.includes(method) ? method : DEFAULT_SETTINGS.openMethod];
+  return DISPOSITIONS[method] ?? DISPOSITIONS.newTab;
 }
 
 async function openUrl(url, method, sender) {
@@ -51,16 +50,27 @@ async function openUrl(url, method, sender) {
   }
 }
 
+async function openBrowserSearch(engine, query, openMethod, sender) {
+  if (openMethod === 'backgroundTab') {
+    // The `search` API has no unfocused disposition, so the new tab always
+    // opens focused. Open it, then hand focus straight back to the tab the
+    // search was triggered from - the net result (new tab exists, original
+    // tab stays in front) matches how template engines open via
+    // tabs.create({ active: false }).
+    const originTabId = sender?.tab?.id;
+    await api.search.search({ engine: engine.browserEngineName, query, disposition: DISPOSITIONS.newTab });
+    if (originTabId != null) await api.tabs.update(originTabId, { active: true }).catch(() => {});
+    return;
+  }
+  await api.search.search({ engine: engine.browserEngineName, query, disposition: dispositionFor(openMethod) });
+}
+
 async function openSearch({ engine, terms, method }, sender) {
   const query = String(terms ?? '');
 
   if (engine.source === 'browser') {
     if (!supportsBrowserEngineSearch()) throw new Error('Browser engine search is unavailable');
-    await api.search.search({
-      engine: engine.browserEngineName,
-      query,
-      disposition: dispositionFor(method),
-    });
+    await openBrowserSearch(engine, query, resolveOpenMethod(method, sender), sender);
     return;
   }
 
