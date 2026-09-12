@@ -198,9 +198,14 @@ function supportsBrowserEngineSearch() {
 
 async function loadEngines() {
   const result = await api.storage.local.get(STORAGE_KEYS.engines);
-  const engines = result[STORAGE_KEYS.engines];
-  if (!Array.isArray(engines)) return [];
-  return engines.map(normalizeEngine).filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
+  const stored = result[STORAGE_KEYS.engines];
+  if (stored === undefined) {
+    const engines = defaultEngineList();
+    await saveEngines(engines);
+    return engines;
+  }
+  if (!Array.isArray(stored)) return [];
+  return stored.map(normalizeEngine).filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
 }
 
 async function saveEngines(engines) {

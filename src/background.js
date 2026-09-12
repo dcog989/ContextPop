@@ -15,8 +15,7 @@ const DISPOSITIONS = Object.freeze({
 });
 
 async function seedStorage() {
-  const engines = await loadEngines();
-  if (!engines.length) await saveEngines(defaultEngineList());
+  await loadEngines();
 
   const result = await api.storage.local.get(STORAGE_KEYS.settings);
   if (!result[STORAGE_KEYS.settings]) await saveSettings(defaultSettings());
@@ -92,14 +91,8 @@ async function openLink({ url, method }, sender) {
 
 async function handleMessage(message, sender) {
   switch (message?.type) {
-    case 'getEngines': {
-      let engines = await loadEngines();
-      if (!engines.length) {
-        engines = defaultEngineList();
-        await saveEngines(engines);
-      }
-      return engines;
-    }
+    case 'getEngines':
+      return loadEngines();
     case 'getSettings':
       return loadSettings();
     case 'getIcons': {
