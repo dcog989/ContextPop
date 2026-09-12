@@ -66,8 +66,8 @@
   "popupSizeCompact": {
     "message": "Compact"
   },
-  "popupSizeNormal": {
-    "message": "Normal"
+  "popupSizeStandard": {
+    "message": "Standard"
   },
   "popupSizeLarge": {
     "message": "Large"
