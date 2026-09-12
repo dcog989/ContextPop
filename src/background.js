@@ -52,14 +52,11 @@ async function openUrl(url, method, sender) {
 
 async function openBrowserSearch(engine, query, openMethod, sender) {
   if (openMethod === 'backgroundTab') {
-    // The `search` API has no unfocused disposition, so the new tab always
-    // opens focused. Open it, then hand focus straight back to the tab the
-    // search was triggered from - the net result (new tab exists, original
-    // tab stays in front) matches how template engines open via
-    // tabs.create({ active: false }).
-    const originTabId = sender?.tab?.id;
-    await api.search.search({ engine: engine.browserEngineName, query, disposition: DISPOSITIONS.newTab });
-    if (originTabId != null) await api.tabs.update(originTabId, { active: true }).catch(() => {});
+    // The search API has no unfocused disposition, so open a background tab
+    // and have the search run in it via tabId. The tab never takes focus,
+    // matching template engines' tabs.create({ active: false }).
+    const tab = await api.tabs.create({ active: false, openerTabId: sender?.tab?.id });
+    await api.search.search({ engine: engine.browserEngineName, query, tabId: tab.id });
     return;
   }
   await api.search.search({ engine: engine.browserEngineName, query, disposition: dispositionFor(openMethod) });
