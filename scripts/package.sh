@@ -60,8 +60,8 @@ with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as archive:
   fi
 }
 
-make_zip "$dist/firefox" "$dist/context-pop-firefox.zip"
-make_zip "$dist/chrome" "$dist/context-pop-chrome.zip"
+make_zip "$dist/firefox" "$dist/contextpop-firefox.zip"
+make_zip "$dist/chrome" "$dist/contextpop-chrome.zip"
 
 echo "Packaged:"
 ls -lh "$dist"/*.zip

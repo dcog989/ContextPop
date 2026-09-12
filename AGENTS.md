@@ -32,7 +32,7 @@
 - Lint/format: `biome check` (`biome check --write` to fix).
 - Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files and runs `cog verify` on commit messages.
 - Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so both manifests stay in sync.
-- Build: none for the extension. `scripts/package.sh` produces `dist/context-pop-{firefox,chrome}.zip`.
+- Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-{firefox,chrome}.zip`.
 
 ### Common Patterns
 

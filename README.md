@@ -48,7 +48,7 @@ Build zip archives for both stores:
 ./scripts/package.sh
 ```
 
-Outputs `dist/context-pop-firefox.zip` and `dist/context-pop-chrome.zip`. The script uses `zip` when available and falls back to Python's `zipfile`. It also fails if the shared fields in the two manifests drift.
+Outputs `dist/contextpop-firefox.zip` and `dist/contextpop-chrome.zip`. The script uses `zip` when available and falls back to Python's `zipfile`. It also fails if the shared fields in the two manifests drift.
 
 ## Development
 
