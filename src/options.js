@@ -385,6 +385,15 @@ function validate() {
     if (!engine.template.includes('{searchTerms}')) return msg('errorTemplateTerms', engine.name);
     if (!/^https?:\/\//i.test(engine.template)) return msg('errorTemplateScheme', engine.name);
   }
+  for (const def of BUILTIN_ACTION_DEFS) {
+    if (!def.template) continue;
+    const value = state.settings.builtinActions[def.id];
+    if (!value?.enabled) continue;
+    const template = String(value.template ?? '');
+    const name = (msg(`action${capitalize(def.id)}`) || capitalize(def.id)).trim();
+    if (!template.includes('{searchTerms}')) return msg('errorTemplateTerms', name);
+    if (!/^https?:\/\//i.test(template)) return msg('errorTemplateScheme', name);
+  }
   return null;
 }
 
