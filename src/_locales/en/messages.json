@@ -24,8 +24,8 @@
   "restoreDefaults": {
     "message": "Restore defaults"
   },
-  "behaviorHeading": {
-    "message": "Behavior"
+  "preferencesHeading": {
+    "message": "Preferences"
   },
   "triggerLabel": {
     "message": "Open the menu"

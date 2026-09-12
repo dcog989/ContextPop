@@ -20,8 +20,8 @@
   "restoreDefaults": {
     "message": "Rétablir les valeurs par défaut"
   },
-  "behaviorHeading": {
-    "message": "Comportement"
+  "preferencesHeading": {
+    "message": "Préférences"
   },
   "triggerLabel": {
     "message": "Ouvrir le menu"

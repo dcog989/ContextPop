@@ -20,8 +20,8 @@
   "restoreDefaults": {
     "message": "डिफ़ॉल्ट पुनर्स्थापित करें"
   },
-  "behaviorHeading": {
-    "message": "व्यवहार"
+  "preferencesHeading": {
+    "message": "प्राथमिकताएँ"
   },
   "triggerLabel": {
     "message": "मेनू खोलें"
