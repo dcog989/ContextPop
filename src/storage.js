@@ -145,7 +145,6 @@ function normalizeSettings(stored) {
   const base = defaultSettings();
   const input = stored && typeof stored === 'object' ? stored : {};
   const settings = { ...base, ...input };
-  delete settings.faviconProvider;
   settings.popupSize = POPUP_SIZES.includes(input.popupSize) ? input.popupSize : DEFAULT_SETTINGS.popupSize;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);

@@ -1,6 +1,6 @@
 # ContextPop
 
-Launches a customizable popup when text is selected. Provides instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, open link in new tab, etc..
+Launches a customizable popup on text selection for instant search, copy to clipboard, dictionary, thesaurus, and links.
 
 ## Features
 

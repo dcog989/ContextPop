@@ -4,7 +4,7 @@
     "description": "Extension name."
   },
   "extDescription": {
-    "message": "Launches a customizable popup when text is selected. Provides instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, open link in new tab, etc..",
+    "message": "Launches a customizable popup on text selection for instant search, copy to clipboard, dictionary, thesaurus, and links.",
     "description": "Extension description."
   },
   "actionTitle": {
@@ -197,9 +197,6 @@
   },
   "repositoryLink": {
     "message": "Project on GitHub"
-  },
-  "menuNoEngines": {
-    "message": "No search engines configured"
   },
   "menuLabel": {
     "message": "Selection actions"
