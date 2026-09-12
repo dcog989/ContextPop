@@ -183,9 +183,6 @@
   "backupHeading": {
     "message": "Backup"
   },
-  "backupHint": {
-    "message": "Export or import your full configuration (engines and settings)."
-  },
   "exportConfig": {
     "message": "Export settings"
   },
