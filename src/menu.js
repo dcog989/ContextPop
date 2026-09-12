@@ -255,6 +255,7 @@
     switch (id) {
       case 'copyRich':
       case 'copyPlain':
+      case 'copyLink':
         menuState.handlers?.[id]?.();
         break;
       case 'openLink':
@@ -262,6 +263,7 @@
         break;
       case 'define':
       case 'thesaurus':
+      case 'translate':
         send({ type: 'openReference', template: action.template, terms: menuState.text });
         break;
       default:

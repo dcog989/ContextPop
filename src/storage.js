@@ -27,11 +27,16 @@ var ACTION_ICONS = Object.freeze({
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 22H5.5a1 1 0 0 1 0-5h4.501"/><path d="m21 22-1.879-1.878"/><path d="M3 19.5v-15A2.5 2.5 0 0 1 5.5 2H18a1 1 0 0 1 1 1v8"/><circle cx="17" cy="18" r="3"/></svg>',
   thesaurus:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>',
+  translate:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>',
+  copyLink:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
 });
 
 var BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', contexts: ['text', 'word'], icon: ACTION_ICONS.copyRich },
   { id: 'copyPlain', contexts: ['text', 'word'], icon: ACTION_ICONS.copyPlain },
+  { id: 'copyLink', contexts: ['link'], icon: ACTION_ICONS.copyLink },
   { id: 'openLink', contexts: ['link'], icon: ACTION_ICONS.openLink },
   {
     id: 'define',
@@ -44,6 +49,12 @@ var BUILTIN_ACTION_DEFS = Object.freeze([
     contexts: ['word'],
     template: THESAURUS_TEMPLATE,
     icon: ACTION_ICONS.thesaurus,
+  },
+  {
+    id: 'translate',
+    contexts: ['text', 'word'],
+    template: 'https://www.deepl.com/translator#auto/en/{searchTerms}',
+    icon: ACTION_ICONS.translate,
   },
 ]);
 
@@ -143,9 +154,7 @@ function normalizeSettings(stored) {
   const input = stored && typeof stored === 'object' ? stored : {};
   const settings = { ...base, ...input };
   delete settings.faviconProvider;
-  settings.popupSize = POPUP_SIZES.includes(input.popupSize)
-    ? input.popupSize
-    : DEFAULT_SETTINGS.popupSize;
+  settings.popupSize = POPUP_SIZES.includes(input.popupSize) ? input.popupSize : DEFAULT_SETTINGS.popupSize;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {

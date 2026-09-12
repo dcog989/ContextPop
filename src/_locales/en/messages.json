@@ -225,6 +225,9 @@
   "actionCopyPlain": {
     "message": "Copy as plain text"
   },
+  "actionCopyLink": {
+    "message": "Copy link address"
+  },
   "actionOpenLink": {
     "message": "Open link"
   },
@@ -263,6 +266,9 @@
         "example": "ubiquitous"
       }
     }
+  },
+  "actionTranslate": {
+    "message": "Translate"
   },
   "actionFallbackName": {
     "message": "Action"

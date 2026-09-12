@@ -130,13 +130,20 @@
     if (!copied) throw new Error('Copy failed');
   }
 
-  async function copyPlain() {
-    const text = (contentState.selection?.text || '').replace(/\s+/g, ' ').trim();
+  async function writeClipboardText(text) {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
       fallbackCopy(text);
     }
+  }
+
+  async function copyPlain() {
+    await writeClipboardText((contentState.selection?.text || '').replace(/\s+/g, ' ').trim());
+  }
+
+  async function copyLink() {
+    await writeClipboardText(contentState.selection?.href || '');
   }
 
   async function copyRich() {
@@ -183,7 +190,7 @@
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines,
       settings: contentState.settings ?? defaultSettings(),
-      handlers: { copyRich, copyPlain },
+      handlers: { copyRich, copyPlain, copyLink },
     });
   }
 
