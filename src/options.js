@@ -377,8 +377,8 @@ function importConfig(file) {
 }
 
 function exportConfig() {
-  downloadJson('context-pop-settings.json', {
-    app: 'context-pop',
+  downloadJson('contextpop-settings.json', {
+    app: 'contextpop',
     schema: 1,
     engines: state.engines,
     settings: state.settings,
