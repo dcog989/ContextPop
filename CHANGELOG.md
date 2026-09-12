@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.3.1 - 2026-09-12
+
+#### Bug Fixes
+
+- (e8a7b7d) run event page on startup so first action click registers - dcog989
+
+- (d698599) honor background-tab open method for browser-native engines - dcog989
+
+#### Refactoring
+
+- (81fec2a) replace manual regex.exec loops with matchAll - dcog989
+
+- - -
+
 ## v0.3.0 - 2026-09-12
 
 #### Features
