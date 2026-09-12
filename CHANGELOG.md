@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.4.1 - 2026-09-12
+
+#### Bug Fixes
+
+- (f820734) stop flashing the icon-access warning on every save - dcog989
+
+- - -
+
 ## v0.4.0 - 2026-09-12
 
 #### Features
