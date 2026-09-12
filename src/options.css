@@ -84,6 +84,10 @@ h2 {
   flex-wrap: wrap;
 }
 
+section > h2 + .actions {
+  margin-top: 12px;
+}
+
 .hint {
   margin: 8px 0 16px;
   color: var(--muted);
