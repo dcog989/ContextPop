@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.3.0 - 2026-09-12
+
+#### Features
+
+- (d4497a9) rename Behavior section to Preferences - dcog989
+
+- (3c0b4ef) add option to use accent color for popup border - dcog989
+
+#### Bug Fixes
+
+- (ecc648a) clear selection by close reason, preserving it on Escape - dcog989
+
+- - -
+
 ## v0.2.0 - 2026-09-12
 
 #### Features
