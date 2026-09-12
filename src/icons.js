@@ -17,6 +17,15 @@ var WELL_KNOWN_ICONS = [
   { path: '/favicon.ico', vector: false, size: 16 },
 ];
 var ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-precomposed']);
+// This file is importScript'd into the Chrome service worker (see
+// background.js), which has no `document`/DOMParser - so markup fetched by
+// fetchMarkup() can't be parsed with a real HTML parser there. These two
+// patterns hand-roll just enough of a <link>-tag/attribute scanner to find
+// icon/manifest links, in exchange for the usual fragility of regex-based
+// HTML parsing (e.g. unusual attribute quoting or malformed tags can be
+// missed). createSvgIcon() below uses a real DOMParser instead, but that
+// function only runs in content-script/options-page context, which does
+// have a document.
 var LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
 var ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
 
