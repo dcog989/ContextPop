@@ -11,9 +11,8 @@ var STORAGE_KEYS = Object.freeze({
 var CONTEXTS = Object.freeze(['text', 'word', 'link']);
 var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
-var POPUP_SIZES = Object.freeze(['compact', 'normal', 'large', 'luxury']);
+var POPUP_SIZES = Object.freeze(['compact', 'standard', 'large', 'luxury']);
 var POPUP_POSITIONS = Object.freeze(['below', 'under']);
-var LEGACY_POPUP_SIZES = Object.freeze({ small: 'compact', medium: 'normal', large: 'large' });
 
 var THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
 
@@ -62,7 +61,7 @@ var DEFAULT_SETTINGS = Object.freeze({
   theme: 'auto',
   showLabels: false,
   actionsPosition: 'before',
-  popupSize: 'normal',
+  popupSize: 'standard',
   popupPosition: 'below',
 });
 
@@ -144,11 +143,9 @@ function normalizeSettings(stored) {
   const input = stored && typeof stored === 'object' ? stored : {};
   const settings = { ...base, ...input };
   delete settings.faviconProvider;
-  delete settings.iconSize;
-  const legacyPopupSize = LEGACY_POPUP_SIZES[input.iconSize];
   settings.popupSize = POPUP_SIZES.includes(input.popupSize)
     ? input.popupSize
-    : legacyPopupSize || DEFAULT_SETTINGS.popupSize;
+    : DEFAULT_SETTINGS.popupSize;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {

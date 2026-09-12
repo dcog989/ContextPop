@@ -468,7 +468,7 @@
     menu.style.visibility = 'hidden';
 
     if (settings.showLabels) menu.classList.add('has-labels');
-    menu.classList.add(`size-${settings.popupSize || 'normal'}`);
+    menu.classList.add(`size-${settings.popupSize || 'standard'}`);
     applyTheme(menu, settings.theme);
 
     const iconSetters = new Map();
