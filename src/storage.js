@@ -34,16 +34,16 @@ var ACTION_ICONS = Object.freeze({
 });
 
 var BUILTIN_ACTION_DEFS = Object.freeze([
-  { id: 'copyRich', contexts: ['text', 'word'], icon: ACTION_ICONS.copyRich },
   { id: 'copyPlain', contexts: ['text', 'word'], icon: ACTION_ICONS.copyPlain },
   { id: 'copyLink', contexts: ['link'], icon: ACTION_ICONS.copyLink },
-  { id: 'openLink', contexts: ['link'], icon: ACTION_ICONS.openLink },
+  { id: 'copyRich', contexts: ['text', 'word'], icon: ACTION_ICONS.copyRich },
   {
     id: 'define',
     contexts: ['word'],
     template: 'https://en.wiktionary.org/wiki/{searchTerms}',
     icon: ACTION_ICONS.define,
   },
+  { id: 'openLink', contexts: ['link'], icon: ACTION_ICONS.openLink },
   {
     id: 'thesaurus',
     contexts: ['word'],
