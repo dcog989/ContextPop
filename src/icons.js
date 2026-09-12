@@ -499,7 +499,7 @@ function createSvgIcon(markup) {
   if (typeof markup !== 'string' || markup.length === 0) return null;
   const parsed = new DOMParser().parseFromString(markup, 'image/svg+xml');
   const root = parsed.documentElement;
-  if (!root || root.nodeName !== 'svg') return null;
+  if (root?.nodeName !== 'svg') return null;
   return document.importNode(root, true);
 }
 
