@@ -84,9 +84,7 @@
     if (!rect || (rect.width === 0 && rect.height === 0)) return null;
 
     const anchor =
-      findAnchor(range.commonAncestorContainer) ||
-      findAnchor(range.startContainer) ||
-      findAnchor(range.endContainer);
+      findAnchor(range.commonAncestorContainer) || findAnchor(range.startContainer) || findAnchor(range.endContainer);
     const anchorHref = anchor?.href && isHttpUrl(anchor.href) ? anchor.href : '';
 
     return {
