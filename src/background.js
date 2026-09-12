@@ -135,9 +135,17 @@ async function handleMessage(message, sender) {
   }
 }
 
-api.runtime.onInstalled.addListener(() => {
+function seedStorageOnFailure() {
   seedStorage().catch((error) => console.error('ContextPop: seed failed', error));
-});
+}
+
+api.runtime.onInstalled.addListener(seedStorageOnFailure);
+
+// Firefox MV3 only persists an event page's listeners after it has run once. A
+// listener here forces that run every browser session, otherwise the first
+// action click that wakes the suspended page is dropped and the options page
+// does not open until a second click.
+api.runtime.onStartup.addListener(seedStorageOnFailure);
 
 api.action.onClicked.addListener(() => {
   api.runtime.openOptionsPage();
