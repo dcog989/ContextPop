@@ -189,7 +189,7 @@
     api.runtime.sendMessage(message).catch(() => {});
   }
 
-  function closeMenu({ restoreFocus = false } = {}) {
+  function closeMenu({ restoreFocus = false, reason = 'action' } = {}) {
     if (!menuState.open) return;
     menuState.open = false;
     if (menuState.host?.parentNode) menuState.host.parentNode.removeChild(menuState.host);
@@ -201,6 +201,10 @@
     if (restoreFocus && previousFocus?.isConnected && typeof previousFocus.focus === 'function') {
       previousFocus.focus({ preventScroll: true });
     }
+
+    const onClose = menuState.onClose;
+    menuState.onClose = null;
+    onClose?.(reason);
   }
 
   function createIcon(engine) {
@@ -344,7 +348,7 @@
         break;
       case 'Escape':
         event.preventDefault();
-        closeMenu({ restoreFocus: true });
+        closeMenu({ restoreFocus: true, reason: 'escape' });
         break;
       default:
         break;
@@ -435,8 +439,8 @@
     }
   }
 
-  function openMenu({ text, html, context, href, linkText, rect, point, engines, settings, handlers }) {
-    closeMenu();
+  function openMenu({ text, html, context, href, linkText, rect, point, engines, settings, handlers, onClose }) {
+    closeMenu({ reason: 'replace' });
 
     menuState.text = text;
     menuState.html = html;
@@ -444,6 +448,7 @@
     menuState.href = href;
     menuState.linkText = linkText;
     menuState.handlers = handlers;
+    menuState.onClose = onClose ?? null;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     const allActions = builtinActionList(settings);

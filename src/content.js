@@ -102,6 +102,13 @@
     return 'text';
   }
 
+  function handleMenuClose(reason) {
+    if (reason === 'escape' || reason === 'replace') return;
+    contentState.selection = null;
+    const selection = window.getSelection();
+    if (selection) selection.removeAllRanges();
+  }
+
   function buildActivation() {
     const info = readSelection();
     if (!info) return null;
@@ -192,6 +199,7 @@
       engines: contentState.engines,
       settings: contentState.settings ?? defaultSettings(),
       handlers: { copyRich, copyPlain, copyLink },
+      onClose: handleMenuClose,
     });
   }
 
@@ -214,7 +222,7 @@
 
   function handleMouseDown(event) {
     if (isMenuOpen() && !event.composedPath().includes(menuState.host)) {
-      closeMenu();
+      closeMenu({ reason: 'outside' });
       contentState.suppressMouseUp = true;
     }
   }
@@ -225,12 +233,12 @@
     document.addEventListener(
       'keydown',
       (event) => {
-        if (event.key === 'Escape') closeMenu({ restoreFocus: true });
+        if (event.key === 'Escape') closeMenu({ restoreFocus: true, reason: 'escape' });
       },
       true,
     );
-    window.addEventListener('scroll', () => closeMenu(), true);
-    window.addEventListener('blur', () => closeMenu());
+    window.addEventListener('scroll', () => closeMenu({ reason: 'scroll' }), true);
+    window.addEventListener('blur', () => closeMenu({ reason: 'blur' }));
 
     loadConfig();
     api.storage.onChanged.addListener((changes, area) => {
