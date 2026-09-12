@@ -133,7 +133,7 @@ async function handleMessage(message, sender) {
 }
 
 api.runtime.onInstalled.addListener(() => {
-  seedStorage().catch((error) => console.error('Context Smart: seed failed', error));
+  seedStorage().catch((error) => console.error('ContextPop: seed failed', error));
 });
 
 api.action.onClicked.addListener(() => {

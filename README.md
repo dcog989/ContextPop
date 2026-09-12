@@ -1,13 +1,13 @@
-# Context Smart
+# ContextPop
 
 Launches a customizable popup when text is selected. Provides instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, open link in new tab, etc..
 
 ## Features
 
 - Popup tile grid on text selection, keyboard navigable (arrows, Home/End, Tab, Escape)
-- Built-in actions: copy (rich or plain), open link, define, thesaurus, and search with the browser default
+- Built-in actions: copy (rich or plain), copy link address, open link, dictionary, thesaurus, translate, and search with the browser default
 - Search engines, with a configurable Actions-before/after-engines group order
-- Context-aware actions: copy, open link, define, and thesaurus apply to the selections they suit (`text`, `word`, `link`)
+- Context-aware actions: copy, copy link address, open link, dictionary, thesaurus, and translate apply to the selections they suit (`text`, `word`, `link`)
 - Manage engines (name, template, result view, optional icon); engines are offered for any selection
 - Import the engines already installed in Firefox; search them through the browser
 - Engine icons fetched from each engine's own site (or a custom icon URL), with a letter fallback
@@ -48,7 +48,7 @@ Build zip archives for both stores:
 ./scripts/package.sh
 ```
 
-Outputs `dist/context-smart-firefox.zip` and `dist/context-smart-chrome.zip`. The script uses `zip` when available and falls back to Python's `zipfile`. It also fails if the shared fields in the two manifests drift.
+Outputs `dist/context-pop-firefox.zip` and `dist/context-pop-chrome.zip`. The script uses `zip` when available and falls back to Python's `zipfile`. It also fails if the shared fields in the two manifests drift.
 
 ## Development
 

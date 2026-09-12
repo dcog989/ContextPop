@@ -1,10 +1,10 @@
 # Privacy Policy
 
-Context Smart does not collect, store, or transmit any personal data to the developer.
+ContextPop does not collect, store, or transmit any personal data to the developer.
 
 ## What the extension handles
 
-- **Selected text.** When you trigger the menu and pick an engine, the selected text is inserted into that engine's URL and opened in your browser. It is sent directly to the search engine you chose, not to the developer. The same applies to the Define and Thesaurus actions, which open the lookup in a popup window at the provider you configured.
+- **Selected text.** When you trigger the menu and pick an engine, the selected text is inserted into that engine's URL and opened in your browser. It is sent directly to the search engine you chose, not to the developer. The same applies to the Dictionary and Thesaurus actions, which open the lookup in a popup window at the provider you configured.
 - **Clipboard.** Copy actions write the selected text to your system clipboard. This happens entirely on your device; nothing is transmitted.
 - **Settings and engines.** Your engine list and preferences are stored only in your browser via `storage.local`. They are never uploaded. Engines imported from the browser stay on-device.
 - **Icons and favicons.** To show an engine icon, the extension fetches the favicon from the engine's own site, reading the icon the site declares and preferring a high-resolution one. If you set a custom icon URL for an engine, that is used instead. Fetched icons are cached in `storage.local` on your device and sent without cookies or a referrer, so they are not tied to the page you are viewing. Icons are optional; engines without one display a letter.
@@ -19,4 +19,4 @@ Context Smart does not collect, store, or transmit any personal data to the deve
 
 ## Contact
 
-Open an issue at <https://github.com/dcog989/Context-Smart/issues> for any privacy question.
+Open an issue at <https://github.com/dcog989/ContextPop/issues> for any privacy question.

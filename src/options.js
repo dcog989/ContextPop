@@ -370,8 +370,8 @@ function importConfig(file) {
 }
 
 function exportConfig() {
-  downloadJson('context-smart-settings.json', {
-    app: 'context-smart',
+  downloadJson('context-pop-settings.json', {
+    app: 'context-pop',
     schema: 1,
     engines: state.engines,
     settings: state.settings,
@@ -529,7 +529,7 @@ async function load() {
   configureBrowserImport();
 }
 
-globalThis.__contextSmartTheme?.applyTokens(document.documentElement);
+globalThis.__contextPopTheme?.applyTokens(document.documentElement);
 localize();
 bindSettings();
 bindActions();

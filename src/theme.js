@@ -1,5 +1,5 @@
 (() => {
-  if (globalThis.__contextSmartTheme) return;
+  if (globalThis.__contextPopTheme) return;
 
   const TOKENS = Object.freeze({
     accent: '#c65900',
@@ -17,5 +17,5 @@
     }
   }
 
-  globalThis.__contextSmartTheme = { TOKENS, applyTokens };
+  globalThis.__contextPopTheme = { TOKENS, applyTokens };
 })();

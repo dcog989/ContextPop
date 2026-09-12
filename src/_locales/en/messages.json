@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Context Smart",
+    "message": "ContextPop",
     "description": "Extension name."
   },
   "extDescription": {
@@ -8,11 +8,11 @@
     "description": "Extension description."
   },
   "actionTitle": {
-    "message": "Context Smart - open settings",
+    "message": "ContextPop - open settings",
     "description": "Toolbar button tooltip."
   },
   "optionsPageTitle": {
-    "message": "Context Smart - Options",
+    "message": "ContextPop - Options",
     "description": "Options page title."
   },
   "enginesHeading": {

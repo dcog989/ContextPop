@@ -1,5 +1,5 @@
 (() => {
-  if (globalThis.__contextSmartMenu) return;
+  if (globalThis.__contextPopMenu) return;
 
   const api = globalThis.browser ?? globalThis.chrome;
 
@@ -455,7 +455,7 @@
     host.style.inset = '0';
     host.style.zIndex = '2147483647';
     host.style.pointerEvents = 'none';
-    globalThis.__contextSmartTheme?.applyTokens(host);
+    globalThis.__contextPopTheme?.applyTokens(host);
 
     const root = host.attachShadow({ mode: 'closed' });
 
@@ -513,5 +513,5 @@
     applyEngineIcons(iconSetters, engines);
   }
 
-  globalThis.__contextSmartMenu = { openMenu, closeMenu, isMenuOpen, menuState };
+  globalThis.__contextPopMenu = { openMenu, closeMenu, isMenuOpen, menuState };
 })();

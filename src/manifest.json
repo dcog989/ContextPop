@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
-  "homepage_url": "https://github.com/dcog989/Context-Smart",
+  "homepage_url": "https://github.com/dcog989/ContextPop",
   "browser_specific_settings": {
     "gecko": {
-      "id": "context-smart@context-smart.app",
+      "id": "contextpop@contextpop.app",
       "strict_min_version": "115.0",
       "data_collection_permissions": {
         "required": ["none"]

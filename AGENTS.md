@@ -2,7 +2,7 @@
 
 ## Project Specifics
 
-- Name: Context Smart
+- Name: ContextPop
 - Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox and Chrome, Manifest V3.
 - Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, lefthook, and cocogitto binaries.
 
@@ -11,7 +11,7 @@
 - `src/background.js` — stateless background (Firefox event page / Chrome service worker); storage seeding, tab opening, message routing.
 - `src/content.js` — selection detection and trigger handling.
 - `src/menu.js` — popup UI rendered in a closed shadow root.
-- `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextSmartTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
+- `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
 - `src/storage.js` — shared storage schema and helpers (`api`, engines, settings).
 - `src/defaultEngines.js` — seed engines.
 - `src/options.html` / `src/options.js` / `src/options.css` — engine and settings management.
@@ -31,13 +31,13 @@
 - Lint/format: `biome check` (`biome check --write` to fix).
 - Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files and runs `cog verify` on commit messages.
 - Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so both manifests stay in sync.
-- Build: none for the extension. `scripts/package.sh` produces `dist/context-smart-{firefox,chrome}.zip`.
+- Build: none for the extension. `scripts/package.sh` produces `dist/context-pop-{firefox,chrome}.zip`.
 
 ### Common Patterns
 
 - Add feature: extend `src/background.js` message handling and `src/menu.js` UI, then persist via `src/storage.js`.
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
-- Content scripts `theme.js`, `menu.js`, and `content.js` run in one isolated world but are wrapped in IIFEs; `theme.js` publishes `globalThis.__contextSmartTheme` and `menu.js` publishes `globalThis.__contextSmartMenu`, which `content.js` consumes.
+- Content scripts `theme.js`, `menu.js`, and `content.js` run in one isolated world but are wrapped in IIFEs; `theme.js` publishes `globalThis.__contextPopTheme` and `menu.js` publishes `globalThis.__contextPopMenu`, which `content.js` consumes.
 - Design tokens (accent, font family) live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access

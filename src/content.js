@@ -1,12 +1,12 @@
 (() => {
-  const menuApi = globalThis.__contextSmartMenu;
+  const menuApi = globalThis.__contextPopMenu;
   if (!menuApi) {
-    console.error('Context Smart: menu module failed to load');
+    console.error('ContextPop: menu module failed to load');
     return;
   }
 
-  if (globalThis.__contextSmartInitialized) return;
-  globalThis.__contextSmartInitialized = true;
+  if (globalThis.__contextPopInitialized) return;
+  globalThis.__contextPopInitialized = true;
 
   const { openMenu, closeMenu, isMenuOpen, menuState } = menuApi;
   const api = globalThis.browser ?? globalThis.chrome;
@@ -34,7 +34,7 @@
       contentState.settings = settings;
       contentState.engines = engines;
     } catch (error) {
-      console.error('Context Smart: failed to load config', error);
+      console.error('ContextPop: failed to load config', error);
     }
   }
 
