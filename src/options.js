@@ -400,11 +400,10 @@ function validate() {
   return null;
 }
 
-async function ensureIconPermission(engines) {
-  const origins = collectIconOrigins(engines);
-  if (!origins.length || !api.permissions?.request) return true;
+async function ensureHostAccess() {
+  if (!api.permissions?.request) return true;
   try {
-    return await api.permissions.request({ origins });
+    return await api.permissions.request({ origins: ['http://*/*', 'https://*/*'] });
   } catch {
     return false;
   }
@@ -422,6 +421,8 @@ async function save() {
   const settings = normalizeSettings(state.settings);
   settings.columns = clamp(Number(settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
+  const hostAccess = await ensureHostAccess();
+
   try {
     await Promise.all([saveEngines(engines), saveSettings(settings)]);
   } catch (error) {
@@ -430,7 +431,7 @@ async function save() {
   }
 
   state.dirty = false;
-  setStatus(msg('statusSaved'));
+  setStatus(hostAccess ? msg('statusSaved') : msg('statusIconAccessDenied'), !hostAccess);
   clearStatusSoon();
 }
 
@@ -448,7 +449,7 @@ async function handleRefreshIcons() {
   elements.refreshIcons.disabled = true;
   elements.refreshIcons.classList.add('is-loading');
   try {
-    const granted = await ensureIconPermission(state.engines);
+    const granted = await ensureHostAccess();
     if (!granted) {
       setStatus(msg('statusIconAccessDenied'), true);
       return;
