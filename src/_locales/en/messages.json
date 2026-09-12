@@ -232,7 +232,7 @@
     "message": "Open link"
   },
   "actionDefine": {
-    "message": "Define $word$",
+    "message": "Dictionary $word$",
     "placeholders": {
       "word": {
         "content": "$1",
@@ -241,7 +241,7 @@
     }
   },
   "actionDefineTooltip": {
-    "message": "Define \"$word$\"",
+    "message": "Dictionary \"$word$\"",
     "placeholders": {
       "word": {
         "content": "$1",

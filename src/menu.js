@@ -228,7 +228,7 @@
   function actionLabel(action, text) {
     switch (action.id) {
       case 'define':
-        return t('actionDefine', 'Define $1$', [text]);
+        return t('actionDefine', 'Dictionary $1$', [text]);
       case 'thesaurus':
         return t('actionThesaurus', 'Thesaurus $1$', [text]);
       default:
@@ -239,7 +239,7 @@
   function actionTooltip(action, text) {
     switch (action.id) {
       case 'define':
-        return t('actionDefineTooltip', 'Define "$1$"', [text]);
+        return t('actionDefineTooltip', 'Dictionary "$1$"', [text]);
       case 'thesaurus':
         return t('actionThesaurusTooltip', 'Thesaurus "$1$"', [text]);
       default:
