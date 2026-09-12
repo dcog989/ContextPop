@@ -14,7 +14,7 @@ Launches a customizable popup on text selection for instant search, copy to clip
 - Open results in a new tab, background tab, current tab, new window, or a popup window
 - Shift-click opens a new window; Ctrl/Cmd-click or middle-click opens a background tab
 - Light, dark, or system theme
-- English, Spanish, German, and French UI via `_locales`
+- English, Spanish, German, French, and Hindi UI via `_locales`
 - Firefox and Chrome, Manifest V3, no build step
 
 ## Install (temporary / unpacked)

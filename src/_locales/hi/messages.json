@@ -1,0 +1,302 @@
+{
+  "extName": {
+    "message": "ContextPop"
+  },
+  "extDescription": {
+    "message": "चयनित टेक्स्ट पर अनुकूलन योग्य पॉपअप खोलता है — तुरंत खोज, क्लिपबोर्ड पर कॉपी, शब्दकोश, पर्यायवाची और लिंक के लिए।"
+  },
+  "actionTitle": {
+    "message": "ContextPop - सेटिंग्स खोलें"
+  },
+  "optionsPageTitle": {
+    "message": "ContextPop - विकल्प"
+  },
+  "enginesHeading": {
+    "message": "खोज इंजन"
+  },
+  "addEngine": {
+    "message": "इंजन जोड़ें"
+  },
+  "restoreDefaults": {
+    "message": "डिफ़ॉल्ट पुनर्स्थापित करें"
+  },
+  "behaviorHeading": {
+    "message": "व्यवहार"
+  },
+  "triggerLabel": {
+    "message": "मेनू खोलें"
+  },
+  "triggerMouseup": {
+    "message": "टेक्स्ट चुनने पर"
+  },
+  "triggerAlt": {
+    "message": "चयन + Alt दबाए रखें"
+  },
+  "triggerCtrl": {
+    "message": "चयन + Ctrl/Cmd दबाए रखें"
+  },
+  "triggerShift": {
+    "message": "चयन + Shift दबाए रखें"
+  },
+  "openInLabel": {
+    "message": "परिणाम इसमें खोलें"
+  },
+  "openNewTab": {
+    "message": "नया फ़ोकस्ड टैब"
+  },
+  "openBackgroundTab": {
+    "message": "नया बैकग्राउंड टैब"
+  },
+  "openCurrentTab": {
+    "message": "वर्तमान टैब"
+  },
+  "openNewWindow": {
+    "message": "नई विंडो"
+  },
+  "columnsLabel": {
+    "message": "कॉलम"
+  },
+  "popupSizeLabel": {
+    "message": "पॉपअप आकार"
+  },
+  "popupSizeCompact": {
+    "message": "कॉम्पैक्ट"
+  },
+  "popupSizeStandard": {
+    "message": "मानक"
+  },
+  "popupSizeLarge": {
+    "message": "बड़ा"
+  },
+  "popupSizeLuxury": {
+    "message": "अतिरिक्त बड़ा"
+  },
+  "popupPositionLabel": {
+    "message": "पॉपअप स्थिति"
+  },
+  "popupPositionBelow": {
+    "message": "कर्सर के नीचे"
+  },
+  "popupPositionUnder": {
+    "message": "कर्सर पर केंद्रित"
+  },
+  "themeLabel": {
+    "message": "थीम"
+  },
+  "themeAuto": {
+    "message": "सिस्टम"
+  },
+  "themeLight": {
+    "message": "हल्का"
+  },
+  "themeDark": {
+    "message": "गहरा"
+  },
+  "showLabels": {
+    "message": "इंजन नाम दिखाएँ"
+  },
+  "namePlaceholder": {
+    "message": "नाम"
+  },
+  "templatePlaceholder": {
+    "message": "https://example.com/search?q={searchTerms}"
+  },
+  "templatePlaceholderBrowser": {
+    "message": "ब्राउज़र से आयातित..."
+  },
+  "iconUrlPlaceholder": {
+    "message": "आइकन URL (वैकल्पिक)"
+  },
+  "moveUp": {
+    "message": "ऊपर ले जाएँ"
+  },
+  "moveDown": {
+    "message": "नीचे ले जाएँ"
+  },
+  "delete": {
+    "message": "हटाएँ"
+  },
+  "statusSaving": {
+    "message": "सहेजा जा रहा है..."
+  },
+  "statusSaved": {
+    "message": "सहेजा गया"
+  },
+  "statusDefaultsRestored": {
+    "message": "डिफ़ॉल्ट पुनर्स्थापित"
+  },
+  "statusImportFailed": {
+    "message": "आयात विफल: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "No engine array found"
+      }
+    }
+  },
+  "statusImportReadFailed": {
+    "message": "आयात विफल: फ़ाइल पढ़ी नहीं जा सकी"
+  },
+  "errorNameRequired": {
+    "message": "प्रत्येक इंजन का एक नाम होना चाहिए।"
+  },
+  "errorTemplateTerms": {
+    "message": "“$name$” टेम्पलेट में {searchTerms} शामिल होना चाहिए।",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusSaveFailed": {
+    "message": "सहेजना विफल: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Quota exceeded"
+      }
+    }
+  },
+  "statusIconAccessDenied": {
+    "message": "आइकन पहुँच नहीं दी गई, इसलिए इंजन आइकन की जगह अक्षर दिखाए जाते हैं।"
+  },
+  "statusIconsRefreshed": {
+    "message": "आइकन ताज़ा किए गए"
+  },
+  "statusSaveFirst": {
+    "message": "पहले अपने बदलाव सहेजें।"
+  },
+  "statusRefreshFailed": {
+    "message": "ताज़ा करना विफल: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
+  "backupHeading": {
+    "message": "बैकअप"
+  },
+  "exportConfig": {
+    "message": "सेटिंग्स निर्यात करें"
+  },
+  "importConfig": {
+    "message": "सेटिंग्स आयात करें"
+  },
+  "statusConfigImported": {
+    "message": "सेटिंग्स आयातित।"
+  },
+  "errorConfigInvalid": {
+    "message": "फ़ाइल में कोई इंजन नहीं मिला।"
+  },
+  "repositoryLink": {
+    "message": "GitHub पर प्रोजेक्ट"
+  },
+  "menuLabel": {
+    "message": "चयन क्रियाएँ"
+  },
+  "menuNoActions": {
+    "message": "इस चयन के लिए कुछ उपलब्ध नहीं है"
+  },
+  "actionsHeading": {
+    "message": "क्रियाएँ"
+  },
+  "actionsPositionLabel": {
+    "message": "क्रियाओं की स्थिति"
+  },
+  "actionsBefore": {
+    "message": "खोज इंजनों से पहले"
+  },
+  "actionsAfter": {
+    "message": "खोज इंजनों के बाद"
+  },
+  "actionCopyRich": {
+    "message": "क्लिपबोर्ड पर कॉपी करें"
+  },
+  "actionCopyPlain": {
+    "message": "सादे टेक्स्ट के रूप में कॉपी करें"
+  },
+  "actionCopyLink": {
+    "message": "लिंक पता कॉपी करें"
+  },
+  "actionOpenLink": {
+    "message": "लिंक खोलें"
+  },
+  "actionDefine": {
+    "message": "शब्दकोश $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionDefineTooltip": {
+    "message": "शब्दकोश “$word$”",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurus": {
+    "message": "पर्यायवाची $word$",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionThesaurusTooltip": {
+    "message": "पर्यायवाची “$word$”",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ubiquitous"
+      }
+    }
+  },
+  "actionTranslate": {
+    "message": "अनुवाद करें"
+  },
+  "actionFallbackName": {
+    "message": "क्रिया"
+  },
+  "providerTemplateLabel": {
+    "message": "प्रदाता टेम्पलेट"
+  },
+  "providerTemplatePlaceholder": {
+    "message": "https://example.com/lookup/{searchTerms}"
+  },
+  "importFromBrowser": {
+    "message": "ब्राउज़र से आयात करें"
+  },
+  "importUnavailable": {
+    "message": "यह ब्राउज़र एक्सटेंशन को इंस्टॉल किए गए खोज इंजन सूचीबद्ध करने नहीं देता। इन्हें मैन्युअल रूप से जोड़ें।"
+  },
+  "refreshIcons": {
+    "message": "आइकन ताज़ा करें"
+  },
+  "errorTemplateScheme": {
+    "message": "“$name$” टेम्पलेट में http या https होना चाहिए।",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
+  },
+  "statusBrowserImported": {
+    "message": "$count$ ब्राउज़र इंजन आयातित",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  }
+}
