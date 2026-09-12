@@ -400,6 +400,11 @@ select:focus {
   text-decoration: underline;
 }
 
+.version {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 #status {
   color: var(--muted);
   font-size: 13px;

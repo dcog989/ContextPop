@@ -27,6 +27,7 @@ const elements = {
   refreshIcons: document.getElementById('refresh-icons'),
   popupSize: document.getElementById('setting-popup-size'),
   popupPosition: document.getElementById('setting-popup-position'),
+  version: document.getElementById('version'),
 };
 
 function msg(name, substitutions) {
@@ -548,6 +549,7 @@ async function load() {
 
 globalThis.__contextPopTheme?.applyTokens(document.documentElement);
 localize();
+elements.version.textContent = `v${api.runtime.getManifest().version}`;
 bindSettings();
 bindActions();
 load();
