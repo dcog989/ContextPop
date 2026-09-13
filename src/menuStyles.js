@@ -17,6 +17,8 @@
   border: 1px solid #00000029;
   border-radius: 0.71em;
   box-shadow: 0 10px 32px #00000047;
+  opacity: var(--cs-alpha, 1);
+  transition: opacity 120ms ease;
   pointer-events: auto;
   font-family: var(--font-family);
   font-size: 14px;
@@ -50,6 +52,9 @@
   background: #202124;
   color: #f1f3f4;
   border-color: #ffffff29;
+}
+.cs-menu:hover {
+  opacity: 1;
 }
 .cs-menu.accent-border {
   border-color: var(--accent);

@@ -68,6 +68,7 @@ var DEFAULT_SETTINGS = Object.freeze({
   popupSize: 'standard',
   popupPosition: 'below',
   popupAnimation: false,
+  popupOpacity: 100,
   accentBorder: false,
 });
 
@@ -157,6 +158,10 @@ function normalizeSettings(stored) {
     settings.popupPosition = DEFAULT_SETTINGS.popupPosition;
   }
   settings.popupAnimation = settings.popupAnimation === true;
+  const opacity = Number(input.popupOpacity);
+  settings.popupOpacity = Number.isFinite(opacity)
+    ? Math.min(100, Math.max(0, Math.round(opacity)))
+    : DEFAULT_SETTINGS.popupOpacity;
   return settings;
 }
 

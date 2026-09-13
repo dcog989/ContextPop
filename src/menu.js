@@ -37,6 +37,12 @@
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
+  function applyOpacity(host, percent) {
+    const value = Number(percent);
+    const alpha = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) / 100 : 1;
+    host.style.setProperty('--cs-alpha', String(alpha));
+  }
+
   function send(message) {
     api.runtime.sendMessage(message).catch(() => {});
   }
@@ -188,6 +194,7 @@
     host.style.zIndex = '2147483647';
     host.style.pointerEvents = 'none';
     globalThis.__contextPopTheme?.applyTokens(host);
+    applyOpacity(host, settings.popupOpacity);
 
     const root = host.attachShadow({ mode: 'closed' });
 

@@ -22,6 +22,8 @@ const elements = {
   popupSize: document.getElementById('setting-popup-size'),
   popupPosition: document.getElementById('setting-popup-position'),
   popupAnimation: document.getElementById('setting-popup-animation'),
+  popupOpacity: document.getElementById('setting-popup-opacity'),
+  popupOpacityValue: document.getElementById('setting-popup-opacity-value'),
   version: document.getElementById('version'),
 };
 

@@ -83,6 +83,9 @@
   "popupAnimation": {
     "message": "पॉपअप एनिमेट करें"
   },
+  "popupOpacityLabel": {
+    "message": "पॉपअप अपारदर्शिता"
+  },
   "themeLabel": {
     "message": "थीम"
   },

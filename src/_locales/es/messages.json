@@ -83,6 +83,9 @@
   "popupAnimation": {
     "message": "Animar el menú"
   },
+  "popupOpacityLabel": {
+    "message": "Opacidad del menú"
+  },
   "themeLabel": {
     "message": "Tema"
   },

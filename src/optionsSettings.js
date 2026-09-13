@@ -11,6 +11,8 @@ function renderSettings() {
   elements.popupSize.value = state.settings.popupSize;
   elements.popupPosition.value = state.settings.popupPosition;
   elements.popupAnimation.checked = Boolean(state.settings.popupAnimation);
+  elements.popupOpacity.value = state.settings.popupOpacity;
+  elements.popupOpacityValue.textContent = `${state.settings.popupOpacity}%`;
 }
 
 function bindSettings() {
@@ -53,6 +55,11 @@ function bindSettings() {
   });
   elements.popupAnimation.addEventListener('change', () => {
     state.settings.popupAnimation = elements.popupAnimation.checked;
+    markDirty();
+  });
+  elements.popupOpacity.addEventListener('input', () => {
+    state.settings.popupOpacity = clamp(Number(elements.popupOpacity.value) || 0, 0, 100);
+    elements.popupOpacityValue.textContent = `${state.settings.popupOpacity}%`;
     markDirty();
   });
 }

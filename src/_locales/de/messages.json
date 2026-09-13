@@ -83,6 +83,9 @@
   "popupAnimation": {
     "message": "Popup animieren"
   },
+  "popupOpacityLabel": {
+    "message": "Popup-Deckkraft"
+  },
   "themeLabel": {
     "message": "Design"
   },

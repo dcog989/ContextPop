@@ -87,6 +87,9 @@
   "popupAnimation": {
     "message": "Animate popup"
   },
+  "popupOpacityLabel": {
+    "message": "Popup opacity"
+  },
   "themeLabel": {
     "message": "Theme"
   },
