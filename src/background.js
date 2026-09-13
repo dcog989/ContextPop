@@ -70,6 +70,11 @@ async function openBrowserSearch(engine, query, openMethod, sender) {
   await api.search.search({ engine: engine.browserEngineName, query, disposition: dispositionFor(openMethod) });
 }
 
+function assertTemplate(value, label) {
+  if (!value.includes('{searchTerms}')) throw new Error(`${label} template is missing {searchTerms}`);
+  if (!HTTP_URL_PATTERN.test(value)) throw new Error(`${label} template must use http or https`);
+}
+
 async function openSearch({ engine, terms, method }, sender) {
   const query = String(terms ?? '');
 
@@ -79,17 +84,14 @@ async function openSearch({ engine, terms, method }, sender) {
     return;
   }
 
-  if (!engine.template.includes('{searchTerms}')) throw new Error('Engine template is missing {searchTerms}');
-  if (!HTTP_URL_PATTERN.test(engine.template)) throw new Error('Engine template must use http or https');
-
+  assertTemplate(engine.template, 'Engine');
   const url = buildSearchUrl(engine.template, query);
   await openUrl(url, method, sender);
 }
 
 async function openReference({ template, terms }) {
   const value = String(template ?? '');
-  if (!value.includes('{searchTerms}')) throw new Error('Provider template is missing {searchTerms}');
-  if (!HTTP_URL_PATTERN.test(value)) throw new Error('Provider template must use http or https');
+  assertTemplate(value, 'Provider');
   await api.windows.create({
     url: buildSearchUrl(value, String(terms ?? '')),
     type: 'popup',
@@ -100,7 +102,7 @@ async function openReference({ template, terms }) {
 
 async function openLink({ url, method }, sender) {
   const value = String(url ?? '');
-  if (!HTTP_URL_PATTERN.test(value)) throw new Error('Link must use http or https');
+  if (!isHttpUrl(value)) throw new Error('Link must use http or https');
   await openUrl(value, method, sender);
 }
 

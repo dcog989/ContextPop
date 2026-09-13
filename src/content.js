@@ -57,15 +57,6 @@
     return null;
   }
 
-  function isHttpUrl(value) {
-    try {
-      const url = new URL(value);
-      return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch {
-      return false;
-    }
-  }
-
   function serializeSelection(range) {
     const container = document.createElement('div');
     container.appendChild(range.cloneContents());

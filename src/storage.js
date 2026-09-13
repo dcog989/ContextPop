@@ -197,6 +197,15 @@ function buildSearchUrl(template, terms) {
   return String(template).replace(/\{searchTerms\}/g, encodeURIComponent(terms));
 }
 
+function isHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function defaultEngineList() {
   return DEFAULT_ENGINES.map((engine) => normalizeEngine(engine));
 }
