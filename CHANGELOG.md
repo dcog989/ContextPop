@@ -2,6 +2,42 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.5.0 - 2026-09-13
+
+#### Features
+
+- (1b79de3) fade popup chrome and tiles with popup opacity - dcog989
+
+- (9829b8e) add per-engine enable/disable checkbox - dcog989
+
+- (2036449) add restore-defaults button to actions - dcog989
+
+- (9bf9f04) add popup opacity slider - dcog989
+
+- (5d3fdf3) add optional expand/shrink popup animation - dcog989
+
+#### Bug Fixes
+
+- (a851866) require all-site host access for content scripts - dcog989
+
+- (5233a5c) make hovered tile background opaque - dcog989
+
+- (3143ef2) fade accent border with popup opacity - dcog989
+
+#### Refactoring
+
+- (88bf224) share HTTP URL validation and template checks - dcog989
+
+- (0bfd7c6) split popup logic into stateless menu modules - dcog989
+
+- (7d5b029) split options controller into single-concern modules - dcog989
+
+- (e99894a) split favicon logic into single-concern modules - dcog989
+
+- (9f11638) change export name from 'context-pop' to 'contextpop' - dcog989
+
+- - -
+
 ## v0.4.1 - 2026-09-12
 
 #### Bug Fixes
