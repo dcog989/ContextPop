@@ -1,7 +1,15 @@
+// Popup shell: owns the private menu state, lifecycle (open/close), action dispatch, and
+// composition of the stateless menu modules. Publishes globalThis.__contextPopMenu for
+// content.js.
+
 (() => {
   if (globalThis.__contextPopMenu) return;
 
   const api = globalThis.browser ?? globalThis.chrome;
+  const { t } = globalThis.__contextPopMenuI18n;
+  const { css: MENU_CSS } = globalThis.__contextPopMenuStyles;
+  const { applyTheme, positionMenu, focusTile, moveFocus, focusEdge } = globalThis.__contextPopMenuLayout;
+  const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
 
   const menuState = {
     open: false,
@@ -17,172 +25,6 @@
     root: null,
     previousFocus: null,
   };
-
-  const MENU_CSS = `
-.cs-menu {
-  position: absolute;
-  z-index: 2147483647;
-  display: flex;
-  flex-direction: column;
-  gap: 0.57em;
-  padding: 0.57em;
-  max-width: min(92vw, 40em);
-  max-height: 70vh;
-  overflow: auto;
-  background: #ffffff;
-  color: #1a1a1a;
-  border: 1px solid #00000029;
-  border-radius: 0.71em;
-  box-shadow: 0 10px 32px #00000047;
-  pointer-events: auto;
-  font-family: var(--font-family);
-  font-size: 14px;
-  --icon-size: 26px;
-  --tile-size: 38px;
-}
-.cs-menu.size-compact {
-  font-size: 12px;
-  --icon-size: 22px;
-  --tile-size: 32px;
-  gap: 4px;
-  padding: 4px;
-}
-.cs-menu.size-compact .cs-tiles {
-  gap: 2px;
-}
-.cs-menu.size-compact .cs-tile {
-  padding: 1px;
-}
-.cs-menu.size-large {
-  font-size: 16px;
-  --icon-size: 30px;
-  --tile-size: 44px;
-}
-.cs-menu.size-luxury {
-  font-size: 18px;
-  --icon-size: 34px;
-  --tile-size: 50px;
-}
-.cs-menu.dark {
-  background: #202124;
-  color: #f1f3f4;
-  border-color: #ffffff29;
-}
-.cs-menu.accent-border {
-  border-color: var(--accent);
-}
-.cs-tiles {
-  display: grid;
-  gap: 0.29em;
-}
-.cs-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.14em;
-  width: var(--tile-size);
-  height: var(--tile-size);
-  padding: 0.14em;
-  border: 1px solid transparent;
-  border-radius: 0.57em;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  outline: none;
-}
-.cs-tile:hover {
-  background: #00000014;
-  border-color: #00000029;
-}
-.cs-menu.kb .cs-tile:focus {
-  background: #00000014;
-  border-color: #00000029;
-}
-.cs-menu.dark .cs-tile:hover,
-.cs-menu.dark.kb .cs-tile:focus {
-  background: #ffffff1f;
-  border-color: #ffffff33;
-}
-.cs-menu.has-labels .cs-tile {
-  width: auto;
-  min-width: 4.86em;
-  height: auto;
-  padding: 0.43em 0.57em;
-}
-.cs-tile:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-.cs-tile:disabled:hover {
-  background: transparent;
-  border-color: transparent;
-}
-.cs-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icon-size);
-  height: var(--icon-size);
-}
-.cs-icon [hidden] {
-  display: none !important;
-}
-.cs-icon img {
-  width: var(--icon-size);
-  height: var(--icon-size);
-  object-fit: contain;
-  pointer-events: none;
-}
-.cs-icon .cs-mask {
-  width: var(--icon-size);
-  height: var(--icon-size);
-  background-color: currentColor;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  pointer-events: none;
-}
-.cs-icon svg {
-  width: calc(var(--icon-size) - 0.14em);
-  height: calc(var(--icon-size) - 0.14em);
-}
-.cs-letter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icon-size);
-  height: var(--icon-size);
-  border-radius: 50%;
-  background: var(--accent);
-  color: #ffffff;
-  font-size: calc(var(--icon-size) * 0.54);
-  font-weight: 600;
-}
-.cs-label {
-  max-width: 7.6em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.79em;
-  line-height: 1.2;
-}
-.cs-empty {
-  padding: 0.67em 1em;
-  font-size: 0.86em;
-  opacity: 0.72;
-}
-`;
-
-  function t(name, fallback, substitutions) {
-    const value = api.i18n?.getMessage(name, substitutions);
-    if (value) return value;
-    if (!substitutions) return fallback;
-    return fallback.replace(/\$(\d+)\$/g, (_match, index) => String(substitutions[Number(index) - 1] ?? ''));
-  }
 
   function isMenuOpen() {
     return menuState.open;
@@ -210,49 +52,10 @@
     onClose?.(reason);
   }
 
-  function createIcon(engine) {
-    const { element, setSource } = createFaviconIcon({
-      prefix: 'cs',
-      label: (engine.name || '?').trim().charAt(0).toUpperCase(),
-    });
-    element.className = 'cs-icon';
-    return { element, setSource };
-  }
-
-  function createBuiltinIcon(action) {
-    const wrapper = document.createElement('span');
-    wrapper.className = 'cs-icon';
-    const icon = createSvgIcon(action.icon);
-    if (icon) wrapper.appendChild(icon);
-    return wrapper;
-  }
-
   function resolveMethod(event, base) {
     if (event.shiftKey) return 'newWindow';
     if (event.ctrlKey || event.metaKey) return 'backgroundTab';
     return base || 'newTab';
-  }
-
-  function actionLabel(action, text) {
-    switch (action.id) {
-      case 'define':
-        return t('actionDefine', 'Dictionary $1$', [text]);
-      case 'thesaurus':
-        return t('actionThesaurus', 'Thesaurus $1$', [text]);
-      default:
-        return t(`action${capitalize(action.id)}`, action.id);
-    }
-  }
-
-  function actionTooltip(action, text) {
-    switch (action.id) {
-      case 'define':
-        return t('actionDefineTooltip', 'Dictionary "$1$"', [text]);
-      case 'thesaurus':
-        return t('actionThesaurusTooltip', 'Thesaurus "$1$"', [text]);
-      default:
-        return actionLabel(action, text);
-    }
   }
 
   function dispatchAction(id, event) {
@@ -302,27 +105,6 @@
     closeMenu({ restoreFocus: true });
   }
 
-  function focusTile(tile) {
-    const tiles = tile.parentNode ? [...tile.parentNode.querySelectorAll('.cs-tile')] : [tile];
-    for (const item of tiles) item.tabIndex = item === tile ? 0 : -1;
-    tile.focus({ preventScroll: true });
-  }
-
-  function moveFocus(menu, delta) {
-    const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
-    if (!tiles.length) return;
-    const current = tiles.indexOf(menu.querySelector('.cs-tile:focus'));
-    let next = current + delta;
-    if (next < 0) next = tiles.length - 1;
-    if (next >= tiles.length) next = 0;
-    focusTile(tiles[next]);
-  }
-
-  function focusEdge(menu, last) {
-    const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
-    if (tiles.length) focusTile(last ? tiles[tiles.length - 1] : tiles[0]);
-  }
-
   function handleMenuKeydown(event) {
     const menu = event.currentTarget;
     menu.classList.add('kb');
@@ -355,90 +137,6 @@
         break;
       default:
         break;
-    }
-  }
-
-  function decorateTile(tile, label, showLabels, tooltip = label) {
-    tile.type = 'button';
-    tile.className = 'cs-tile';
-    tile.title = tooltip;
-    tile.setAttribute('aria-label', label);
-    tile.setAttribute('role', 'menuitem');
-    tile.tabIndex = -1;
-
-    if (showLabels) {
-      const span = document.createElement('span');
-      span.className = 'cs-label';
-      span.textContent = label;
-      tile.appendChild(span);
-    }
-    return tile;
-  }
-
-  function createActionTile(action, text, showLabels) {
-    const label = actionLabel(action, text);
-    const tile = document.createElement('button');
-    decorateTile(tile, label, showLabels, actionTooltip(action, text));
-    tile.dataset.actionId = action.id;
-    if (action.disabled) tile.disabled = true;
-    tile.prepend(createBuiltinIcon(action));
-    tile.addEventListener('click', handleActionClick);
-    return tile;
-  }
-
-  function createEngineTile(engine, showLabels) {
-    const tile = document.createElement('button');
-    decorateTile(tile, engine.name, showLabels);
-    tile.dataset.engineId = engine.id;
-
-    const icon = createIcon(engine);
-    tile.prepend(icon.element);
-    tile.addEventListener('click', handleEngineClick);
-    tile.addEventListener('auxclick', handleEngineAuxClick);
-    return { tile, setIcon: icon.setSource };
-  }
-
-  function applyTheme(menu, theme) {
-    const dark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    menu.classList.toggle('dark', dark);
-  }
-
-  function positionMenu(menu, anchor) {
-    const margin = 8;
-    const rect = anchor.rect || { left: margin, top: margin, right: margin, bottom: margin };
-    const size = menu.getBoundingClientRect();
-
-    let left = rect.left;
-    let top = rect.bottom + margin;
-
-    if (anchor.position === 'under' && anchor.point) {
-      const tileRect = menu.querySelector('.cs-tile:not(:disabled)')?.getBoundingClientRect();
-      const offsetX = tileRect ? tileRect.left - size.left + tileRect.width / 2 : 0;
-      const offsetY = tileRect ? tileRect.top - size.top + tileRect.height / 2 : 0;
-      left = anchor.point.x - offsetX;
-      top = anchor.point.y - offsetY;
-    } else if (top + size.height > window.innerHeight - margin) {
-      top = rect.top - size.height - margin;
-    }
-
-    left = Math.min(Math.max(margin, left), Math.max(margin, window.innerWidth - size.width - margin));
-    top = Math.min(Math.max(margin, top), Math.max(margin, window.innerHeight - size.height - margin));
-
-    menu.style.left = `${Math.round(left)}px`;
-    menu.style.top = `${Math.round(top)}px`;
-  }
-
-  function appendActionTiles(tiles, actions, settings) {
-    for (const action of actions) {
-      tiles.appendChild(createActionTile(action, menuState.text, settings.showLabels));
-    }
-  }
-
-  function appendEngineTiles(tiles, engines, settings, iconSetters) {
-    for (const engine of engines) {
-      const { tile, setIcon } = createEngineTile(engine, settings.showLabels);
-      tiles.appendChild(tile);
-      iconSetters.set(engine.id, setIcon);
     }
   }
 
@@ -490,9 +188,10 @@
     tiles.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
 
     const actionsFirst = settings.actionsPosition !== 'after';
-    if (actionsFirst) appendActionTiles(tiles, actions, settings);
-    appendEngineTiles(tiles, engines, settings, iconSetters);
-    if (!actionsFirst) appendActionTiles(tiles, actions, settings);
+    const engineHandlers = { onClick: handleEngineClick, onAuxClick: handleEngineAuxClick };
+    if (actionsFirst) appendActionTiles(tiles, actions, text, settings.showLabels, handleActionClick);
+    appendEngineTiles(tiles, engines, settings.showLabels, iconSetters, engineHandlers);
+    if (!actionsFirst) appendActionTiles(tiles, actions, text, settings.showLabels, handleActionClick);
 
     if (tiles.childElementCount) menu.appendChild(tiles);
 
