@@ -47,7 +47,7 @@
   --tile-size: 50px;
 }
 .cs-menu.dark {
-  background: rgba(32, 33, 36, var(--cs-alpha, 1));
+  background: rgba(33, 33, 33, var(--cs-alpha, 1));
   color: #f1f3f4;
   border-color: rgba(255, 255, 255, calc(0.16 * var(--cs-alpha, 1)));
 }
@@ -81,16 +81,16 @@
   opacity: 1;
 }
 .cs-tile:hover {
-  background: #00000014;
+  background: #ebebeb;
   border-color: #00000029;
 }
 .cs-menu.kb .cs-tile:focus {
-  background: #00000014;
+  background: #ebebeb;
   border-color: #00000029;
 }
 .cs-menu.dark .cs-tile:hover,
 .cs-menu.dark.kb .cs-tile:focus {
-  background: #ffffff1f;
+  background: #3c3c3c;
   border-color: #ffffff33;
 }
 .cs-menu.has-labels .cs-tile {
