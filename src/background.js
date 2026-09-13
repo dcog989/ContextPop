@@ -142,6 +142,21 @@ async function handleMessage(message, sender) {
   }
 }
 
+const HOST_ORIGINS = Object.freeze(['http://*/*', 'https://*/*']);
+
+// Firefox keeps host grants per add-on and does not re-prompt on reload, so a
+// previously denied grant would silently suppress the content scripts forever.
+// The toolbar click is a user gesture, which lets us ask again.
+async function ensureHostAccess() {
+  if (!api.permissions?.request) return true;
+  try {
+    if (api.permissions.contains && (await api.permissions.contains({ origins: HOST_ORIGINS }))) return true;
+    return await api.permissions.request({ origins: HOST_ORIGINS });
+  } catch {
+    return false;
+  }
+}
+
 function seedStorageOnFailure() {
   seedStorage().catch((error) => console.error('ContextPop: seed failed', error));
 }
@@ -154,7 +169,8 @@ api.runtime.onInstalled.addListener(seedStorageOnFailure);
 // does not open until a second click.
 api.runtime.onStartup.addListener(seedStorageOnFailure);
 
-api.action.onClicked.addListener(() => {
+api.action.onClicked.addListener(async () => {
+  await ensureHostAccess();
   api.runtime.openOptionsPage();
 });
 
