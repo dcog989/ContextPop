@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.6.1 - 2026-09-13
+
+#### Bug Fixes
+
+- (1d9a1bb) open options before permission check and revert host-access refactor - dcog989
+
+- - -
+
 ## v0.6.0 - 2026-09-13
 
 #### Features
