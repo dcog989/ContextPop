@@ -206,8 +206,10 @@ api.runtime.onInstalled.addListener((/** @type {any} */ details) => {
 api.runtime.onStartup.addListener(seedStorageOnFailure);
 
 api.action.onClicked.addListener(async () => {
-  await requestHostAccess();
+  // Open settings before awaiting anything: opening must not wait on the permission
+  // API, which can swallow the click on a cold event-page start.
   api.runtime.openOptionsPage();
+  await requestHostAccess();
 });
 
 api.runtime.onMessage.addListener(

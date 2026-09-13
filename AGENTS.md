@@ -16,7 +16,7 @@
 - `src/menuLayout.js` — theme class, on-screen positioning, animation origin, roving focus (`__contextPopMenuLayout`).
 - `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
 - `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
-- `src/storage.js` — shared storage schema and helpers (`api`, engines, settings, onboarding flag, host-access request and non-prompting check).
+- `src/storage.js` — shared storage schema and helpers (`api`, engines, settings, onboarding flag, host-access request).
 - `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
 - `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`); owns `HTTP_URL_PATTERN` (also used by the background).
 - `src/iconParse.js` — favicon candidate and web-app-manifest discovery from fetched markup.
