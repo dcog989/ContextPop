@@ -194,8 +194,7 @@ function seedStorageOnFailure() {
 
 api.runtime.onInstalled.addListener((/** @type {any} */ details) => {
   seedStorageOnFailure();
-  // Send first-time installs to the options page so onboarding and the host-access
-  // prompt are discoverable; `permissions.request` itself must run from a click.
+  // Send first-time installs to the options page so the onboarding callout is seen.
   if (details?.reason === 'install') api.runtime.openOptionsPage();
 });
 
@@ -205,11 +204,12 @@ api.runtime.onInstalled.addListener((/** @type {any} */ details) => {
 // does not open until a second click.
 api.runtime.onStartup.addListener(seedStorageOnFailure);
 
-api.action.onClicked.addListener(async () => {
-  // Open settings before awaiting anything: opening must not wait on the permission
-  // API, which can swallow the click on a cold event-page start.
+// Keep this handler synchronous: an awaited permission/storage call before or after
+// openOptionsPage() loses the click on a waking event page, so the first press is
+// dropped. Host access is granted at install; the options page requests it from a click
+// when the user refreshes icons.
+api.action.onClicked.addListener(() => {
   api.runtime.openOptionsPage();
-  await requestHostAccess();
 });
 
 api.runtime.onMessage.addListener(
