@@ -5,7 +5,7 @@
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "homepage_url": "https://github.com/dcog989/ContextPop",
-  "minimum_chrome_version": "109",
+  "minimum_chrome_version": "119",
   "background": {
     "service_worker": "background.js"
   },

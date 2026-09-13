@@ -12,13 +12,11 @@
   max-width: min(92vw, 40em);
   max-height: 70vh;
   overflow: auto;
-  background: #ffffff;
+  background: rgba(255, 255, 255, var(--cs-alpha, 1));
   color: #1a1a1a;
-  border: 1px solid #00000029;
+  border: 1px solid rgba(0, 0, 0, calc(0.16 * var(--cs-alpha, 1)));
   border-radius: 0.71em;
-  box-shadow: 0 10px 32px #00000047;
-  opacity: var(--cs-alpha, 1);
-  transition: opacity 120ms ease;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, calc(0.28 * var(--cs-alpha, 1)));
   pointer-events: auto;
   font-family: var(--font-family);
   font-size: 14px;
@@ -49,12 +47,9 @@
   --tile-size: 50px;
 }
 .cs-menu.dark {
-  background: #202124;
+  background: rgba(32, 33, 36, var(--cs-alpha, 1));
   color: #f1f3f4;
-  border-color: #ffffff29;
-}
-.cs-menu:hover {
-  opacity: 1;
+  border-color: rgba(255, 255, 255, calc(0.16 * var(--cs-alpha, 1)));
 }
 .cs-menu.accent-border {
   border-color: var(--accent);
@@ -78,6 +73,12 @@
   color: inherit;
   cursor: pointer;
   outline: none;
+  opacity: var(--cs-alpha, 1);
+  transition: opacity 120ms ease;
+}
+.cs-tile:not(:disabled):hover,
+.cs-menu.kb .cs-tile:not(:disabled):focus {
+  opacity: 1;
 }
 .cs-tile:hover {
   background: #00000014;
@@ -99,7 +100,7 @@
   padding: 0.43em 0.57em;
 }
 .cs-tile:disabled {
-  opacity: 0.35;
+  opacity: calc(0.35 * var(--cs-alpha, 1));
   cursor: default;
 }
 .cs-tile:disabled:hover {
@@ -161,7 +162,7 @@
 .cs-empty {
   padding: 0.67em 1em;
   font-size: 0.86em;
-  opacity: 0.72;
+  opacity: calc(0.72 * var(--cs-alpha, 1));
 }
 .cs-menu.cs-anim-in {
   animation: cs-expand 140ms ease-out;
