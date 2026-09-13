@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.6.2 - 2026-09-13
+
+#### Bug Fixes
+
+- (6ab56c9) make action click handler synchronous to restore one-click options - dcog989
+
+- - -
+
 ## v0.6.1 - 2026-09-13
 
 #### Bug Fixes
