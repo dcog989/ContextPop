@@ -4,11 +4,19 @@
 (() => {
   if (globalThis.__contextPopMenuLayout) return;
 
+  /**
+   * @param {HTMLElement} menu
+   * @param {string} theme
+   */
   function applyTheme(menu, theme) {
     const dark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     menu.classList.toggle('dark', dark);
   }
 
+  /**
+   * @param {HTMLElement} menu
+   * @param {MenuAnchor} anchor
+   */
   function positionMenu(menu, anchor) {
     const margin = 8;
     const rect = anchor.rect || { left: margin, top: margin, right: margin, bottom: margin };
@@ -34,6 +42,10 @@
     menu.style.top = `${Math.round(top)}px`;
   }
 
+  /**
+   * @param {HTMLElement} menu
+   * @param {MenuAnchor} anchor
+   */
   function applyAnimationOrigin(menu, anchor) {
     const box = menu.getBoundingClientRect();
     const rect = anchor.rect;
@@ -46,24 +58,37 @@
     menu.style.transformOrigin = `${Math.round(x)}px ${Math.round(y)}px`;
   }
 
+  /**
+   * @param {HTMLElement} tile
+   */
   function focusTile(tile) {
-    const tiles = tile.parentNode ? [...tile.parentNode.querySelectorAll('.cs-tile')] : [tile];
+    const tiles = /** @type {HTMLElement[]} */ (
+      tile.parentNode ? [...tile.parentNode.querySelectorAll('.cs-tile')] : [tile]
+    );
     for (const item of tiles) item.tabIndex = item === tile ? 0 : -1;
     tile.focus({ preventScroll: true });
   }
 
+  /**
+   * @param {HTMLElement} menu
+   * @param {number} delta
+   */
   function moveFocus(menu, delta) {
-    const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
+    const tiles = /** @type {HTMLElement[]} */ ([...menu.querySelectorAll('.cs-tile:not(:disabled)')]);
     if (!tiles.length) return;
-    const current = tiles.indexOf(menu.querySelector('.cs-tile:focus'));
+    const current = tiles.indexOf(/** @type {HTMLElement} */ (menu.querySelector('.cs-tile:focus')));
     let next = current + delta;
     if (next < 0) next = tiles.length - 1;
     if (next >= tiles.length) next = 0;
     focusTile(tiles[next]);
   }
 
+  /**
+   * @param {HTMLElement} menu
+   * @param {boolean} last
+   */
   function focusEdge(menu, last) {
-    const tiles = [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
+    const tiles = /** @type {HTMLElement[]} */ ([...menu.querySelectorAll('.cs-tile:not(:disabled)')]);
     if (tiles.length) focusTile(last ? tiles[tiles.length - 1] : tiles[0]);
   }
 

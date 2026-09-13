@@ -11,6 +11,7 @@
   const { openMenu, closeMenu, isMenuOpen, menuState } = menuApi;
   const api = globalThis.browser ?? globalThis.chrome;
 
+  /** @type {{ settings: Settings | null, engines: Engine[], selection: SelectionInfo | null, suppressMouseUp: boolean }} */
   const contentState = {
     settings: null,
     engines: [],
@@ -18,11 +19,17 @@
     suppressMouseUp: false,
   };
 
+  /**
+   * @param {any} message
+   * @returns {Promise<any>}
+   */
   function request(message) {
-    return api.runtime.sendMessage(message).then((response) => {
-      if (response?.error) throw new Error(response.error);
-      return response?.data;
-    });
+    return api.runtime.sendMessage(message).then(
+      /** @param {any} response */ (response) => {
+        if (response?.error) throw new Error(response.error);
+        return response?.data;
+      },
+    );
   }
 
   async function loadConfig() {
@@ -38,6 +45,10 @@
     }
   }
 
+  /**
+   * @param {any} element
+   * @returns {boolean}
+   */
   function isEditableElement(element) {
     if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
     return (
@@ -48,21 +59,34 @@
     );
   }
 
+  /**
+   * @param {Node} node
+   * @returns {HTMLAnchorElement | null}
+   */
   function findAnchor(node) {
-    let element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+    let element = /** @type {Element | null} */ (node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement);
     while (element && element !== document.documentElement) {
-      if (element.tagName === 'A' && element.href) return element;
+      if (element.tagName === 'A' && /** @type {HTMLAnchorElement} */ (element).href) {
+        return /** @type {HTMLAnchorElement} */ (element);
+      }
       element = element.parentElement;
     }
     return null;
   }
 
+  /**
+   * @param {Range} range
+   * @returns {string}
+   */
   function serializeSelection(range) {
     const container = document.createElement('div');
     container.appendChild(range.cloneContents());
     return container.innerHTML;
   }
 
+  /**
+   * @returns {SelectionInfo | null}
+   */
   function readSelection() {
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
@@ -83,16 +107,23 @@
       rect,
       html: serializeSelection(range),
       href: anchorHref || (isHttpUrl(text) ? text : ''),
-      linkText: anchor ? anchor.textContent.trim() : '',
+      linkText: anchor ? (anchor.textContent ?? '').trim() : '',
     };
   }
 
+  /**
+   * @param {SelectionInfo} info
+   * @returns {string}
+   */
   function classify(info) {
     if (info.href) return 'link';
     if (/^\S+$/.test(info.text)) return 'word';
     return 'text';
   }
 
+  /**
+   * @param {string} reason
+   */
   function handleMenuClose(reason) {
     if (reason === 'escape' || reason === 'replace') return;
     contentState.selection = null;
@@ -100,12 +131,18 @@
     if (selection) selection.removeAllRanges();
   }
 
+  /**
+   * @returns {(SelectionInfo & { context: string }) | null}
+   */
   function buildActivation() {
     const info = readSelection();
     if (!info) return null;
     return { ...info, context: classify(info) };
   }
 
+  /**
+   * @param {string} text
+   */
   function fallbackCopy(text) {
     const container = document.body || document.documentElement;
     if (!container) throw new Error('Copy failed');
@@ -129,6 +166,10 @@
     if (!copied) throw new Error('Copy failed');
   }
 
+  /**
+   * @param {string} text
+   * @returns {Promise<void>}
+   */
   async function writeClipboardText(text) {
     try {
       await navigator.clipboard.writeText(text);
@@ -137,14 +178,23 @@
     }
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async function copyPlain() {
     await writeClipboardText((contentState.selection?.text || '').replace(/\s+/g, ' ').trim());
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async function copyLink() {
     await writeClipboardText(contentState.selection?.href || '');
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async function copyRich() {
     const plain = contentState.selection?.text || '';
     const html = contentState.selection?.html?.trim() ? contentState.selection.html : plain;
@@ -164,6 +214,10 @@
     await copyPlain();
   }
 
+  /**
+   * @param {MouseEvent} event
+   * @returns {boolean}
+   */
   function triggerMatches(event) {
     switch (contentState.settings?.trigger ?? 'mouseup') {
       case 'alt':
@@ -177,6 +231,10 @@
     }
   }
 
+  /**
+   * @param {SelectionInfo & { context: string }} info
+   * @param {MouseEvent | null} event
+   */
   function showMenu(info, event) {
     contentState.selection = info;
     openMenu({
@@ -194,6 +252,9 @@
     });
   }
 
+  /**
+   * @param {MouseEvent} event
+   */
   function handleMouseUp(event) {
     if (event.button !== 0) return;
 
@@ -204,15 +265,18 @@
 
     if (isMenuOpen()) return;
     if (!triggerMatches(event)) return;
-    if (event.composedPath().includes(menuState.host)) return;
+    if (menuState.host && event.composedPath().includes(menuState.host)) return;
     if (isEditableElement(event.target)) return;
 
     const info = buildActivation();
     if (info) showMenu(info, event);
   }
 
+  /**
+   * @param {MouseEvent} event
+   */
   function handleMouseDown(event) {
-    if (isMenuOpen() && !event.composedPath().includes(menuState.host)) {
+    if (isMenuOpen() && !(menuState.host && event.composedPath().includes(menuState.host))) {
       closeMenu({ reason: 'outside' });
       contentState.suppressMouseUp = true;
     }
@@ -223,7 +287,7 @@
     document.addEventListener('mousedown', handleMouseDown, true);
     document.addEventListener(
       'keydown',
-      (event) => {
+      /** @param {KeyboardEvent} event */ (event) => {
         if (event.key === 'Escape') closeMenu({ restoreFocus: true, reason: 'escape' });
       },
       true,
@@ -232,7 +296,7 @@
     window.addEventListener('blur', () => closeMenu({ reason: 'blur' }));
 
     loadConfig();
-    api.storage.onChanged.addListener((changes, area) => {
+    api.storage.onChanged.addListener((/** @type {any} */ changes, /** @type {string} */ area) => {
       if (area !== 'local') return;
       if (changes[STORAGE_KEYS.settings] || changes[STORAGE_KEYS.engines]) loadConfig();
     });

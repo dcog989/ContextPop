@@ -16,6 +16,10 @@ var MONOCHROME_SVG_COLORS = new Set([
   'grey',
 ]);
 
+/**
+ * @param {string} value
+ * @returns {boolean}
+ */
 function svgColorIsMonochrome(value) {
   const color = String(value).trim().toLowerCase();
   if (MONOCHROME_SVG_COLORS.has(color)) return true;
@@ -46,6 +50,10 @@ function svgColorIsMonochrome(value) {
   return saturation < 0.25 && (lightness < 0.3 || lightness > 0.7);
 }
 
+/**
+ * @param {string} text
+ * @returns {boolean}
+ */
 function isMonochromeSvgText(text) {
   for (const match of text.matchAll(SVG_COLOR_PATTERN)) {
     if (!svgColorIsMonochrome(match[1])) return false;
@@ -53,6 +61,10 @@ function isMonochromeSvgText(text) {
   return true;
 }
 
+/**
+ * @param {string} dataUrl
+ * @returns {boolean}
+ */
 function svgDataUrlIsMonochrome(dataUrl) {
   if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/svg+xml')) return false;
   try {

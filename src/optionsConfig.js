@@ -1,6 +1,10 @@
 // Configuration transfer: serialize engines/settings to a JSON download and read an
 // exported file back into `state`, then re-render the affected views.
 
+/**
+ * @param {string} filename
+ * @param {any} data
+ */
 function downloadJson(filename, data) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -11,6 +15,10 @@ function downloadJson(filename, data) {
   URL.revokeObjectURL(url);
 }
 
+/**
+ * @param {File} file
+ * @param {(parsed: any, incoming: any[]) => void} apply
+ */
 function readConfigFile(file, apply) {
   const reader = new FileReader();
   reader.onload = () => {
@@ -18,7 +26,7 @@ function readConfigFile(file, apply) {
     try {
       parsed = JSON.parse(String(reader.result));
     } catch (error) {
-      setStatus(msg('statusImportFailed', error.message), true);
+      setStatus(msg('statusImportFailed', errorMessage(error)), true);
       return;
     }
     const incoming = Array.isArray(parsed) ? parsed : parsed.engines;
@@ -32,6 +40,9 @@ function readConfigFile(file, apply) {
   reader.readAsText(file);
 }
 
+/**
+ * @param {File} file
+ */
 function importConfig(file) {
   readConfigFile(file, (parsed, incoming) => {
     state.engines = incoming

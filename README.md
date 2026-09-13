@@ -52,11 +52,12 @@ Outputs `dist/contextpop-firefox.zip` and `dist/contextpop-chrome.zip`. The scri
 
 ## Development
 
-No install and no build. Dev tooling is the system `biome`, `lefthook`, and `cog` binaries:
+No install and no build. Dev tooling is the system `biome`, `lefthook`, `cog`, and `tsc` binaries:
 
 ```sh
 biome check          # lint + format check
 biome check --write  # apply fixes
+tsc --noEmit -p jsconfig.json  # type-check the JS
 lefthook install     # enable git hooks once per clone
 cog bump --auto      # version + changelog; syncs both manifests
 ```

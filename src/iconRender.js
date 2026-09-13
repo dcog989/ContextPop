@@ -1,6 +1,10 @@
 // DOM rendering of engine and action icons. Requires a document, so this module is loaded
 // by the content scripts and the options page but not by the background service worker.
 
+/**
+ * @param {string | null | undefined} markup
+ * @returns {Node | null}
+ */
 function createSvgIcon(markup) {
   if (typeof markup !== 'string' || markup.length === 0) return null;
   const parsed = new DOMParser().parseFromString(markup, 'image/svg+xml');
@@ -9,6 +13,10 @@ function createSvgIcon(markup) {
   return document.importNode(root, true);
 }
 
+/**
+ * @param {{ prefix: string, label: string }} options
+ * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
+ */
 function createFaviconIcon({ prefix, label }) {
   const wrapper = document.createElement('span');
   const mask = document.createElement('span');
@@ -26,6 +34,9 @@ function createFaviconIcon({ prefix, label }) {
     fallback.hidden = false;
   });
 
+  /**
+   * @param {string | null | undefined} source
+   */
   const setSource = (source) => {
     if (!source || !wrapper.isConnected) return;
     if (svgDataUrlIsMonochrome(source)) {
@@ -45,9 +56,15 @@ function createFaviconIcon({ prefix, label }) {
   return { element: wrapper, setSource };
 }
 
+/**
+ * @param {Map<string, (source: string | null | undefined) => void>} iconSetters
+ * @param {Engine[]} engines
+ * @returns {Promise<void>}
+ */
 async function applyEngineIcons(iconSetters, engines) {
   if (!engines.length) return;
 
+  /** @type {Record<string, string>} */
   let icons = {};
   try {
     const response = await api.runtime.sendMessage({ type: 'getIcons' });

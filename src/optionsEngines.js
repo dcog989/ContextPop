@@ -1,8 +1,13 @@
 // Search-engine list view: rendering, add/delete/reorder, import from the browser, and
 // icon refresh. Mutates `state.engines` and schedules saves through markDirty().
 
+/** @type {Map<string, (source: string | null | undefined) => void>} */
 let iconSetters = new Map();
 
+/**
+ * @param {Engine} engine
+ * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
+ */
 function createEngineIcon(engine) {
   const { element, setSource } = createFaviconIcon({
     prefix: 'engine',
@@ -12,12 +17,17 @@ function createEngineIcon(engine) {
   return { element, setSource };
 }
 
+/**
+ * @param {Engine} engine
+ * @param {number} index
+ * @returns {{ fragment: DocumentFragment, setIcon: (source: string | null | undefined) => void }}
+ */
 function createRow(engine, index) {
-  const fragment = elements.rowTemplate.content.cloneNode(true);
-  const row = fragment.querySelector('.engine-row');
+  const fragment = /** @type {DocumentFragment} */ (elements.rowTemplate.content.cloneNode(true));
+  const row = /** @type {HTMLElement} */ (fragment.querySelector('.engine-row'));
   row.dataset.rowId = engine.id;
 
-  const enabled = fragment.querySelector('.engine-enabled');
+  const enabled = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-enabled'));
   const syncDisabled = () => row.classList.toggle('is-disabled', !enabled.checked);
   enabled.checked = engine.enabled !== false;
   enabled.addEventListener('change', () => {
@@ -28,16 +38,16 @@ function createRow(engine, index) {
   syncDisabled();
 
   const icon = createEngineIcon(engine);
-  fragment.querySelector('.engine-icon').replaceWith(icon.element);
+  /** @type {Element} */ (fragment.querySelector('.engine-icon')).replaceWith(icon.element);
 
-  const name = fragment.querySelector('.engine-name');
+  const name = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-name'));
   name.value = engine.name;
   name.addEventListener('input', () => {
     engine.name = name.value;
     markDirty();
   });
 
-  const template = fragment.querySelector('.engine-template');
+  const template = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-template'));
   template.value = engine.template;
   if (engine.source === 'browser') {
     template.disabled = true;
@@ -49,16 +59,20 @@ function createRow(engine, index) {
     markDirty();
   });
 
-  const iconUrl = fragment.querySelector('.engine-icon-url');
+  const iconUrl = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-icon-url'));
   iconUrl.value = engine.icon || '';
   iconUrl.addEventListener('input', () => {
     engine.icon = iconUrl.value.trim();
     markDirty();
   });
 
-  fragment.querySelector('.move-up').addEventListener('click', () => moveEngine(index, -1));
-  fragment.querySelector('.move-down').addEventListener('click', () => moveEngine(index, 1));
-  fragment.querySelector('.delete').addEventListener('click', () => deleteEngine(index));
+  /** @type {HTMLElement} */ (fragment.querySelector('.move-up')).addEventListener('click', () =>
+    moveEngine(index, -1),
+  );
+  /** @type {HTMLElement} */ (fragment.querySelector('.move-down')).addEventListener('click', () =>
+    moveEngine(index, 1),
+  );
+  /** @type {HTMLElement} */ (fragment.querySelector('.delete')).addEventListener('click', () => deleteEngine(index));
 
   return { fragment, setIcon: icon.setSource };
 }
@@ -74,6 +88,10 @@ function renderEngines() {
   applyEngineIcons(iconSetters, state.engines);
 }
 
+/**
+ * @param {number} index
+ * @param {number} offset
+ */
 function moveEngine(index, offset) {
   const target = index + offset;
   if (target < 0 || target >= state.engines.length) return;
@@ -85,14 +103,20 @@ function moveEngine(index, offset) {
   markDirty();
 }
 
+/**
+ * @param {number} index
+ */
 function removeEngine(index) {
   state.engines.splice(index, 1);
   renderEngines();
   markDirty();
 }
 
+/**
+ * @param {number} index
+ */
 function deleteEngine(index) {
-  const row = elements.list.children[index];
+  const row = /** @type {HTMLElement | undefined} */ (elements.list.children[index]);
   if (!row || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     removeEngine(index);
     return;
@@ -128,15 +152,18 @@ function restoreDefaults() {
 async function importBrowserEngines() {
   if (typeof api.search?.get !== 'function') return;
 
+  /** @type {any[]} */
   let installed = [];
   try {
     installed = await api.search.get();
   } catch (error) {
-    setStatus(msg('statusImportFailed', error.message), true);
+    setStatus(msg('statusImportFailed', errorMessage(error)), true);
     return;
   }
 
-  const existing = new Set(state.engines.map((engine) => engine.browserEngineName).filter(Boolean));
+  const existing = new Set(
+    state.engines.map((engine) => engine.browserEngineName).filter((name) => typeof name === 'string'),
+  );
   let added = 0;
   for (const item of installed) {
     if (!item?.name || existing.has(item.name)) continue;
@@ -182,7 +209,7 @@ async function handleRefreshIcons() {
     setStatus(msg('statusIconsRefreshed'));
     clearStatusSoon();
   } catch (error) {
-    setStatus(msg('statusRefreshFailed', error.message), true);
+    setStatus(msg('statusRefreshFailed', errorMessage(error)), true);
   } finally {
     elements.refreshIcons.disabled = false;
     elements.refreshIcons.classList.remove('is-loading');

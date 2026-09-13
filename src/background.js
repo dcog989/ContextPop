@@ -15,6 +15,7 @@ const OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'ne
 const POPUP_WIDTH = 520;
 const POPUP_HEIGHT = 720;
 
+/** @type {Record<string, string>} */
 const DISPOSITIONS = Object.freeze({
   newTab: 'NEW_TAB',
   currentTab: 'CURRENT_TAB',
@@ -28,16 +29,31 @@ async function seedStorage() {
   if (!result[STORAGE_KEYS.settings]) await saveSettings(defaultSettings());
 }
 
+/**
+ * @param {any} method
+ * @param {any} sender
+ * @returns {string}
+ */
 function resolveOpenMethod(method, sender) {
   let resolved = OPEN_METHODS.includes(method) ? method : DEFAULT_SETTINGS.openMethod;
   if (resolved === 'currentTab' && sender?.tab?.id == null) resolved = 'newTab';
   return resolved;
 }
 
+/**
+ * @param {string} method
+ * @returns {string}
+ */
 function dispositionFor(method) {
   return DISPOSITIONS[method] ?? DISPOSITIONS.newTab;
 }
 
+/**
+ * @param {string} url
+ * @param {any} method
+ * @param {any} sender
+ * @returns {Promise<void>}
+ */
 async function openUrl(url, method, sender) {
   const openMethod = resolveOpenMethod(method, sender);
   const openerTabId = sender?.tab?.id;
@@ -58,6 +74,13 @@ async function openUrl(url, method, sender) {
   }
 }
 
+/**
+ * @param {Engine} engine
+ * @param {string} query
+ * @param {string} openMethod
+ * @param {any} sender
+ * @returns {Promise<void>}
+ */
 async function openBrowserSearch(engine, query, openMethod, sender) {
   if (openMethod === 'backgroundTab') {
     // The search API has no unfocused disposition, so open a background tab
@@ -70,11 +93,20 @@ async function openBrowserSearch(engine, query, openMethod, sender) {
   await api.search.search({ engine: engine.browserEngineName, query, disposition: dispositionFor(openMethod) });
 }
 
+/**
+ * @param {string} value
+ * @param {string} label
+ */
 function assertTemplate(value, label) {
   if (!value.includes('{searchTerms}')) throw new Error(`${label} template is missing {searchTerms}`);
   if (!HTTP_URL_PATTERN.test(value)) throw new Error(`${label} template must use http or https`);
 }
 
+/**
+ * @param {{ engine: Engine, terms: any, method: any }} message
+ * @param {any} sender
+ * @returns {Promise<void>}
+ */
 async function openSearch({ engine, terms, method }, sender) {
   const query = String(terms ?? '');
 
@@ -89,6 +121,10 @@ async function openSearch({ engine, terms, method }, sender) {
   await openUrl(url, method, sender);
 }
 
+/**
+ * @param {{ template: any, terms: any }} message
+ * @returns {Promise<void>}
+ */
 async function openReference({ template, terms }) {
   const value = String(template ?? '');
   assertTemplate(value, 'Provider');
@@ -100,12 +136,22 @@ async function openReference({ template, terms }) {
   });
 }
 
+/**
+ * @param {{ url: any, method: any }} message
+ * @param {any} sender
+ * @returns {Promise<void>}
+ */
 async function openLink({ url, method }, sender) {
   const value = String(url ?? '');
   if (!isHttpUrl(value)) throw new Error('Link must use http or https');
   await openUrl(value, method, sender);
 }
 
+/**
+ * @param {any} message
+ * @param {any} sender
+ * @returns {Promise<any>}
+ */
 async function handleMessage(message, sender) {
   switch (message?.type) {
     case 'getEngines':
@@ -159,9 +205,11 @@ api.action.onClicked.addListener(async () => {
   api.runtime.openOptionsPage();
 });
 
-api.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  handleMessage(message, sender)
-    .then((data) => sendResponse({ data }))
-    .catch((error) => sendResponse({ error: error.message }));
-  return true;
-});
+api.runtime.onMessage.addListener(
+  (/** @type {any} */ message, /** @type {any} */ sender, /** @type {(response?: any) => void} */ sendResponse) => {
+    handleMessage(message, sender)
+      .then((data) => sendResponse({ data }))
+      .catch((error) => sendResponse({ error: errorMessage(error) }));
+    return true;
+  },
+);

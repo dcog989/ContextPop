@@ -89,6 +89,9 @@ var DEFAULT_SETTINGS = Object.freeze({
   accentBorder: false,
 });
 
+/**
+ * @returns {Settings}
+ */
 function defaultSettings() {
   return {
     ...DEFAULT_SETTINGS,
@@ -110,6 +113,10 @@ function generateId() {
   return `engine-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/**
+ * @param {any} engine
+ * @returns {Engine}
+ */
 function normalizeEngine(engine) {
   const source = ENGINE_SOURCES.includes(engine?.source) ? engine.source : 'template';
   return {
@@ -123,6 +130,11 @@ function normalizeEngine(engine) {
   };
 }
 
+/**
+ * @param {any} stored
+ * @param {Record<string, BuiltinActionValue>} base
+ * @returns {Record<string, BuiltinActionValue>}
+ */
 function normalizeBuiltinActions(stored, base) {
   const source = Array.isArray(stored)
     ? Object.fromEntries(stored.map((item) => [item?.id, item]))
@@ -134,6 +146,7 @@ function normalizeBuiltinActions(stored, base) {
     BUILTIN_ACTION_DEFS.map((def) => {
       const fallback = base[def.id];
       const value = source[def.id] || {};
+      /** @type {BuiltinActionValue} */
       const entry = {
         enabled: value.enabled !== false,
       };
@@ -146,6 +159,10 @@ function normalizeBuiltinActions(stored, base) {
   );
 }
 
+/**
+ * @param {any} order
+ * @returns {string[]}
+ */
 function normalizeActionOrder(order) {
   const ids = BUILTIN_ACTION_DEFS.map((def) => def.id);
   const seen = new Set();
@@ -162,6 +179,10 @@ function normalizeActionOrder(order) {
   return result;
 }
 
+/**
+ * @param {any} stored
+ * @returns {Settings}
+ */
 function normalizeSettings(stored) {
   const base = defaultSettings();
   const input = stored && typeof stored === 'object' ? stored : {};
@@ -183,12 +204,16 @@ function normalizeSettings(stored) {
   return settings;
 }
 
+/**
+ * @param {Settings} settings
+ * @returns {ActionItem[]}
+ */
 function builtinActionList(settings) {
   const normalized = normalizeSettings(settings || {});
   const byId = new Map(BUILTIN_ACTION_DEFS.map((def) => [def.id, def]));
   return normalized.actionOrder
     .map((id) => byId.get(id))
-    .filter(Boolean)
+    .filter((def) => def !== undefined)
     .map((def) => {
       const value = normalized.builtinActions[def.id];
       return {
@@ -201,19 +226,45 @@ function builtinActionList(settings) {
     });
 }
 
+/**
+ * @param {any} item
+ * @param {string} context
+ * @returns {boolean}
+ */
 function matchesContext(item, context) {
   const contexts = Array.isArray(item?.contexts) ? item.contexts : CONTEXTS;
   return contexts.includes(context);
 }
 
+/**
+ * @param {unknown} error
+ * @returns {string}
+ */
+function errorMessage(error) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * @param {string} value
+ * @returns {string}
+ */
 function capitalize(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+/**
+ * @param {string} template
+ * @param {string} terms
+ * @returns {string}
+ */
 function buildSearchUrl(template, terms) {
   return String(template).replace(/\{searchTerms\}/g, encodeURIComponent(terms));
 }
 
+/**
+ * @param {string} value
+ * @returns {boolean}
+ */
 function isHttpUrl(value) {
   try {
     const url = new URL(value);
@@ -223,14 +274,23 @@ function isHttpUrl(value) {
   }
 }
 
+/**
+ * @returns {Engine[]}
+ */
 function defaultEngineList() {
   return DEFAULT_ENGINES.map((engine) => normalizeEngine(engine));
 }
 
+/**
+ * @returns {boolean}
+ */
 function supportsBrowserEngineSearch() {
   return typeof api.search?.search === 'function';
 }
 
+/**
+ * @returns {Promise<Engine[]>}
+ */
 async function loadEngines() {
   const result = await api.storage.local.get(STORAGE_KEYS.engines);
   const stored = result[STORAGE_KEYS.engines];
@@ -243,15 +303,24 @@ async function loadEngines() {
   return stored.map(normalizeEngine).filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
 }
 
+/**
+ * @param {Engine[]} engines
+ */
 async function saveEngines(engines) {
   await api.storage.local.set({ [STORAGE_KEYS.engines]: engines });
 }
 
+/**
+ * @returns {Promise<Settings>}
+ */
 async function loadSettings() {
   const result = await api.storage.local.get(STORAGE_KEYS.settings);
   return normalizeSettings(result[STORAGE_KEYS.settings]);
 }
 
+/**
+ * @param {Settings} settings
+ */
 async function saveSettings(settings) {
   await api.storage.local.set({ [STORAGE_KEYS.settings]: settings });
 }

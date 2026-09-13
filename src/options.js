@@ -3,29 +3,37 @@
 // run, which happens after this file has initialized it.
 
 const elements = {
-  actionList: document.getElementById('action-list'),
-  actionRowTemplate: document.getElementById('action-row-template'),
-  list: document.getElementById('engine-list'),
-  status: document.getElementById('status'),
-  importConfigFile: document.getElementById('import-config-file'),
-  importBrowser: document.getElementById('import-browser-engines'),
-  browserNote: document.getElementById('browser-import-note'),
-  rowTemplate: document.getElementById('engine-row-template'),
-  actionsPosition: document.getElementById('setting-actions-position'),
-  trigger: document.getElementById('setting-trigger'),
-  openMethod: document.getElementById('setting-open-method'),
-  columns: document.getElementById('setting-columns'),
-  theme: document.getElementById('setting-theme'),
-  labels: document.getElementById('setting-labels'),
-  accentBorder: document.getElementById('setting-accent-border'),
-  refreshIcons: document.getElementById('refresh-icons'),
-  popupSize: document.getElementById('setting-popup-size'),
-  popupPosition: document.getElementById('setting-popup-position'),
-  popupAnimation: document.getElementById('setting-popup-animation'),
-  popupOpacity: document.getElementById('setting-popup-opacity'),
-  popupOpacityValue: document.getElementById('setting-popup-opacity-value'),
-  version: document.getElementById('version'),
+  actionList: /** @type {HTMLElement} */ (document.getElementById('action-list')),
+  actionRowTemplate: /** @type {HTMLTemplateElement} */ (document.getElementById('action-row-template')),
+  list: /** @type {HTMLElement} */ (document.getElementById('engine-list')),
+  status: /** @type {HTMLElement} */ (document.getElementById('status')),
+  importConfigFile: /** @type {HTMLInputElement} */ (document.getElementById('import-config-file')),
+  importBrowser: /** @type {HTMLButtonElement} */ (document.getElementById('import-browser-engines')),
+  browserNote: /** @type {HTMLElement} */ (document.getElementById('browser-import-note')),
+  rowTemplate: /** @type {HTMLTemplateElement} */ (document.getElementById('engine-row-template')),
+  actionsPosition: /** @type {HTMLSelectElement} */ (document.getElementById('setting-actions-position')),
+  trigger: /** @type {HTMLSelectElement} */ (document.getElementById('setting-trigger')),
+  openMethod: /** @type {HTMLSelectElement} */ (document.getElementById('setting-open-method')),
+  columns: /** @type {HTMLInputElement} */ (document.getElementById('setting-columns')),
+  theme: /** @type {HTMLSelectElement} */ (document.getElementById('setting-theme')),
+  labels: /** @type {HTMLInputElement} */ (document.getElementById('setting-labels')),
+  accentBorder: /** @type {HTMLInputElement} */ (document.getElementById('setting-accent-border')),
+  refreshIcons: /** @type {HTMLButtonElement} */ (document.getElementById('refresh-icons')),
+  popupSize: /** @type {HTMLSelectElement} */ (document.getElementById('setting-popup-size')),
+  popupPosition: /** @type {HTMLSelectElement} */ (document.getElementById('setting-popup-position')),
+  popupAnimation: /** @type {HTMLInputElement} */ (document.getElementById('setting-popup-animation')),
+  popupOpacity: /** @type {HTMLInputElement} */ (document.getElementById('setting-popup-opacity')),
+  popupOpacityValue: /** @type {HTMLElement} */ (document.getElementById('setting-popup-opacity-value')),
+  version: /** @type {HTMLElement} */ (document.getElementById('version')),
 };
+
+/**
+ * @param {string} id
+ * @returns {HTMLElement}
+ */
+function byId(id) {
+  return /** @type {HTMLElement} */ (document.getElementById(id));
+}
 
 function configureBrowserImport() {
   const available = typeof api.search?.get === 'function';
@@ -34,15 +42,15 @@ function configureBrowserImport() {
 }
 
 function bindActions() {
-  document.getElementById('add-engine').addEventListener('click', addEngine);
-  document.getElementById('restore-defaults').addEventListener('click', restoreDefaults);
-  document.getElementById('restore-action-defaults').addEventListener('click', restoreActionDefaults);
+  byId('add-engine').addEventListener('click', addEngine);
+  byId('restore-defaults').addEventListener('click', restoreDefaults);
+  byId('restore-action-defaults').addEventListener('click', restoreActionDefaults);
   elements.refreshIcons.addEventListener('click', handleRefreshIcons);
   elements.importBrowser.addEventListener('click', importBrowserEngines);
-  document.getElementById('export-config').addEventListener('click', exportConfig);
-  document.getElementById('import-config').addEventListener('click', () => elements.importConfigFile.click());
+  byId('export-config').addEventListener('click', exportConfig);
+  byId('import-config').addEventListener('click', () => elements.importConfigFile.click());
   elements.importConfigFile.addEventListener('change', () => {
-    const [file] = elements.importConfigFile.files;
+    const file = elements.importConfigFile.files?.[0];
     elements.importConfigFile.value = '';
     if (file) importConfig(file);
   });

@@ -13,7 +13,12 @@ var ICON_RELATIONS = new Set(['icon', 'apple-touch-icon', 'apple-touch-icon-prec
 var LINK_TAG_PATTERN = /<link\b[^>]*>/gi;
 var ATTRIBUTE_PATTERN = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
 
+/**
+ * @param {string} tag
+ * @returns {Record<string, string>}
+ */
 function parseAttributes(tag) {
+  /** @type {Record<string, string>} */
   const attributes = {};
   for (const match of tag.matchAll(ATTRIBUTE_PATTERN)) {
     attributes[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? '';
@@ -21,6 +26,10 @@ function parseAttributes(tag) {
   return attributes;
 }
 
+/**
+ * @param {Record<string, string>} attributes
+ * @returns {number}
+ */
 function iconSize(attributes) {
   if ((attributes.sizes || '').trim().toLowerCase() === 'any') return Number.POSITIVE_INFINITY;
   let best = 0;
@@ -32,11 +41,22 @@ function iconSize(attributes) {
   return best;
 }
 
+/**
+ * @param {Record<string, string>} attributes
+ * @param {string} href
+ * @returns {boolean}
+ */
 function isVectorIcon(attributes, href) {
   return (attributes.type || '').toLowerCase() === 'image/svg+xml' || /\.svg($|[?#])/i.test(href);
 }
 
+/**
+ * @param {string} markup
+ * @param {string} baseUrl
+ * @returns {IconCandidate[]}
+ */
 function iconCandidates(markup, baseUrl) {
+  /** @type {IconCandidate[]} */
   const candidates = [];
   const seen = new Set();
   for (const match of markup.matchAll(LINK_TAG_PATTERN)) {
@@ -61,6 +81,11 @@ function iconCandidates(markup, baseUrl) {
   return candidates;
 }
 
+/**
+ * @param {string} markup
+ * @param {string} baseUrl
+ * @returns {string}
+ */
 function findManifestUrl(markup, baseUrl) {
   for (const match of markup.matchAll(LINK_TAG_PATTERN)) {
     const attributes = parseAttributes(match[0]);

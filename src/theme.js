@@ -6,10 +6,20 @@
     fontFamily: 'system-ui, sans-serif',
   });
 
+  /**
+   * @param {string} name
+   * @returns {string}
+   */
   function toCssVariable(name) {
-    return `--${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
+    return `--${name.replace(
+      /[A-Z]/g,
+      /** @param {string} letter @returns {string} */ (letter) => `-${letter.toLowerCase()}`,
+    )}`;
   }
 
+  /**
+   * @param {HTMLElement | null} target
+   */
   function applyTokens(target) {
     if (!target) return;
     for (const [name, value] of Object.entries(TOKENS)) {

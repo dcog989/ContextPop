@@ -12,6 +12,7 @@
     globalThis.__contextPopMenuLayout;
   const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
 
+  /** @type {MenuState} */
   const menuState = {
     open: false,
     text: '',
@@ -25,6 +26,7 @@
     host: null,
     root: null,
     previousFocus: null,
+    onClose: null,
   };
 
   const CLOSE_ANIM_MS = 150;
@@ -37,16 +39,26 @@
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
+  /**
+   * @param {HTMLElement} host
+   * @param {number} percent
+   */
   function applyOpacity(host, percent) {
     const value = Number(percent);
     const alpha = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) / 100 : 1;
     host.style.setProperty('--cs-alpha', String(alpha));
   }
 
+  /**
+   * @param {any} message
+   */
   function send(message) {
     api.runtime.sendMessage(message).catch(() => {});
   }
 
+  /**
+   * @param {{ restoreFocus?: boolean, reason?: string }} [options]
+   */
   function closeMenu({ restoreFocus = false, reason = 'action' } = {}) {
     if (!menuState.open) return;
     menuState.open = false;
@@ -83,12 +95,21 @@
     }
   }
 
+  /**
+   * @param {MouseEvent} event
+   * @param {string | undefined} base
+   * @returns {string}
+   */
   function resolveMethod(event, base) {
     if (event.shiftKey) return 'newWindow';
     if (event.ctrlKey || event.metaKey) return 'backgroundTab';
     return base || 'newTab';
   }
 
+  /**
+   * @param {string} id
+   * @param {MouseEvent} event
+   */
   function dispatchAction(id, event) {
     const action = menuState.actions.find((item) => item.id === id);
     if (!action) return;
@@ -113,31 +134,49 @@
     }
   }
 
+  /**
+   * @param {MouseEvent} event
+   */
   function handleActionClick(event) {
-    dispatchAction(event.currentTarget.dataset.actionId, event);
+    const target = /** @type {HTMLElement} */ (event.currentTarget);
+    dispatchAction(target.dataset.actionId ?? '', event);
     closeMenu({ restoreFocus: true });
   }
 
+  /**
+   * @param {MouseEvent} event
+   */
   function handleEngineClick(event) {
     const method = resolveMethod(event, menuState.settings?.openMethod);
-    send({ type: 'search', engineId: event.currentTarget.dataset.engineId, terms: menuState.text, method });
+    send({
+      type: 'search',
+      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId,
+      terms: menuState.text,
+      method,
+    });
     closeMenu({ restoreFocus: true });
   }
 
+  /**
+   * @param {MouseEvent} event
+   */
   function handleEngineAuxClick(event) {
     if (event.button !== 1) return;
     event.preventDefault();
     send({
       type: 'search',
-      engineId: event.currentTarget.dataset.engineId,
+      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId,
       terms: menuState.text,
       method: 'backgroundTab',
     });
     closeMenu({ restoreFocus: true });
   }
 
+  /**
+   * @param {KeyboardEvent} event
+   */
   function handleMenuKeydown(event) {
-    const menu = event.currentTarget;
+    const menu = /** @type {HTMLElement} */ (event.currentTarget);
     menu.classList.add('kb');
     switch (event.key) {
       case 'ArrowRight':
@@ -171,6 +210,9 @@
     }
   }
 
+  /**
+   * @param {OpenMenuOptions} options
+   */
   function openMenu({ text, html, context, href, linkText, rect, point, engines, settings, handlers, onClose }) {
     closeMenu({ reason: 'replace' });
 
@@ -213,6 +255,7 @@
     if (settings.accentBorder) menu.classList.add('accent-border');
     applyTheme(menu, settings.theme);
 
+    /** @type {Map<string, (source: string | null | undefined) => void>} */
     const iconSetters = new Map();
 
     const tiles = document.createElement('div');
@@ -253,7 +296,7 @@
       menu.classList.add('cs-anim-in');
     }
 
-    const firstTile = menu.querySelector('.cs-tile:not(:disabled)');
+    const firstTile = /** @type {HTMLElement | null} */ (menu.querySelector('.cs-tile:not(:disabled)'));
     if (firstTile) focusTile(firstTile);
 
     applyEngineIcons(iconSetters, engines);

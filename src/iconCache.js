@@ -3,8 +3,13 @@
 // in-memory layer keeps working for the current worker lifetime.
 
 var ICON_CACHE_PREFIX = 'icon:';
+/** @type {Map<string, string | null>} */
 var iconMemoryCache = new Map();
 
+/**
+ * @param {string} key
+ * @returns {Promise<string | null | undefined>}
+ */
 async function readIconCache(key) {
   if (iconMemoryCache.has(key)) return iconMemoryCache.get(key);
   try {
@@ -20,6 +25,11 @@ async function readIconCache(key) {
   return undefined;
 }
 
+/**
+ * @param {string} key
+ * @param {string | null} dataUrl
+ * @returns {Promise<void>}
+ */
 async function writeIconCache(key, dataUrl) {
   iconMemoryCache.set(key, dataUrl);
   try {
@@ -29,19 +39,29 @@ async function writeIconCache(key, dataUrl) {
   }
 }
 
+/**
+ * @param {string} key
+ */
 function markIconUnavailable(key) {
   iconMemoryCache.set(key, null);
 }
 
+/**
+ * @returns {Promise<string[]>}
+ */
 async function iconCacheKeys() {
   const area = api.storage.local;
   if (typeof area.getKeys === 'function') {
-    return (await area.getKeys()).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
+    return /** @type {string[]} */ (await area.getKeys()).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
   }
   const all = await area.get(null);
   return Object.keys(all).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
 }
 
+/**
+ * @param {Set<string>} referencedKeys
+ * @returns {Promise<void>}
+ */
 async function pruneIconCache(referencedKeys) {
   try {
     const keys = await iconCacheKeys();

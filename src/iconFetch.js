@@ -7,15 +7,24 @@ var MAX_MARKUP_BYTES = 512 * 1024;
 var ICON_FETCH_TIMEOUT_MS = 4000;
 var BASE64_CHUNK_SIZE = 0x8000;
 
+/**
+ * @param {ArrayBuffer} buffer
+ * @param {string} contentType
+ * @returns {string}
+ */
 function arrayBufferToDataUrl(buffer, contentType) {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.length; i += BASE64_CHUNK_SIZE) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + BASE64_CHUNK_SIZE));
+    binary += String.fromCharCode(...bytes.subarray(i, i + BASE64_CHUNK_SIZE));
   }
   return `data:${contentType};base64,${btoa(binary)}`;
 }
 
+/**
+ * @param {string} url
+ * @returns {Promise<FetchResult>}
+ */
 async function fetchImage(url) {
   if (!url) return { dataUrl: null, definitive: false };
   if (url.startsWith('data:')) return { dataUrl: url, definitive: true };
@@ -47,6 +56,10 @@ async function fetchImage(url) {
   }
 }
 
+/**
+ * @param {string} url
+ * @returns {Promise<MenuContent>}
+ */
 async function fetchMarkup(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
@@ -83,6 +96,10 @@ async function fetchMarkup(url) {
   }
 }
 
+/**
+ * @param {string} manifestUrl
+ * @returns {Promise<IconCandidate[]>}
+ */
 async function fetchManifestIcons(manifestUrl) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
@@ -95,6 +112,7 @@ async function fetchManifestIcons(manifestUrl) {
     if (!response.ok) return [];
     const data = await response.json();
     const icons = Array.isArray(data?.icons) ? data.icons : [];
+    /** @type {IconCandidate[]} */
     const candidates = [];
     for (const icon of icons) {
       if (typeof icon?.src !== 'string' || !icon.src) continue;

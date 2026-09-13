@@ -12,6 +12,7 @@ var HTTP_URL_PATTERN = /^https?:\/\//i;
 // exhaustive - engines not listed here (and not shaped like a domain) get
 // no icon, just the fallback letter. Expect this to go stale as browsers
 // add/rename default engines; update opportunistically, not proactively.
+/** @type {Record<string, string>} */
 var KNOWN_ENGINE_HOSTS = Object.freeze({
   google: 'www.google.com',
   duckduckgo: 'duckduckgo.com',
@@ -46,6 +47,10 @@ var KNOWN_ENGINE_HOSTS = Object.freeze({
 
 var DOMAIN_ENGINE_NAME_PATTERN = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/;
 
+/**
+ * @param {string | null | undefined} name
+ * @returns {string}
+ */
 function normalizeEngineName(name) {
   return String(name ?? '')
     .toLowerCase()
@@ -54,6 +59,10 @@ function normalizeEngineName(name) {
     .trim();
 }
 
+/**
+ * @param {string | null | undefined} name
+ * @returns {string}
+ */
 function browserEngineHost(name) {
   const raw = String(name ?? '').trim();
   const wikipedia = raw.match(/^wikipedia\s*\(([a-z-]+)\)/i);
@@ -63,6 +72,10 @@ function browserEngineHost(name) {
   return KNOWN_ENGINE_HOSTS[normalized] || '';
 }
 
+/**
+ * @param {string} template
+ * @returns {string}
+ */
 function templateHost(template) {
   try {
     return new URL(String(template).replace(/\{searchTerms\}/g, 'x')).host;
@@ -71,6 +84,10 @@ function templateHost(template) {
   }
 }
 
+/**
+ * @param {Engine} engine
+ * @returns {IconSource | null}
+ */
 function engineIconSource(engine) {
   const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
   if (engine.source === 'browser') {

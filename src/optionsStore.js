@@ -2,26 +2,39 @@
 // plus debounced saving and validation. Views mutate `state` and call markDirty() to
 // schedule a save.
 
+/** @type {{ engines: Engine[], settings: Settings, dirty: boolean }} */
 const state = {
   engines: [],
-  settings: null,
+  settings: defaultSettings(),
   dirty: false,
 };
 
+/** @type {ReturnType<typeof setTimeout> | null} */
 let saveTimer = null;
+/** @type {ReturnType<typeof setTimeout> | null} */
 let statusTimer = null;
 
+/**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+/**
+ * @param {string} message
+ * @param {boolean} [isError]
+ */
 function setStatus(message, isError = false) {
   elements.status.textContent = message;
   elements.status.classList.toggle('error', isError);
 }
 
 function clearStatusSoon() {
-  clearTimeout(statusTimer);
+  if (statusTimer) clearTimeout(statusTimer);
   statusTimer = setTimeout(() => {
     if (!state.dirty) setStatus('');
   }, 1500);
@@ -30,10 +43,13 @@ function clearStatusSoon() {
 function markDirty() {
   state.dirty = true;
   setStatus(msg('statusSaving'));
-  clearTimeout(saveTimer);
+  if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => save(), 400);
 }
 
+/**
+ * @returns {string | null}
+ */
 function validate() {
   for (const engine of state.engines) {
     if (engine.enabled === false) continue;
@@ -55,7 +71,7 @@ function validate() {
 }
 
 async function save() {
-  clearTimeout(saveTimer);
+  if (saveTimer) clearTimeout(saveTimer);
   const problem = validate();
   if (problem) {
     setStatus(problem, true);
@@ -69,7 +85,7 @@ async function save() {
   try {
     await Promise.all([saveEngines(engines), saveSettings(settings)]);
   } catch (error) {
-    setStatus(msg('statusSaveFailed', error.message), true);
+    setStatus(msg('statusSaveFailed', errorMessage(error)), true);
     return;
   }
 

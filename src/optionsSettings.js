@@ -4,14 +4,14 @@ function renderSettings() {
   elements.actionsPosition.value = state.settings.actionsPosition;
   elements.trigger.value = state.settings.trigger;
   elements.openMethod.value = state.settings.openMethod;
-  elements.columns.value = state.settings.columns;
+  elements.columns.value = String(state.settings.columns);
   elements.theme.value = state.settings.theme;
   elements.labels.checked = Boolean(state.settings.showLabels);
   elements.accentBorder.checked = Boolean(state.settings.accentBorder);
   elements.popupSize.value = state.settings.popupSize;
   elements.popupPosition.value = state.settings.popupPosition;
   elements.popupAnimation.checked = Boolean(state.settings.popupAnimation);
-  elements.popupOpacity.value = state.settings.popupOpacity;
+  elements.popupOpacity.value = String(state.settings.popupOpacity);
   elements.popupOpacityValue.textContent = `${state.settings.popupOpacity}%`;
 }
 
@@ -30,7 +30,7 @@ function bindSettings() {
   });
   elements.columns.addEventListener('change', () => {
     state.settings.columns = clamp(Number(elements.columns.value) || DEFAULT_SETTINGS.columns, 1, 12);
-    elements.columns.value = state.settings.columns;
+    elements.columns.value = String(state.settings.columns);
     markDirty();
   });
   elements.theme.addEventListener('change', () => {

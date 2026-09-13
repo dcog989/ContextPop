@@ -1,13 +1,27 @@
 // Shared row-reorder animation for the action and engine lists: capture each row's top
 // before a reorder, then FLIP the rows back into place afterwards.
 
+/**
+ * @param {HTMLElement} container
+ * @returns {Map<string | undefined, number>}
+ */
 function captureRowPositions(container) {
-  return new Map([...container.children].map((el) => [el.dataset.rowId, el.getBoundingClientRect().top]));
+  return new Map(
+    Array.from(container.children, (node) => {
+      const el = /** @type {HTMLElement} */ (node);
+      return /** @type {[string | undefined, number]} */ ([el.dataset.rowId, el.getBoundingClientRect().top]);
+    }),
+  );
 }
 
+/**
+ * @param {HTMLElement} container
+ * @param {Map<string | undefined, number>} first
+ */
 function playRowReorder(container, first) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  for (const el of container.children) {
+  for (const node of container.children) {
+    const el = /** @type {HTMLElement} */ (node);
     const oldTop = first.get(el.dataset.rowId);
     if (oldTop === undefined) continue;
     const delta = oldTop - el.getBoundingClientRect().top;

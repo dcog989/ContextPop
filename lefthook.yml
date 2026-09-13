@@ -2,12 +2,16 @@
 min_version: 2.0.0
 
 pre-commit:
-  parallel: true
+  # Sequential: typescript runs after biome --write so tsc sees the formatted files.
+  parallel: false
   commands:
     biome:
       glob: "*.{js,json,css,html}"
       run: biome check --write --no-errors-on-unmatched {staged_files}
       stage_fixed: true
+    typescript:
+      glob: "*.{js,ts,json}"
+      run: tsc --noEmit -p jsconfig.json
 
 commit-msg:
   commands:

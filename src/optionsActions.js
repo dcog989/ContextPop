@@ -1,13 +1,19 @@
 // Actions list view: renders the built-in action rows with their enable toggles, editable
 // templates, and reorder controls, and applies reordering to `state`.
 
+/**
+ * @param {string} actionId
+ * @param {number} index
+ * @returns {DocumentFragment}
+ */
 function createActionRow(actionId, index) {
   const def = BUILTIN_ACTION_DEFS.find((item) => item.id === actionId);
   const value = state.settings.builtinActions[actionId];
-  const fragment = elements.actionRowTemplate.content.cloneNode(true);
-  fragment.querySelector('.action-row').dataset.rowId = actionId;
+  const fragment = /** @type {DocumentFragment} */ (elements.actionRowTemplate.content.cloneNode(true));
+  const row = /** @type {HTMLElement} */ (fragment.querySelector('.action-row'));
+  row.dataset.rowId = actionId;
 
-  const enabled = fragment.querySelector('.action-enabled');
+  const enabled = /** @type {HTMLInputElement} */ (fragment.querySelector('.action-enabled'));
   enabled.checked = value.enabled;
   enabled.addEventListener('change', () => {
     value.enabled = enabled.checked;
@@ -15,13 +21,15 @@ function createActionRow(actionId, index) {
   });
 
   const icon = createSvgIcon(def?.icon);
-  if (icon) fragment.querySelector('.action-icon').appendChild(icon);
-  fragment.querySelector('.action-name').textContent = msg(`action${capitalize(actionId)}`);
+  if (icon) /** @type {HTMLElement} */ (fragment.querySelector('.action-icon')).appendChild(icon);
+  /** @type {HTMLElement} */ (fragment.querySelector('.action-name')).textContent = msg(
+    `action${capitalize(actionId)}`,
+  );
 
-  const templateField = fragment.querySelector('.action-template-field');
+  const templateField = /** @type {HTMLElement} */ (fragment.querySelector('.action-template-field'));
   if (def?.template) {
     templateField.hidden = false;
-    const templateInput = fragment.querySelector('.action-template');
+    const templateInput = /** @type {HTMLInputElement} */ (fragment.querySelector('.action-template'));
     templateInput.value = value.template || def.template;
     templateInput.addEventListener('input', () => {
       value.template = templateInput.value;
@@ -29,8 +37,12 @@ function createActionRow(actionId, index) {
     });
   }
 
-  fragment.querySelector('.move-up').addEventListener('click', () => moveAction(index, -1));
-  fragment.querySelector('.move-down').addEventListener('click', () => moveAction(index, 1));
+  /** @type {HTMLElement} */ (fragment.querySelector('.move-up')).addEventListener('click', () =>
+    moveAction(index, -1),
+  );
+  /** @type {HTMLElement} */ (fragment.querySelector('.move-down')).addEventListener('click', () =>
+    moveAction(index, 1),
+  );
   return fragment;
 }
 
@@ -41,6 +53,10 @@ function renderActions() {
   });
 }
 
+/**
+ * @param {number} index
+ * @param {number} offset
+ */
 function moveAction(index, offset) {
   const target = index + offset;
   const order = state.settings.actionOrder;

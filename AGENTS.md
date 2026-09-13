@@ -4,7 +4,7 @@
 
 - Name: ContextPop
 - Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox and Chrome, Manifest V3.
-- Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, lefthook, and cocogitto binaries.
+- Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, lefthook, cocogitto, and TypeScript (`tsc`) binaries.
 
 ### Key Files
 
@@ -30,6 +30,7 @@
 - `src/chrome_manifest.json` — Chrome MV3 manifest.
 - `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi); the manifests and pages use these via `__MSG_*__` / `api.i18n`.
 - `biome.json` / `lefthook.yml` / `cog.toml` / `changelog.tpl` — dev tooling config.
+- `jsconfig.json` / `globals.d.ts` — TypeScript `checkJs` config and hand-written ambient types (WebExtension `browser`/`chrome`, IIFE-published globals, shared domain typedefs).
 - `scripts/package.sh` — validates manifest drift, then writes both store zips to `dist/`.
 - `scripts/sync_version.sh` — updates the version in both manifests (called by cog).
 - `PRIVACY.md` — store privacy disclosure.
@@ -40,7 +41,8 @@
 - Dev: reload the unpacked extension after edits.
 - Test: manual, load unpacked (see README).
 - Lint/format: `biome check` (`biome check --write` to fix).
-- Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files and runs `cog verify` on commit messages.
+- Type-check: `tsc --noEmit -p jsconfig.json` (strict `checkJs`; `globals.d.ts` supplies platform and shared-global types).
+- Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files, runs `tsc` on staged JS, and runs `cog verify` on commit messages.
 - Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so both manifests stay in sync.
 - Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-{firefox,chrome}.zip`.
 

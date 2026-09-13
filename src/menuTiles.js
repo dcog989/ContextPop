@@ -7,6 +7,11 @@
 
   const { t } = globalThis.__contextPopMenuI18n;
 
+  /**
+   * @param {ActionItem} action
+   * @param {string} text
+   * @returns {string}
+   */
   function actionLabel(action, text) {
     switch (action.id) {
       case 'define':
@@ -18,6 +23,11 @@
     }
   }
 
+  /**
+   * @param {ActionItem} action
+   * @param {string} text
+   * @returns {string}
+   */
   function actionTooltip(action, text) {
     switch (action.id) {
       case 'define':
@@ -29,6 +39,13 @@
     }
   }
 
+  /**
+   * @param {HTMLButtonElement} tile
+   * @param {string} label
+   * @param {boolean} showLabels
+   * @param {string} [tooltip]
+   * @returns {HTMLButtonElement}
+   */
   function decorateTile(tile, label, showLabels, tooltip = label) {
     tile.type = 'button';
     tile.className = 'cs-tile';
@@ -46,6 +63,10 @@
     return tile;
   }
 
+  /**
+   * @param {ActionItem} action
+   * @returns {HTMLElement}
+   */
   function createBuiltinIcon(action) {
     const wrapper = document.createElement('span');
     wrapper.className = 'cs-icon';
@@ -54,6 +75,10 @@
     return wrapper;
   }
 
+  /**
+   * @param {Engine} engine
+   * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
+   */
   function createIcon(engine) {
     const { element, setSource } = createFaviconIcon({
       prefix: 'cs',
@@ -63,6 +88,13 @@
     return { element, setSource };
   }
 
+  /**
+   * @param {ActionItem} action
+   * @param {string} text
+   * @param {boolean} showLabels
+   * @param {(event: MouseEvent) => void} onActivate
+   * @returns {HTMLButtonElement}
+   */
   function createActionTile(action, text, showLabels, onActivate) {
     const label = actionLabel(action, text);
     const tile = document.createElement('button');
@@ -74,6 +106,12 @@
     return tile;
   }
 
+  /**
+   * @param {Engine} engine
+   * @param {boolean} showLabels
+   * @param {EngineTileHandlers} handlers
+   * @returns {EngineTile}
+   */
   function createEngineTile(engine, showLabels, handlers) {
     const tile = document.createElement('button');
     decorateTile(tile, engine.name, showLabels);
@@ -86,12 +124,26 @@
     return { tile, setIcon: icon.setSource };
   }
 
+  /**
+   * @param {HTMLElement} tiles
+   * @param {ActionItem[]} actions
+   * @param {string} text
+   * @param {boolean} showLabels
+   * @param {(event: MouseEvent) => void} onActivate
+   */
   function appendActionTiles(tiles, actions, text, showLabels, onActivate) {
     for (const action of actions) {
       tiles.appendChild(createActionTile(action, text, showLabels, onActivate));
     }
   }
 
+  /**
+   * @param {HTMLElement} tiles
+   * @param {Engine[]} engines
+   * @param {boolean} showLabels
+   * @param {Map<string, (source: string | null | undefined) => void>} iconSetters
+   * @param {EngineTileHandlers} handlers
+   */
   function appendEngineTiles(tiles, engines, showLabels, iconSetters, handlers) {
     for (const engine of engines) {
       const { tile, setIcon } = createEngineTile(engine, showLabels, handlers);

@@ -2,8 +2,13 @@
 // between cached entries, custom icon URLs, and site-declared icons. Depends on the
 // iconSource/iconParse/iconFetch/iconCache modules, which must be loaded before this file.
 
+/**
+ * @param {IconCandidate[]} candidates
+ * @returns {IconCandidate[]}
+ */
 function rankCandidates(candidates) {
   const seen = new Set();
+  /** @type {IconCandidate[]} */
   const unique = [];
   for (const candidate of candidates) {
     if (!candidate.url || seen.has(candidate.url)) continue;
@@ -14,6 +19,10 @@ function rankCandidates(candidates) {
   return unique;
 }
 
+/**
+ * @param {string} homeUrl
+ * @returns {Promise<FetchResult>}
+ */
 async function fetchBestIcon(homeUrl) {
   const { markup, baseUrl, definitive: markupDefinitive } = await fetchMarkup(homeUrl);
   const candidates = markup ? iconCandidates(markup, baseUrl) : [];
@@ -40,6 +49,10 @@ async function fetchBestIcon(homeUrl) {
   return { dataUrl: null, definitive: definitive && candidates.length > 0 };
 }
 
+/**
+ * @param {Engine} engine
+ * @returns {Promise<{ dataUrl: string | null, fetched: boolean }>}
+ */
 async function resolveEngineIcon(engine) {
   const source = engineIconSource(engine);
   if (!source) return { dataUrl: null, fetched: false };
@@ -54,8 +67,14 @@ async function resolveEngineIcon(engine) {
   return { dataUrl: result.dataUrl, fetched: true };
 }
 
+/**
+ * @param {Engine[]} engines
+ * @returns {Promise<Record<string, string>>}
+ */
 async function loadIconMap(engines) {
+  /** @type {Record<string, string>} */
   const icons = {};
+  /** @type {Set<string>} */
   const referenced = new Set();
   for (const engine of engines) {
     const source = engineIconSource(engine);
