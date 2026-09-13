@@ -66,6 +66,14 @@ section {
   margin-bottom: 20px;
 }
 
+.onboarding {
+  border-color: var(--accent);
+}
+
+.onboarding[hidden] {
+  display: none;
+}
+
 h2 {
   margin: 0;
   font-size: 15px;

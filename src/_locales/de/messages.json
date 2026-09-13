@@ -310,5 +310,14 @@
         "example": "3"
       }
     }
+  },
+  "onboardingHeading": {
+    "message": "Willkommen bei ContextPop"
+  },
+  "onboardingBody": {
+    "message": "Markiere Text auf einer beliebigen Seite, um das Popup zu öffnen. Wähle unten, wann es erscheint und wo Ergebnisse geöffnet werden. Alle Einstellungen werden automatisch gespeichert."
+  },
+  "onboardingDismiss": {
+    "message": "Verstanden"
   }
 }

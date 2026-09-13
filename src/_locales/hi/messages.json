@@ -310,5 +310,14 @@
         "example": "3"
       }
     }
+  },
+  "onboardingHeading": {
+    "message": "ContextPop में आपका स्वागत है"
+  },
+  "onboardingBody": {
+    "message": "पॉपअप खोलने के लिए किसी भी पृष्ठ पर टेक्स्ट चुनें। नीचे चुनें कि यह कब दिखे और परिणाम कहाँ खुलें। सभी सेटिंग्स स्वतः सहेजी जाती हैं।"
+  },
+  "onboardingDismiss": {
+    "message": "समझ गया"
   }
 }

@@ -6,6 +6,7 @@ var api = globalThis.browser ?? globalThis.chrome;
 var STORAGE_KEYS = Object.freeze({
   engines: 'engines',
   settings: 'settings',
+  onboarding: 'onboarding',
 });
 
 var HOST_ORIGINS = Object.freeze(['http://*/*', 'https://*/*']);
@@ -16,10 +17,19 @@ var HOST_ORIGINS = Object.freeze(['http://*/*', 'https://*/*']);
 var requestHostAccess = async () => {
   if (!api.permissions?.request) return true;
   try {
-    if (api.permissions.contains && (await api.permissions.contains({ origins: HOST_ORIGINS }))) {
-      return true;
-    }
+    if (await hasHostAccess()) return true;
     return await api.permissions.request({ origins: HOST_ORIGINS });
+  } catch {
+    return false;
+  }
+};
+
+// Non-prompting check used to decide whether first-run setup is still needed. Must not
+// call permissions.request, which browsers only allow inside a user-gesture handler.
+var hasHostAccess = async () => {
+  if (!api.permissions?.contains) return true;
+  try {
+    return await api.permissions.contains({ origins: HOST_ORIGINS });
   } catch {
     return false;
   }
@@ -325,4 +335,19 @@ async function loadSettings() {
  */
 async function saveSettings(settings) {
   await api.storage.local.set({ [STORAGE_KEYS.settings]: settings });
+}
+
+/**
+ * @returns {Promise<boolean>}
+ */
+async function loadOnboardingComplete() {
+  const result = await api.storage.local.get(STORAGE_KEYS.onboarding);
+  return result[STORAGE_KEYS.onboarding] === true;
+}
+
+/**
+ * @returns {Promise<void>}
+ */
+async function saveOnboardingComplete() {
+  await api.storage.local.set({ [STORAGE_KEYS.onboarding]: true });
 }

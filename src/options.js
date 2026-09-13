@@ -25,6 +25,8 @@ const elements = {
   popupOpacity: /** @type {HTMLInputElement} */ (document.getElementById('setting-popup-opacity')),
   popupOpacityValue: /** @type {HTMLElement} */ (document.getElementById('setting-popup-opacity-value')),
   version: /** @type {HTMLElement} */ (document.getElementById('version')),
+  onboarding: /** @type {HTMLElement} */ (document.getElementById('onboarding')),
+  onboardingDismiss: /** @type {HTMLButtonElement} */ (document.getElementById('onboarding-dismiss')),
 };
 
 /**
@@ -74,6 +76,7 @@ async function load() {
   renderEngines();
   renderSettings();
   configureBrowserImport();
+  await revealOnboarding();
 }
 
 globalThis.__contextPopTheme?.applyTokens(document.documentElement);
@@ -81,4 +84,5 @@ localize();
 elements.version.textContent = `v${api.runtime.getManifest().version}`;
 bindSettings();
 bindActions();
+bindOnboarding();
 load();

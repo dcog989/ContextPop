@@ -14,6 +14,7 @@ Launches a customizable popup on text selection for instant search, copy to clip
 - Open results in a new tab, background tab, current tab, new window, or a popup window
 - Shift-click opens a new window; Ctrl/Cmd-click or middle-click opens a background tab
 - Light, dark, or system theme
+- First-run orientation callout on the options page
 - English, Spanish, German, French, and Hindi UI via `_locales`
 - Firefox and Chrome, Manifest V3, no build step
 
@@ -55,11 +56,11 @@ Outputs `dist/contextpop-firefox.zip` and `dist/contextpop-chrome.zip`. The scri
 No install and no build. Dev tooling is the system `biome`, `lefthook`, `cog`, and `tsc` binaries:
 
 ```sh
-biome check          # lint + format check
-biome check --write  # apply fixes
+biome check                    # lint + format check
+biome check --write            # apply fixes
 tsc --noEmit -p jsconfig.json  # type-check the JS
-lefthook install     # enable git hooks once per clone
-cog bump --auto      # version + changelog; syncs both manifests
+lefthook install               # enable git hooks once per clone
+cog bump --auto                # version + changelog; syncs both manifests
 ```
 
 ## Engine template
@@ -77,6 +78,6 @@ https://duckduckgo.com/?q={searchTerms}
 - `storage` — engines, actions, and preferences, kept on-device.
 - `search` — enumerate and use the browser's installed engines (Firefox import/search, Chrome default search).
 - `clipboardWrite` — copy actions.
-- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Granted at install; revoke per-site in the browser's extension settings.
+- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Granted at install (Chrome and Firefox MV3); revoke per-site in the browser's extension settings.
 
 Remote icons are fetched by the background, preferring the high-resolution icon each site declares, and cached on-device without cookies or a referrer. Use "Refresh icons" in settings to re-fetch them. See [PRIVACY.md](PRIVACY.md).

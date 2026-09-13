@@ -16,7 +16,7 @@
 - `src/menuLayout.js` — theme class, on-screen positioning, animation origin, roving focus (`__contextPopMenuLayout`).
 - `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
 - `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
-- `src/storage.js` — shared storage schema and helpers (`api`, engines, settings, host-access request).
+- `src/storage.js` — shared storage schema and helpers (`api`, engines, settings, onboarding flag, host-access request and non-prompting check).
 - `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
 - `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`); owns `HTTP_URL_PATTERN` (also used by the background).
 - `src/iconParse.js` — favicon candidate and web-app-manifest discovery from fetched markup.
@@ -25,7 +25,7 @@
 - `src/iconSvg.js` — SVG monochrome analysis (`svgDataUrlIsMonochrome`).
 - `src/iconRender.js` — DOM icon rendering (`createSvgIcon`, `createFaviconIcon`, `applyEngineIcons`); loaded by content scripts and the options page, not the background.
 - `src/defaultEngines.js` — seed engines.
-- `src/options.html` / `src/options.css` / `src/options*.js` — options page. `options.js` is the entry (DOM registry + wiring); concerns are split into `optionsI18n.js`, `optionsStore.js` (state/save/validate), `optionsReorder.js`, `optionsActions.js`, `optionsEngines.js`, `optionsConfig.js`, and `optionsSettings.js`, loaded in that order by `options.html`.
+- `src/options.html` / `src/options.css` / `src/options*.js` — options page. `options.js` is the entry (DOM registry + wiring); concerns are split into `optionsI18n.js`, `optionsStore.js` (state/save/validate), `optionsReorder.js`, `optionsActions.js`, `optionsEngines.js`, `optionsConfig.js`, `optionsSettings.js`, and `optionsOnboarding.js` (first-run setup callout), loaded in that order by `options.html`. The background opens this page on install.
 - `src/manifest.json` — Firefox MV3 manifest.
 - `src/chrome_manifest.json` — Chrome MV3 manifest.
 - `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi); the manifests and pages use these via `__MSG_*__` / `api.i18n`.

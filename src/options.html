@@ -38,6 +38,21 @@
     </header>
 
     <main>
+      <section id="onboarding" class="onboarding" hidden>
+        <div class="section-head">
+          <h2 data-i18n="onboardingHeading">Welcome to ContextPop</h2>
+          <div class="actions">
+            <button id="onboarding-dismiss" type="button" class="secondary" data-i18n="onboardingDismiss">
+              Got it
+            </button>
+          </div>
+        </div>
+        <p class="hint" data-i18n="onboardingBody">
+          Select text on any page to open the popup. Choose when it appears and where results open below. Every setting
+          is saved automatically.
+        </p>
+      </section>
+
       <section>
         <div class="section-head">
           <h2 data-i18n="actionsHeading">Actions</h2>
@@ -298,6 +313,7 @@
     <script src="optionsEngines.js"></script>
     <script src="optionsConfig.js"></script>
     <script src="optionsSettings.js"></script>
+    <script src="optionsOnboarding.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

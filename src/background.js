@@ -192,7 +192,12 @@ function seedStorageOnFailure() {
   seedStorage().catch((error) => console.error('ContextPop: seed failed', error));
 }
 
-api.runtime.onInstalled.addListener(seedStorageOnFailure);
+api.runtime.onInstalled.addListener((/** @type {any} */ details) => {
+  seedStorageOnFailure();
+  // Send first-time installs to the options page so onboarding and the host-access
+  // prompt are discoverable; `permissions.request` itself must run from a click.
+  if (details?.reason === 'install') api.runtime.openOptionsPage();
+});
 
 // Firefox MV3 only persists an event page's listeners after it has run once. A
 // listener here forces that run every browser session, otherwise the first

@@ -310,5 +310,14 @@
         "example": "3"
       }
     }
+  },
+  "onboardingHeading": {
+    "message": "Bienvenue dans ContextPop"
+  },
+  "onboardingBody": {
+    "message": "Sélectionnez du texte sur n'importe quelle page pour ouvrir la fenêtre. Choisissez ci-dessous quand elle apparaît et où les résultats s'ouvrent. Tous les réglages sont enregistrés automatiquement."
+  },
+  "onboardingDismiss": {
+    "message": "Compris"
   }
 }
