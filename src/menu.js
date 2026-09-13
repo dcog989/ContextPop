@@ -8,7 +8,8 @@
   const api = globalThis.browser ?? globalThis.chrome;
   const { t } = globalThis.__contextPopMenuI18n;
   const { css: MENU_CSS } = globalThis.__contextPopMenuStyles;
-  const { applyTheme, positionMenu, focusTile, moveFocus, focusEdge } = globalThis.__contextPopMenuLayout;
+  const { applyTheme, positionMenu, applyAnimationOrigin, focusTile, moveFocus, focusEdge } =
+    globalThis.__contextPopMenuLayout;
   const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
 
   const menuState = {
@@ -26,8 +27,14 @@
     previousFocus: null,
   };
 
+  const CLOSE_ANIM_MS = 150;
+
   function isMenuOpen() {
     return menuState.open;
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   function send(message) {
@@ -37,7 +44,9 @@
   function closeMenu({ restoreFocus = false, reason = 'action' } = {}) {
     if (!menuState.open) return;
     menuState.open = false;
-    if (menuState.host?.parentNode) menuState.host.parentNode.removeChild(menuState.host);
+
+    const host = menuState.host;
+    const root = menuState.root;
     menuState.host = null;
     menuState.root = null;
 
@@ -50,6 +59,22 @@
     const onClose = menuState.onClose;
     menuState.onClose = null;
     onClose?.(reason);
+
+    const menu = root?.querySelector?.('.cs-menu');
+    if (menu && menuState.settings?.popupAnimation && !prefersReducedMotion()) {
+      menu.classList.remove('cs-anim-in');
+      menu.classList.add('cs-anim-out');
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        host?.remove();
+      };
+      menu.addEventListener('animationend', finish, { once: true });
+      setTimeout(finish, CLOSE_ANIM_MS);
+    } else {
+      host?.remove();
+    }
   }
 
   function resolveMethod(event, base) {
@@ -215,6 +240,11 @@
 
     positionMenu(menu, { rect, point, position: settings.popupPosition });
     menu.style.visibility = '';
+
+    if (settings.popupAnimation && !prefersReducedMotion()) {
+      applyAnimationOrigin(menu, { rect, point, position: settings.popupPosition });
+      menu.classList.add('cs-anim-in');
+    }
 
     const firstTile = menu.querySelector('.cs-tile:not(:disabled)');
     if (firstTile) focusTile(firstTile);

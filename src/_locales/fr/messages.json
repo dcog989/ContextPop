@@ -80,6 +80,9 @@
   "popupPositionUnder": {
     "message": "Centré sur le curseur"
   },
+  "popupAnimation": {
+    "message": "Animer le menu"
+  },
   "themeLabel": {
     "message": "Thème"
   },

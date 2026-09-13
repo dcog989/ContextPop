@@ -158,6 +158,39 @@
   font-size: 0.86em;
   opacity: 0.72;
 }
+.cs-menu.cs-anim-in {
+  animation: cs-expand 140ms ease-out;
+}
+.cs-menu.cs-anim-out {
+  animation: cs-shrink 120ms ease-in forwards;
+  pointer-events: none;
+}
+@keyframes cs-expand {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes cs-shrink {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-menu.cs-anim-in,
+  .cs-menu.cs-anim-out {
+    animation: none;
+  }
+}
 `;
 
   globalThis.__contextPopMenuStyles = { css };

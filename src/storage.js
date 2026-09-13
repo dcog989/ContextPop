@@ -67,6 +67,7 @@ var DEFAULT_SETTINGS = Object.freeze({
   actionsPosition: 'before',
   popupSize: 'standard',
   popupPosition: 'below',
+  popupAnimation: false,
   accentBorder: false,
 });
 
@@ -155,6 +156,7 @@ function normalizeSettings(stored) {
   if (!POPUP_POSITIONS.includes(settings.popupPosition)) {
     settings.popupPosition = DEFAULT_SETTINGS.popupPosition;
   }
+  settings.popupAnimation = settings.popupAnimation === true;
   return settings;
 }
 

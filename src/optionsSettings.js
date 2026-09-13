@@ -10,6 +10,7 @@ function renderSettings() {
   elements.accentBorder.checked = Boolean(state.settings.accentBorder);
   elements.popupSize.value = state.settings.popupSize;
   elements.popupPosition.value = state.settings.popupPosition;
+  elements.popupAnimation.checked = Boolean(state.settings.popupAnimation);
 }
 
 function bindSettings() {
@@ -48,6 +49,10 @@ function bindSettings() {
   });
   elements.popupPosition.addEventListener('change', () => {
     state.settings.popupPosition = elements.popupPosition.value;
+    markDirty();
+  });
+  elements.popupAnimation.addEventListener('change', () => {
+    state.settings.popupAnimation = elements.popupAnimation.checked;
     markDirty();
   });
 }

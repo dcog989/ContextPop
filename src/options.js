@@ -21,6 +21,7 @@ const elements = {
   refreshIcons: document.getElementById('refresh-icons'),
   popupSize: document.getElementById('setting-popup-size'),
   popupPosition: document.getElementById('setting-popup-position'),
+  popupAnimation: document.getElementById('setting-popup-animation'),
   version: document.getElementById('version'),
 };
 

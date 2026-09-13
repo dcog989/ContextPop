@@ -84,6 +84,9 @@
   "popupPositionUnder": {
     "message": "Focused on cursor"
   },
+  "popupAnimation": {
+    "message": "Animate popup"
+  },
   "themeLabel": {
     "message": "Theme"
   },

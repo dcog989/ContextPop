@@ -34,6 +34,18 @@
     menu.style.top = `${Math.round(top)}px`;
   }
 
+  function applyAnimationOrigin(menu, anchor) {
+    const box = menu.getBoundingClientRect();
+    const rect = anchor.rect;
+    const point =
+      anchor.position === 'under' && anchor.point
+        ? anchor.point
+        : { x: (rect?.left ?? 0) + (rect?.width ?? 0) / 2, y: rect?.bottom ?? 0 };
+    const x = Math.min(Math.max(0, point.x - box.left), box.width);
+    const y = Math.min(Math.max(0, point.y - box.top), box.height);
+    menu.style.transformOrigin = `${Math.round(x)}px ${Math.round(y)}px`;
+  }
+
   function focusTile(tile) {
     const tiles = tile.parentNode ? [...tile.parentNode.querySelectorAll('.cs-tile')] : [tile];
     for (const item of tiles) item.tabIndex = item === tile ? 0 : -1;
@@ -55,5 +67,12 @@
     if (tiles.length) focusTile(last ? tiles[tiles.length - 1] : tiles[0]);
   }
 
-  globalThis.__contextPopMenuLayout = { applyTheme, positionMenu, focusTile, moveFocus, focusEdge };
+  globalThis.__contextPopMenuLayout = {
+    applyTheme,
+    positionMenu,
+    applyAnimationOrigin,
+    focusTile,
+    moveFocus,
+    focusEdge,
+  };
 })();

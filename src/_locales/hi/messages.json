@@ -80,6 +80,9 @@
   "popupPositionUnder": {
     "message": "कर्सर पर केंद्रित"
   },
+  "popupAnimation": {
+    "message": "पॉपअप एनिमेट करें"
+  },
   "themeLabel": {
     "message": "थीम"
   },
