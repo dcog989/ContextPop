@@ -2,6 +2,24 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.6.0 - 2026-09-13
+
+#### Features
+
+- (6f8d8ef) add first-run onboarding callout - dcog989
+
+#### Bug Fixes
+
+- (b8c08d7) sync host-access disclosure and dedupe permission helper - dcog989
+
+#### Refactoring
+
+- (1832d64) add BuiltinAction typedef and fix shadowed binding - dcog989
+
+- (57e9c95) type the background/content message protocol - dcog989
+
+- - -
+
 ## v0.5.0 - 2026-09-13
 
 #### Features
