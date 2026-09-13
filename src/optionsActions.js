@@ -52,3 +52,12 @@ function moveAction(index, offset) {
   playRowReorder(elements.actionList, first);
   markDirty();
 }
+
+function restoreActionDefaults() {
+  const defaults = defaultSettings();
+  state.settings.builtinActions = defaults.builtinActions;
+  state.settings.actionOrder = defaults.actionOrder;
+  renderActions();
+  markDirty();
+  setStatus(msg('statusDefaultsRestored'));
+}

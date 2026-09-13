@@ -36,6 +36,7 @@ function configureBrowserImport() {
 function bindActions() {
   document.getElementById('add-engine').addEventListener('click', addEngine);
   document.getElementById('restore-defaults').addEventListener('click', restoreDefaults);
+  document.getElementById('restore-action-defaults').addEventListener('click', restoreActionDefaults);
   elements.refreshIcons.addEventListener('click', handleRefreshIcons);
   elements.importBrowser.addEventListener('click', importBrowserEngines);
   document.getElementById('export-config').addEventListener('click', exportConfig);
