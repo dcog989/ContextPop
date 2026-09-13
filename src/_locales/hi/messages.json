@@ -104,6 +104,9 @@
   "accentBorder": {
     "message": "एक्सेंट रंग की बॉर्डर"
   },
+  "engineEnabledLabel": {
+    "message": "खोज इंजन सक्रिय करें"
+  },
   "namePlaceholder": {
     "message": "नाम"
   },

@@ -104,6 +104,9 @@
   "accentBorder": {
     "message": "Rahmen in Akzentfarbe"
   },
+  "engineEnabledLabel": {
+    "message": "Suchmaschine aktivieren"
+  },
   "namePlaceholder": {
     "message": "Name"
   },

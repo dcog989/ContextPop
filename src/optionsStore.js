@@ -39,6 +39,7 @@ function markDirty() {
 
 function validate() {
   for (const engine of state.engines) {
+    if (engine.enabled === false) continue;
     if (!engine.name.trim()) return msg('errorNameRequired');
     if (engine.source === 'browser') continue;
     if (!engine.template.includes('{searchTerms}')) return msg('errorTemplateTerms', engine.name);

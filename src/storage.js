@@ -99,6 +99,7 @@ function normalizeEngine(engine) {
     id: engine?.id || generateId(),
     name: String(engine?.name ?? ''),
     source,
+    enabled: engine?.enabled !== false,
     template: String(engine?.template ?? ''),
     browserEngineName: String(engine?.browserEngineName ?? ''),
     icon: typeof engine?.icon === 'string' ? engine.icon : '',

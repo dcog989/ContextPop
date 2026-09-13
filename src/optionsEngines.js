@@ -14,7 +14,18 @@ function createEngineIcon(engine) {
 
 function createRow(engine, index) {
   const fragment = elements.rowTemplate.content.cloneNode(true);
-  fragment.querySelector('.engine-row').dataset.rowId = engine.id;
+  const row = fragment.querySelector('.engine-row');
+  row.dataset.rowId = engine.id;
+
+  const enabled = fragment.querySelector('.engine-enabled');
+  const syncDisabled = () => row.classList.toggle('is-disabled', !enabled.checked);
+  enabled.checked = engine.enabled !== false;
+  enabled.addEventListener('change', () => {
+    engine.enabled = enabled.checked;
+    syncDisabled();
+    markDirty();
+  });
+  syncDisabled();
 
   const icon = createEngineIcon(engine);
   fragment.querySelector('.engine-icon').replaceWith(icon.element);

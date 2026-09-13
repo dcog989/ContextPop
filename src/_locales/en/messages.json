@@ -108,6 +108,9 @@
   "accentBorder": {
     "message": "Accent color border"
   },
+  "engineEnabledLabel": {
+    "message": "Enable engine"
+  },
   "namePlaceholder": {
     "message": "Name"
   },

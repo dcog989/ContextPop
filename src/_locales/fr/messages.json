@@ -104,6 +104,9 @@
   "accentBorder": {
     "message": "Bordure de couleur d'accent"
   },
+  "engineEnabledLabel": {
+    "message": "Activer le moteur de recherche"
+  },
   "namePlaceholder": {
     "message": "Nom"
   },

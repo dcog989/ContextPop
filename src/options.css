@@ -209,7 +209,15 @@ button.is-loading::before {
   display: grid;
   gap: 8px;
   align-items: center;
-  grid-template-columns: 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) auto;
+  grid-template-columns: auto 32px minmax(120px, 1fr) minmax(220px, 2fr) minmax(140px, 1fr) auto;
+}
+
+.engine-main input[type="checkbox"] {
+  margin: 0;
+}
+
+.engine-row.is-disabled .engine-main > :not(.engine-enabled) {
+  opacity: 0.55;
 }
 
 .engine-icon {

@@ -196,7 +196,7 @@
       linkText: info.linkText,
       rect: info.rect,
       point: event ? { x: event.clientX, y: event.clientY } : null,
-      engines: contentState.engines,
+      engines: contentState.engines.filter((engine) => engine.enabled !== false),
       settings: contentState.settings ?? defaultSettings(),
       handlers: { copyRich, copyPlain, copyLink },
       onClose: handleMenuClose,
