@@ -8,6 +8,23 @@ var STORAGE_KEYS = Object.freeze({
   settings: 'settings',
 });
 
+var HOST_ORIGINS = Object.freeze(['http://*/*', 'https://*/*']);
+
+// Host access is revocable: Firefox MV3 host permissions are opt-in, and Chrome
+// can withhold required hosts. Both browsers only allow request() from inside a
+// user-gesture handler, so callers must invoke this from a click/keypress.
+var requestHostAccess = async () => {
+  if (!api.permissions?.request) return true;
+  try {
+    if (api.permissions.contains && (await api.permissions.contains({ origins: HOST_ORIGINS }))) {
+      return true;
+    }
+    return await api.permissions.request({ origins: HOST_ORIGINS });
+  } catch {
+    return false;
+  }
+};
+
 var CONTEXTS = Object.freeze(['text', 'word', 'link']);
 var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);

@@ -1,6 +1,6 @@
 // Options-page state and persistence: the single source of truth for engines and settings,
-// plus debounced saving, validation, and host-permission requests. Views mutate `state` and
-// call markDirty() to schedule a save.
+// plus debounced saving and validation. Views mutate `state` and call markDirty() to
+// schedule a save.
 
 const state = {
   engines: [],
@@ -8,11 +8,8 @@ const state = {
   dirty: false,
 };
 
-const HOST_ORIGINS = ['http://*/*', 'https://*/*'];
-
 let saveTimer = null;
 let statusTimer = null;
-let hostAccessAttempted = false;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -57,16 +54,6 @@ function validate() {
   return null;
 }
 
-async function requestHostAccess() {
-  if (!api.permissions?.request) return true;
-  try {
-    if (api.permissions.contains && (await api.permissions.contains({ origins: HOST_ORIGINS }))) return true;
-    return await api.permissions.request({ origins: HOST_ORIGINS });
-  } catch {
-    return false;
-  }
-}
-
 async function save() {
   clearTimeout(saveTimer);
   const problem = validate();
@@ -78,11 +65,6 @@ async function save() {
   const engines = state.engines.map((engine) => normalizeEngine(engine));
   const settings = normalizeSettings(state.settings);
   settings.columns = clamp(Number(settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
-
-  if (!hostAccessAttempted) {
-    hostAccessAttempted = true;
-    await requestHostAccess();
-  }
 
   try {
     await Promise.all([saveEngines(engines), saveSettings(settings)]);

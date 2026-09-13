@@ -14,8 +14,7 @@ ContextPop does not collect, store, or transmit any personal data to the develop
 - `storage` — save your engines and preferences.
 - `search` — read the search engines already installed in your browser and run a search with them (used only when you import or use a browser engine).
 - `clipboardWrite` — copy the selected text to your clipboard when you pick a copy action. The copy stays on your device.
-- Host access to all sites — required to show the menu on any page where you select text.
-- Optional host access — requested only when an engine's icon needs to be fetched from its site.
+- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Requested at install and revocable per-site in the browser's extension settings.
 
 ## Contact
 
