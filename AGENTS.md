@@ -13,7 +13,13 @@
 - `src/menu.js` — popup UI rendered in a closed shadow root.
 - `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
 - `src/storage.js` — shared storage schema and helpers (`api`, engines, settings).
-- `src/icons.js` — favicon resolution, fetch/cache, and rendering; exposes `HTTP_URL_PATTERN` (used by the background), `createFaviconIcon`, and `applyEngineIcons`.
+- `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
+- `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`); owns `HTTP_URL_PATTERN` (also used by the background).
+- `src/iconParse.js` — favicon candidate and web-app-manifest discovery from fetched markup.
+- `src/iconFetch.js` — favicon / markup / manifest fetches and data-URL encoding.
+- `src/iconCache.js` — in-memory + `storage.local` favicon cache (`readIconCache`, `pruneIconCache`, `clearIconCache`).
+- `src/iconSvg.js` — SVG monochrome analysis (`svgDataUrlIsMonochrome`).
+- `src/iconRender.js` — DOM icon rendering (`createSvgIcon`, `createFaviconIcon`, `applyEngineIcons`); loaded by content scripts and the options page, not the background.
 - `src/defaultEngines.js` — seed engines.
 - `src/options.html` / `src/options.js` / `src/options.css` — engine and settings management.
 - `src/manifest.json` — Firefox MV3 manifest.
@@ -38,8 +44,9 @@
 
 - Add feature: extend `src/background.js` message handling and `src/menu.js` UI, then persist via `src/storage.js`.
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
-- Content scripts share one isolated world per frame. `storage.js`, `icons.js`, and `defaultEngines.js` are deliberately unwrapped and declare top-level `var`, so their bare-name globals are shared with siblings — do not wrap them in an IIFE. `theme.js`, `menu.js`, and `content.js` are IIFEs: `theme.js` publishes `globalThis.__contextPopTheme`, `menu.js` publishes `globalThis.__contextPopMenu`, and `content.js` consumes both.
-- Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('defaultEngines.js', 'storage.js', 'icons.js')` before `background.js` runs.
+- Content scripts share one isolated world per frame. `storage.js`, `defaultEngines.js`, and the icon modules (`icons.js`, `iconSource.js`, `iconParse.js`, `iconFetch.js`, `iconCache.js`, `iconSvg.js`, `iconRender.js`) are deliberately unwrapped and declare top-level `var`, so their bare-name globals are shared with siblings — do not wrap them in an IIFE. `theme.js`, `menu.js`, and `content.js` are IIFEs: `theme.js` publishes `globalThis.__contextPopTheme`, `menu.js` publishes `globalThis.__contextPopMenu`, and `content.js` consumes both.
+- Icon modules load per context: the background imports source/parse/cache/fetch + `icons.js`; content scripts and the options page load `iconSvg.js` + `iconRender.js` instead. Keep the `background.scripts`, `chrome_manifest` `importScripts`, and `content_scripts.js` lists in sync when adding a module.
+- Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('defaultEngines.js', 'storage.js', 'iconSource.js', 'iconParse.js', 'iconCache.js', 'iconFetch.js', 'icons.js')` before `background.js` runs.
 - Design tokens (accent, font family) live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access

@@ -1,6 +1,14 @@
 // Chrome loads only this file as a service worker; Firefox lists the scripts in the manifest.
 if (typeof DEFAULT_ENGINES === 'undefined' && typeof importScripts === 'function') {
-  importScripts('defaultEngines.js', 'storage.js', 'icons.js');
+  importScripts(
+    'defaultEngines.js',
+    'storage.js',
+    'iconSource.js',
+    'iconParse.js',
+    'iconCache.js',
+    'iconFetch.js',
+    'icons.js',
+  );
 }
 
 const OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'newWindow']);
