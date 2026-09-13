@@ -50,7 +50,7 @@
   }
 
   /**
-   * @param {any} message
+   * @param {Message} message
    */
   function send(message) {
     api.runtime.sendMessage(message).catch(() => {});
@@ -150,7 +150,7 @@
     const method = resolveMethod(event, menuState.settings?.openMethod);
     send({
       type: 'search',
-      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId,
+      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
       terms: menuState.text,
       method,
     });
@@ -165,7 +165,7 @@
     event.preventDefault();
     send({
       type: 'search',
-      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId,
+      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
       terms: menuState.text,
       method: 'backgroundTab',
     });

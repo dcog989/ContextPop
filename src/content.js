@@ -20,14 +20,15 @@
   };
 
   /**
-   * @param {any} message
-   * @returns {Promise<any>}
+   * @template {MessageType} K
+   * @param {Message & { type: K }} message
+   * @returns {Promise<MessageResultMap[K]>}
    */
   function request(message) {
     return api.runtime.sendMessage(message).then(
-      /** @param {any} response */ (response) => {
-        if (response?.error) throw new Error(response.error);
-        return response?.data;
+      /** @param {MessageResponse<MessageResultMap[K]>} [response] */ (response) => {
+        if (response && 'error' in response) throw new Error(response.error);
+        return /** @type {MessageResultMap[K]} */ (response?.data);
       },
     );
   }

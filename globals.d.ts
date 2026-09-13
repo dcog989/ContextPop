@@ -100,6 +100,38 @@ interface MenuContent {
   definitive: boolean;
 }
 
+// --- Message protocol ------------------------------------------------------
+
+interface MessageMap {
+  getEngines: { type: 'getEngines' };
+  getSettings: { type: 'getSettings' };
+  getIcons: { type: 'getIcons' };
+  refreshIcons: { type: 'refreshIcons' };
+  search: { type: 'search'; engineId: string; terms: string; method: string };
+  openLink: { type: 'openLink'; url: string; method: string };
+  openReference: { type: 'openReference'; template: string; terms: string };
+  openOptions: { type: 'openOptions' };
+}
+
+type MessageType = keyof MessageMap;
+
+type Message = MessageMap[MessageType];
+
+type IconMap = Record<string, string>;
+
+interface MessageResultMap {
+  getEngines: Engine[];
+  getSettings: Settings;
+  getIcons: IconMap;
+  refreshIcons: IconMap;
+  search: { ok: boolean };
+  openLink: { ok: boolean };
+  openReference: { ok: boolean };
+  openOptions: { ok: boolean };
+}
+
+type MessageResponse<T> = { data: T } | { error: string };
+
 // --- Published globals -----------------------------------------------------
 
 interface ThemeApi {

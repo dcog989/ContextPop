@@ -30,7 +30,7 @@ async function seedStorage() {
 }
 
 /**
- * @param {any} method
+ * @param {string} method
  * @param {any} sender
  * @returns {string}
  */
@@ -50,7 +50,7 @@ function dispositionFor(method) {
 
 /**
  * @param {string} url
- * @param {any} method
+ * @param {string} method
  * @param {any} sender
  * @returns {Promise<void>}
  */
@@ -103,7 +103,7 @@ function assertTemplate(value, label) {
 }
 
 /**
- * @param {{ engine: Engine, terms: any, method: any }} message
+ * @param {{ engine: Engine, terms: string, method: string }} message
  * @param {any} sender
  * @returns {Promise<void>}
  */
@@ -122,7 +122,7 @@ async function openSearch({ engine, terms, method }, sender) {
 }
 
 /**
- * @param {{ template: any, terms: any }} message
+ * @param {{ template: string, terms: string }} message
  * @returns {Promise<void>}
  */
 async function openReference({ template, terms }) {
@@ -137,7 +137,7 @@ async function openReference({ template, terms }) {
 }
 
 /**
- * @param {{ url: any, method: any }} message
+ * @param {{ url: string, method: string }} message
  * @param {any} sender
  * @returns {Promise<void>}
  */
@@ -148,12 +148,12 @@ async function openLink({ url, method }, sender) {
 }
 
 /**
- * @param {any} message
+ * @param {Message} message
  * @param {any} sender
- * @returns {Promise<any>}
+ * @returns {Promise<MessageResultMap[MessageType]>}
  */
 async function handleMessage(message, sender) {
-  switch (message?.type) {
+  switch (message.type) {
     case 'getEngines':
       return loadEngines();
     case 'getSettings':
@@ -184,7 +184,7 @@ async function handleMessage(message, sender) {
       await api.runtime.openOptionsPage();
       return { ok: true };
     default:
-      throw new Error(`Unknown message type: ${message?.type}`);
+      throw new Error(`Unknown message type: ${/** @type {any} */ (message).type}`);
   }
 }
 
