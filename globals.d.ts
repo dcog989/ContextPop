@@ -25,6 +25,13 @@ interface Engine {
   icon: string;
 }
 
+interface BuiltinAction {
+  id: string;
+  contexts: string[];
+  template?: string;
+  icon: string;
+}
+
 interface BuiltinActionValue {
   enabled: boolean;
   template?: string;
