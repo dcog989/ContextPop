@@ -81,3 +81,7 @@ https://duckduckgo.com/?q={searchTerms}
 - Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Granted at install (Chrome and Firefox MV3); revoke per-site in the browser's extension settings.
 
 Remote icons are fetched by the background, preferring the high-resolution icon each site declares, and cached on-device without cookies or a referrer. Use "Refresh icons" in settings to re-fetch them. See [PRIVACY.md](PRIVACY.md).
+
+## License
+
+GNU General Public License v3.0
