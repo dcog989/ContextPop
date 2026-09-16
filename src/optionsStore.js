@@ -80,7 +80,6 @@ async function save() {
 
   const engines = state.engines.map((engine) => normalizeEngine(engine));
   const settings = normalizeSettings(state.settings);
-  settings.columns = clamp(Number(settings.columns) || DEFAULT_SETTINGS.columns, 1, 12);
 
   try {
     await Promise.all([saveEngines(engines), saveSettings(settings)]);

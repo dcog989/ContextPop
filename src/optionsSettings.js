@@ -29,7 +29,7 @@ function bindSettings() {
     markDirty();
   });
   elements.columns.addEventListener('change', () => {
-    state.settings.columns = clamp(Number(elements.columns.value) || DEFAULT_SETTINGS.columns, 1, 12);
+    state.settings.columns = normalizeSettings({ ...state.settings, columns: Number(elements.columns.value) }).columns;
     elements.columns.value = String(state.settings.columns);
     markDirty();
   });

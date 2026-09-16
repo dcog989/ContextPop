@@ -35,6 +35,8 @@ var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 var POPUP_SIZES = Object.freeze(['compact', 'standard', 'large', 'luxury']);
 var POPUP_POSITIONS = Object.freeze(['below', 'under']);
+var MIN_COLUMNS = 1;
+var MAX_COLUMNS = 12;
 
 var THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
 
@@ -194,6 +196,10 @@ function normalizeSettings(stored) {
   const base = defaultSettings();
   const input = stored && typeof stored === 'object' ? stored : {};
   const settings = { ...base, ...input };
+  const columns = Number(input.columns);
+  settings.columns = Number.isFinite(columns)
+    ? Math.min(MAX_COLUMNS, Math.max(MIN_COLUMNS, Math.round(columns)))
+    : DEFAULT_SETTINGS.columns;
   settings.popupSize = POPUP_SIZES.includes(input.popupSize) ? input.popupSize : DEFAULT_SETTINGS.popupSize;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
