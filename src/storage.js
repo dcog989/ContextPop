@@ -3,6 +3,8 @@
 // document without throwing a SyntaxError on redeclaration.
 var api = globalThis.browser ?? globalThis.chrome;
 
+var HTTP_URL_PATTERN = /^https?:\/\//i;
+
 var STORAGE_KEYS = Object.freeze({
   engines: 'engines',
   settings: 'settings',

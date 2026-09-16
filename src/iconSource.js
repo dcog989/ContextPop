@@ -5,7 +5,6 @@
 // var (not const) throughout the icon modules: top-level bindings are shared, bare-name
 // globals across sibling content-script files, and must tolerate re-injection into the
 // same document without throwing a SyntaxError on redeclaration.
-var HTTP_URL_PATTERN = /^https?:\/\//i;
 
 // Best-effort mapping from browser search-engine display names to their
 // host, used only to fetch a favicon for browser-native engines. Not
