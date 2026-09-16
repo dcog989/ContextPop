@@ -290,6 +290,14 @@ function isHttpUrl(value) {
 }
 
 /**
+ * @param {string} template
+ * @returns {boolean}
+ */
+function templateHasSearchTerms(template) {
+  return template.includes('{searchTerms}');
+}
+
+/**
  * @returns {Engine[]}
  */
 function defaultEngineList() {

@@ -55,7 +55,7 @@ function validate() {
     if (engine.enabled === false) continue;
     if (!engine.name.trim()) return msg('errorNameRequired');
     if (engine.source === 'browser') continue;
-    if (!engine.template.includes('{searchTerms}')) return msg('errorTemplateTerms', engine.name);
+    if (!templateHasSearchTerms(engine.template)) return msg('errorTemplateTerms', engine.name);
     if (!HTTP_URL_PATTERN.test(engine.template)) return msg('errorTemplateScheme', engine.name);
   }
   for (const def of BUILTIN_ACTION_DEFS) {
@@ -64,7 +64,7 @@ function validate() {
     if (!value?.enabled) continue;
     const template = String(value.template ?? '');
     const name = (msg(`action${capitalize(def.id)}`) || capitalize(def.id)).trim();
-    if (!template.includes('{searchTerms}')) return msg('errorTemplateTerms', name);
+    if (!templateHasSearchTerms(template)) return msg('errorTemplateTerms', name);
     if (!HTTP_URL_PATTERN.test(template)) return msg('errorTemplateScheme', name);
   }
   return null;

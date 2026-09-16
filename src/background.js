@@ -98,7 +98,7 @@ async function openBrowserSearch(engine, query, openMethod, sender) {
  * @param {string} label
  */
 function assertTemplate(value, label) {
-  if (!value.includes('{searchTerms}')) throw new Error(`${label} template is missing {searchTerms}`);
+  if (!templateHasSearchTerms(value)) throw new Error(`${label} template is missing {searchTerms}`);
   if (!HTTP_URL_PATTERN.test(value)) throw new Error(`${label} template must use http or https`);
 }
 
