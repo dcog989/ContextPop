@@ -212,6 +212,15 @@
   "menuNoActions": {
     "message": "Für diese Auswahl ist nichts verfügbar"
   },
+  "actionFailed": {
+    "message": "Aktion fehlgeschlagen: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "In der Vorlage fehlt {searchTerms}"
+      }
+    }
+  },
   "actionsHeading": {
     "message": "Aktionen"
   },

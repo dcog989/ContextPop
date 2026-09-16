@@ -216,6 +216,15 @@
   "menuNoActions": {
     "message": "Nothing available for this selection"
   },
+  "actionFailed": {
+    "message": "Action failed: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Engine template is missing {searchTerms}"
+      }
+    }
+  },
   "actionsHeading": {
     "message": "Actions"
   },

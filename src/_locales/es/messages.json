@@ -212,6 +212,15 @@
   "menuNoActions": {
     "message": "No hay nada disponible para esta selección"
   },
+  "actionFailed": {
+    "message": "La acción falló: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Falta {searchTerms} en la plantilla"
+      }
+    }
+  },
   "actionsHeading": {
     "message": "Acciones"
   },

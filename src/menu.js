@@ -51,9 +51,11 @@
 
   /**
    * @param {Message} message
+   * @returns {Promise<void>}
    */
-  function send(message) {
-    api.runtime.sendMessage(message).catch(() => {});
+  async function send(message) {
+    const response = await api.runtime.sendMessage(message);
+    if (response && 'error' in response) throw new Error(response.error);
   }
 
   /**
@@ -107,10 +109,43 @@
   }
 
   /**
+   * @param {string} message
+   */
+  function showMenuError(message) {
+    const menu = /** @type {HTMLElement | null} */ (menuState.root?.querySelector?.('.cs-menu') ?? null);
+    if (!menu) return;
+    let notice = /** @type {HTMLElement | null} */ (menu.querySelector('.cs-error'));
+    if (!notice) {
+      notice = document.createElement('div');
+      notice.className = 'cs-error';
+      notice.setAttribute('role', 'alert');
+      menu.appendChild(notice);
+    }
+    notice.textContent = message;
+  }
+
+  /**
+   * Runs an action and reports its outcome: close the menu on success, or keep it
+   * open with an inline error when the request is rejected.
+   * @param {HTMLElement | null} host
+   * @param {Promise<void>} request
+   */
+  async function runWithFeedback(host, request) {
+    try {
+      await request;
+    } catch (error) {
+      if (menuState.host === host) showMenuError(t('actionFailed', 'Action failed: $1$', [errorMessage(error)]));
+      return;
+    }
+    if (menuState.host === host) closeMenu({ restoreFocus: true });
+  }
+
+  /**
    * @param {string} id
    * @param {MouseEvent} event
+   * @returns {Promise<void>}
    */
-  function dispatchAction(id, event) {
+  async function dispatchAction(id, event) {
     const action = menuState.actions.find((item) => item.id === id);
     if (!action) return;
     const method = resolveMethod(event, menuState.settings?.openMethod);
@@ -119,15 +154,15 @@
       case 'copyRich':
       case 'copyPlain':
       case 'copyLink':
-        menuState.handlers?.[id]?.();
+        await menuState.handlers?.[id]?.();
         break;
       case 'openLink':
-        send({ type: 'openLink', url: menuState.href, method });
+        await send({ type: 'openLink', url: menuState.href, method });
         break;
       case 'define':
       case 'thesaurus':
       case 'translate':
-        send({ type: 'openReference', template: action.template, terms: menuState.text });
+        await send({ type: 'openReference', template: action.template, terms: menuState.text });
         break;
       default:
         break;
@@ -139,8 +174,7 @@
    */
   function handleActionClick(event) {
     const target = /** @type {HTMLElement} */ (event.currentTarget);
-    dispatchAction(target.dataset.actionId ?? '', event);
-    closeMenu({ restoreFocus: true });
+    runWithFeedback(menuState.host, dispatchAction(target.dataset.actionId ?? '', event));
   }
 
   /**
@@ -148,13 +182,15 @@
    */
   function handleEngineClick(event) {
     const method = resolveMethod(event, menuState.settings?.openMethod);
-    send({
-      type: 'search',
-      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
-      terms: menuState.text,
-      method,
-    });
-    closeMenu({ restoreFocus: true });
+    runWithFeedback(
+      menuState.host,
+      send({
+        type: 'search',
+        engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
+        terms: menuState.text,
+        method,
+      }),
+    );
   }
 
   /**
@@ -163,13 +199,15 @@
   function handleEngineAuxClick(event) {
     if (event.button !== 1) return;
     event.preventDefault();
-    send({
-      type: 'search',
-      engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
-      terms: menuState.text,
-      method: 'backgroundTab',
-    });
-    closeMenu({ restoreFocus: true });
+    runWithFeedback(
+      menuState.host,
+      send({
+        type: 'search',
+        engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
+        terms: menuState.text,
+        method: 'backgroundTab',
+      }),
+    );
   }
 
   /**

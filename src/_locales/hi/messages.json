@@ -212,6 +212,15 @@
   "menuNoActions": {
     "message": "इस चयन के लिए कुछ उपलब्ध नहीं है"
   },
+  "actionFailed": {
+    "message": "क्रिया विफल रही: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "टेम्पलेट में {searchTerms} नहीं है"
+      }
+    }
+  },
   "actionsHeading": {
     "message": "क्रियाएँ"
   },

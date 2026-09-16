@@ -164,6 +164,19 @@
   font-size: 0.86em;
   opacity: calc(0.72 * var(--cs-alpha, 1));
 }
+.cs-error {
+  padding: 0.43em 0.57em;
+  border: 1px solid rgba(214, 69, 69, calc(0.5 * var(--cs-alpha, 1)));
+  border-radius: 0.57em;
+  color: #c0392b;
+  font-size: 0.79em;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.cs-menu.dark .cs-error {
+  border-color: rgba(255, 107, 107, calc(0.5 * var(--cs-alpha, 1)));
+  color: #ff6b6b;
+}
 .cs-menu.cs-anim-in {
   animation: cs-expand 180ms ease-out;
 }

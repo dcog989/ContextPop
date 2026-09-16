@@ -212,6 +212,15 @@
   "menuNoActions": {
     "message": "Rien n'est disponible pour cette sélection"
   },
+  "actionFailed": {
+    "message": "Échec de l'action : $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Le modèle ne contient pas {searchTerms}"
+      }
+    }
+  },
   "actionsHeading": {
     "message": "Actions"
   },
