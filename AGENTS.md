@@ -16,7 +16,9 @@
 - `src/menuLayout.js` — theme class, on-screen positioning, animation origin, roving focus (`__contextPopMenuLayout`).
 - `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
 - `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()` and `prefersReducedMotion()`, loaded by both the options page and the content scripts.
-- `src/storage.js` — shared storage schema and helpers (`api`, `HTTP_URL_PATTERN`, engines, settings, onboarding flag, host-access request).
+- `src/util.js` — shared string/URL/id helpers (`errorMessage`, `capitalize`, `buildSearchUrl`, `isHttpUrl`, `templateHasSearchTerms`, `generateId`).
+- `src/actions.js` — built-in action catalog and normalization (`ACTION_ICONS`, `BUILTIN_ACTION_DEFS`, `normalizeBuiltinActions`, `normalizeActionOrder`, `builtinActionList`, `matchesContext`).
+- `src/storage.js` — storage schema, settings/engine normalization, and load/save helpers (`api`, `HTTP_URL_PATTERN`, keys, `defaultSettings`, `loadEngines`/`saveEngines`, `loadSettings`/`saveSettings`, onboarding, host-access request).
 - `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
 - `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`).
 - `src/iconParse.js` — favicon candidate and web-app-manifest discovery from fetched markup.
@@ -50,9 +52,9 @@
 
 - Add feature: extend `src/background.js` message handling and `src/menu.js` UI, then persist via `src/storage.js`.
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
-- Content scripts share one isolated world per frame. `storage.js`, `defaultEngines.js`, and the icon modules (`icons.js`, `iconSource.js`, `iconParse.js`, `iconFetch.js`, `iconCache.js`, `iconSvg.js`, `iconRender.js`) are deliberately unwrapped and declare top-level `var`, so their bare-name globals are shared with siblings — do not wrap them in an IIFE. `theme.js`, the menu modules (`menuStyles.js`, `menuI18n.js`, `menuLayout.js`, `menuTiles.js`, `menu.js`), and `content.js` are IIFEs: `theme.js` publishes `globalThis.__contextPopTheme`, the menu modules publish `globalThis.__contextPopMenu*`, `menu.js` publishes `globalThis.__contextPopMenu`, and `content.js` consumes it.
+- Content scripts share one isolated world per frame. `util.js`, `actions.js`, `storage.js`, `defaultEngines.js`, and the icon modules (`icons.js`, `iconSource.js`, `iconParse.js`, `iconFetch.js`, `iconCache.js`, `iconSvg.js`, `iconRender.js`) are deliberately unwrapped and declare top-level `var`/`function`, so their bare-name globals are shared with siblings — do not wrap them in an IIFE. `theme.js`, the menu modules (`menuStyles.js`, `menuI18n.js`, `menuLayout.js`, `menuTiles.js`, `menu.js`), and `content.js` are IIFEs: `theme.js` publishes `globalThis.__contextPopTheme`, the menu modules publish `globalThis.__contextPopMenu*`, `menu.js` publishes `globalThis.__contextPopMenu`, and `content.js` consumes it.
 - Icon modules load per context: the background imports source/parse/cache/fetch + `icons.js`; content scripts and the options page load `iconSvg.js` + `iconRender.js` instead. Keep the `background.scripts`, `chrome_manifest` `importScripts`, and `content_scripts.js` lists in sync when adding a module.
-- Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('defaultEngines.js', 'storage.js', 'iconSource.js', 'iconParse.js', 'iconCache.js', 'iconFetch.js', 'icons.js')` before `background.js` runs.
+- Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('util.js', 'actions.js', 'defaultEngines.js', 'storage.js', 'iconSource.js', 'iconParse.js', 'iconCache.js', 'iconFetch.js', 'icons.js')` before `background.js` runs.
 - Design tokens (accent, font family) live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access

@@ -1,6 +1,8 @@
 // Chrome loads only this file as a service worker; Firefox lists the scripts in the manifest.
 if (typeof DEFAULT_ENGINES === 'undefined' && typeof importScripts === 'function') {
   importScripts(
+    'util.js',
+    'actions.js',
     'defaultEngines.js',
     'storage.js',
     'iconSource.js',

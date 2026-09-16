@@ -14,6 +14,8 @@
       "matches": ["<all_urls>"],
       "js": [
         "theme.js",
+        "util.js",
+        "actions.js",
         "defaultEngines.js",
         "storage.js",
         "iconSvg.js",
