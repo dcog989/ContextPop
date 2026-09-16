@@ -1,6 +1,6 @@
 # ContextPop
 
-Launches a customizable popup on text selection for instant search, copy to clipboard, dictionary, thesaurus, and links.
+Browser extension that launches a customizable popup on text selection for instant search, copy to clipboard, dictionary, thesaurus, and links.
 
 ![screenshot 1](assets/screen-1.webp)
 ![screenshot 2](assets/screen-2.webp)
@@ -8,18 +8,20 @@ Launches a customizable popup on text selection for instant search, copy to clip
 ## Features
 
 - Popup tile grid on text selection, keyboard navigable (arrows, Home/End, Tab, Escape)
-- Built-in actions: copy (rich or plain), copy link address, open link, dictionary, thesaurus, translate, and search with the browser default
+- Built-in actions: copy (rich or plain), copy link address, open link, dictionary, thesaurus, and translate
 - Search engines, with a configurable Actions-before/after-engines group order
 - Context-aware actions: copy, copy link address, open link, dictionary, thesaurus, and translate apply to the selections they suit (`text`, `word`, `link`)
-- Manage engines (name, template, result view, optional icon); engines are offered for any selection
-- Import the engines already installed in Firefox; search them through the browser
+- Manage engines (name, template, optional icon); engines are offered for any selection
+- Import the engines already installed in Firefox and search them through the browser
 - Engine icons fetched from each engine's own site (or a custom icon URL), with a letter fallback
-- Open results in a new tab, background tab, current tab, new window, or a popup window
-- Shift-click opens a new window; Ctrl/Cmd-click or middle-click opens a background tab
-- Light, dark, or system theme
+- Open results in a new tab, background tab, current tab, or new window; dictionary/thesaurus/translate open a popup window
+- Configurable trigger: on selection or while holding Alt, Ctrl/Cmd, or Shift
+- Popup controls: columns, size, position, opacity, animation, accent border, and engine-name labels
+- Light, dark, or follow system theme;
+- Export/import settings as JSON
 - First-run orientation callout on the options page
 - English, Spanish, German, French, and Hindi UI via `_locales`
-- Firefox and Chrome, Manifest V3, no build step
+- Firefox and Chrome, Manifest V3
 
 ## Install (temporary / unpacked)
 
@@ -79,12 +81,12 @@ https://duckduckgo.com/?q={searchTerms}
 ## Permissions and privacy
 
 - `storage` — engines, actions, and preferences, kept on-device.
-- `search` — enumerate and use the browser's installed engines (Firefox import/search, Chrome default search).
+- `search` — enumerate and search the browser's installed engines (Firefox import/search; imported engines are hidden where the API is unavailable).
 - `clipboardWrite` — copy actions.
-- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Granted at install (Chrome and Firefox MV3); revoke per-site in the browser's extension settings.
+- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Chrome grants this at install; Firefox MV3 host permissions are opt-in, so approve them from the extension's permissions. Revoke per-site in the browser's extension settings.
 
 Remote icons are fetched by the background, preferring the high-resolution icon each site declares, and cached on-device without cookies or a referrer. Use "Refresh icons" in settings to re-fetch them. See [PRIVACY.md](PRIVACY.md).
 
 ## License
 
-GNU General Public License v3.0
+[GNU General Public License v3.0](LICENSE)
