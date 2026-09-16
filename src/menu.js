@@ -29,7 +29,7 @@
     onClose: null,
   };
 
-  const CLOSE_ANIM_MS = 150;
+  const CLOSE_ANIM_MS = 200;
 
   function isMenuOpen() {
     return menuState.open;

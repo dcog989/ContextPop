@@ -165,10 +165,10 @@
   opacity: calc(0.72 * var(--cs-alpha, 1));
 }
 .cs-menu.cs-anim-in {
-  animation: cs-expand 140ms ease-out;
+  animation: cs-expand 180ms ease-out;
 }
 .cs-menu.cs-anim-out {
-  animation: cs-shrink 120ms ease-in forwards;
+  animation: cs-shrink 160ms ease-in forwards;
   pointer-events: none;
 }
 @keyframes cs-expand {
