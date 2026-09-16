@@ -27,7 +27,7 @@
 - `src/iconSvg.js` — SVG monochrome analysis (`svgDataUrlIsMonochrome`).
 - `src/iconRender.js` — DOM icon rendering (`createSvgIcon`, `createFaviconIcon`, `applyEngineIcons`); loaded by content scripts and the options page, not the background.
 - `src/defaultEngines.js` — seed engines.
-- `src/options.html` / `src/options.css` / `src/options*.js` — options page. `options.js` is the entry (DOM registry + wiring); concerns are split into `optionsI18n.js`, `optionsStore.js` (state/save/validate), `optionsReorder.js`, `optionsActions.js`, `optionsEngines.js`, `optionsConfig.js`, `optionsSettings.js`, and `optionsOnboarding.js` (first-run setup callout), loaded in that order by `options.html`. The background opens this page on install.
+- `src/options.html` / `src/options.css` / `src/options*.js` — options page. `options.js` is the entry (DOM registry + wiring); concerns are split into `optionsI18n.js`, `optionsStore.js` (state/save/validate), `optionsReorder.js`, `optionsActions.js`, `optionsEngines.js`, `optionsConfig.js`, `optionsSettings.js`, and `optionsOnboarding.js` (first-run callout and host-access grant), loaded in that order by `options.html`. The background opens this page on install.
 - `src/manifest.json` — Firefox MV3 manifest.
 - `src/chrome_manifest.json` — Chrome MV3 manifest.
 - `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi); the manifests and pages use these via `__MSG_*__` / `api.i18n`.

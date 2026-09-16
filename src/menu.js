@@ -370,6 +370,9 @@
     const firstTile = /** @type {HTMLElement | null} */ (menu.querySelector('.cs-tile:not(:disabled)'));
     if (firstTile) focusTile(firstTile);
 
+    // Apply each engine's stored icon immediately so imported/custom favicons show at
+    // once (as the options list does), then upgrade with the background-resolved map.
+    applyEngineIcons(iconSetters, engines, {});
     requestIcons().then((icons) => applyEngineIcons(iconSetters, engines, icons));
   }
 

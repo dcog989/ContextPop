@@ -328,5 +328,8 @@
   },
   "onboardingDismiss": {
     "message": "Entendido"
+  },
+  "onboardingGrant": {
+    "message": "Conceder acceso a los sitios"
   }
 }

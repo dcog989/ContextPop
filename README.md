@@ -83,7 +83,7 @@ https://duckduckgo.com/?q={searchTerms}
 - `storage` — engines, actions, and preferences, kept on-device.
 - `search` — enumerate and search the browser's installed engines (Firefox import/search; imported engines are hidden where the API is unavailable).
 - `clipboardWrite` — copy actions.
-- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. Chrome grants this at install; Firefox MV3 host permissions are opt-in, so approve them from the extension's permissions. Revoke per-site in the browser's extension settings.
+- Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. It is granted at install (Firefox 127+ lists it in the install prompt; Chrome grants it), but users can revoke it and temporary/unpacked loads start without it. When it is missing, grant it from the onboarding callout or "Refresh icons" in settings. Revoke per-site in the browser's extension settings.
 
 Remote icons are fetched by the background, preferring the high-resolution icon each site declares, and cached on-device without cookies or a referrer. Use "Refresh icons" in settings to re-fetch them. See [PRIVACY.md](PRIVACY.md).
 

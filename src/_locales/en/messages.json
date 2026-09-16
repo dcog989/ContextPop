@@ -332,5 +332,8 @@
   },
   "onboardingDismiss": {
     "message": "Got it"
+  },
+  "onboardingGrant": {
+    "message": "Grant site access"
   }
 }

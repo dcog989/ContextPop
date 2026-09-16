@@ -328,5 +328,8 @@
   },
   "onboardingDismiss": {
     "message": "समझ गया"
+  },
+  "onboardingGrant": {
+    "message": "साइट पहुँच दें"
   }
 }

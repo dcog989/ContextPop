@@ -27,6 +27,7 @@ const elements = {
   version: /** @type {HTMLElement} */ (document.getElementById('version')),
   onboarding: /** @type {HTMLElement} */ (document.getElementById('onboarding')),
   onboardingDismiss: /** @type {HTMLButtonElement} */ (document.getElementById('onboarding-dismiss')),
+  onboardingGrant: /** @type {HTMLButtonElement} */ (document.getElementById('onboarding-grant')),
 };
 
 /**

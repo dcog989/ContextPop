@@ -328,5 +328,8 @@
   },
   "onboardingDismiss": {
     "message": "Compris"
+  },
+  "onboardingGrant": {
+    "message": "Autoriser l'accès aux sites"
   }
 }
