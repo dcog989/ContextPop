@@ -20,7 +20,6 @@
     html: '',
     context: '',
     href: '',
-    linkText: '',
     actions: [],
     settings: null,
     handlers: null,
@@ -267,7 +266,7 @@
   /**
    * @param {OpenMenuOptions} options
    */
-  function openMenu({ text, html, context, href, linkText, rect, point, engines, settings, handlers, onClose }) {
+  function openMenu({ text, html, context, href, rect, point, engines, settings, handlers, onClose }) {
     removePendingClose();
     closeMenu({ reason: 'replace' });
 
@@ -275,7 +274,6 @@
     menuState.html = html;
     menuState.context = context;
     menuState.href = href;
-    menuState.linkText = linkText;
     menuState.handlers = handlers;
     menuState.onClose = onClose ?? null;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;

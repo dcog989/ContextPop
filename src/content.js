@@ -108,7 +108,6 @@
       rect,
       html: serializeSelection(range),
       href: anchorHref || (isHttpUrl(text) ? text : ''),
-      linkText: anchor ? (anchor.textContent ?? '').trim() : '',
     };
   }
 
@@ -243,7 +242,6 @@
       html: info.html,
       context: info.context,
       href: info.href,
-      linkText: info.linkText,
       rect: info.rect,
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines.filter((engine) => engine.enabled !== false),

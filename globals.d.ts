@@ -67,7 +67,6 @@ interface SelectionInfo {
   rect: DOMRect;
   html: string;
   href: string;
-  linkText: string;
   context?: string;
 }
 
@@ -198,7 +197,6 @@ interface MenuState {
   html: string;
   context: string;
   href: string;
-  linkText: string;
   actions: ActionItem[];
   settings: Settings | null;
   handlers: Record<string, (() => void) | undefined> | null;
@@ -213,7 +211,6 @@ interface OpenMenuOptions {
   html: string;
   context: string;
   href: string;
-  linkText: string;
   rect: DOMRect | null;
   point: { x: number; y: number } | null;
   engines: Engine[];
