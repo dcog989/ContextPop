@@ -152,5 +152,5 @@
     }
   }
 
-  globalThis.__contextPopMenuTiles = { createActionTile, createEngineTile, appendActionTiles, appendEngineTiles };
+  globalThis.__contextPopMenuTiles = { appendActionTiles, appendEngineTiles };
 })();

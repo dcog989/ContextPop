@@ -168,13 +168,6 @@ interface EngineTile {
 }
 
 interface MenuTilesApi {
-  createActionTile(
-    action: ActionItem,
-    text: string,
-    showLabels: boolean,
-    onActivate: (event: MouseEvent) => void,
-  ): HTMLButtonElement;
-  createEngineTile(engine: Engine, showLabels: boolean, handlers: EngineTileHandlers): EngineTile;
   appendActionTiles(
     tiles: HTMLElement,
     actions: ActionItem[],
@@ -223,7 +216,7 @@ interface MenuApi {
   openMenu(options: OpenMenuOptions): void;
   closeMenu(options?: { restoreFocus?: boolean; reason?: string }): void;
   isMenuOpen(): boolean;
-  menuState: MenuState;
+  isEventInsideMenu(event: Event): boolean;
 }
 
 declare var __contextPopTheme: ThemeApi;

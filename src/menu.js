@@ -41,6 +41,14 @@
   }
 
   /**
+   * @param {Event} event
+   * @returns {boolean}
+   */
+  function isEventInsideMenu(event) {
+    return Boolean(menuState.host && event.composedPath().includes(menuState.host));
+  }
+
+  /**
    * @param {HTMLElement} host
    * @param {number} percent
    */
@@ -355,5 +363,5 @@
     applyEngineIcons(iconSetters, engines);
   }
 
-  globalThis.__contextPopMenu = { openMenu, closeMenu, isMenuOpen, menuState };
+  globalThis.__contextPopMenu = { openMenu, closeMenu, isMenuOpen, isEventInsideMenu };
 })();

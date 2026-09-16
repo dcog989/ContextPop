@@ -8,7 +8,7 @@
   if (globalThis.__contextPopInitialized) return;
   globalThis.__contextPopInitialized = true;
 
-  const { openMenu, closeMenu, isMenuOpen, menuState } = menuApi;
+  const { openMenu, closeMenu, isMenuOpen, isEventInsideMenu } = menuApi;
   const api = globalThis.browser ?? globalThis.chrome;
 
   /** @type {{ settings: Settings | null, engines: Engine[], selection: SelectionInfo | null, suppressMouseUp: boolean }} */
@@ -264,7 +264,7 @@
 
     if (isMenuOpen()) return;
     if (!triggerMatches(event)) return;
-    if (menuState.host && event.composedPath().includes(menuState.host)) return;
+    if (isEventInsideMenu(event)) return;
     if (isEditableElement(event.target)) return;
 
     const info = buildActivation();
@@ -276,7 +276,7 @@
    */
   function handleMouseDown(event) {
     if (event.button !== 0) return;
-    if (isMenuOpen() && !(menuState.host && event.composedPath().includes(menuState.host))) {
+    if (isMenuOpen() && !isEventInsideMenu(event)) {
       closeMenu({ reason: 'outside' });
       contentState.suppressMouseUp = true;
     }
