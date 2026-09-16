@@ -57,23 +57,13 @@ function createFaviconIcon({ prefix, label }) {
 }
 
 /**
+ * Applies an already-fetched icon map to the engine tiles. Pure rendering: callers own
+ * the background request so this module stays free of messaging.
  * @param {Map<string, (source: string | null | undefined) => void>} iconSetters
  * @param {Engine[]} engines
- * @returns {Promise<void>}
+ * @param {Record<string, string>} icons
  */
-async function applyEngineIcons(iconSetters, engines) {
-  if (!engines.length) return;
-
-  /** @type {Record<string, string>} */
-  let icons = {};
-  try {
-    const response = await api.runtime.sendMessage({ type: 'getIcons' });
-    if (response?.error) throw new Error(response.error);
-    icons = response?.data || {};
-  } catch {
-    icons = {};
-  }
-
+function applyEngineIcons(iconSetters, engines, icons) {
   for (const engine of engines) {
     const setIcon = iconSetters.get(engine.id);
     if (setIcon) setIcon(icons[engine.id] || engine.icon);

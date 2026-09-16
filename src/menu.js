@@ -67,6 +67,20 @@
     if (response && 'error' in response) throw new Error(response.error);
   }
 
+  /**
+   * Fetches engine icons for the open menu; failures fall back to the letter tiles.
+   * @returns {Promise<Record<string, string>>}
+   */
+  async function requestIcons() {
+    try {
+      const response = await api.runtime.sendMessage({ type: 'getIcons' });
+      if (response?.error) throw new Error(response.error);
+      return response?.data || {};
+    } catch {
+      return {};
+    }
+  }
+
   function removePendingClose() {
     if (!pendingClose) return;
     clearTimeout(pendingClose.timer);
@@ -356,7 +370,7 @@
     const firstTile = /** @type {HTMLElement | null} */ (menu.querySelector('.cs-tile:not(:disabled)'));
     if (firstTile) focusTile(firstTile);
 
-    applyEngineIcons(iconSetters, engines);
+    requestIcons().then((icons) => applyEngineIcons(iconSetters, engines, icons));
   }
 
   globalThis.__contextPopMenu = { openMenu, closeMenu, isMenuOpen, isEventInsideMenu };

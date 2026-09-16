@@ -77,6 +77,16 @@ function createRow(engine, index) {
   return { fragment, setIcon: icon.setSource };
 }
 
+/**
+ * @param {{ type: 'getIcons' | 'refreshIcons' }} message
+ * @returns {Promise<Record<string, string>>}
+ */
+async function requestEngineIcons(message) {
+  const response = await api.runtime.sendMessage(message);
+  if (response?.error) throw new Error(response.error);
+  return response?.data || {};
+}
+
 function renderEngines() {
   elements.list.replaceChildren();
   iconSetters = new Map();
@@ -85,7 +95,9 @@ function renderEngines() {
     elements.list.appendChild(fragment);
     iconSetters.set(engine.id, setIcon);
   });
-  applyEngineIcons(iconSetters, state.engines);
+  requestEngineIcons({ type: 'getIcons' })
+    .then((icons) => applyEngineIcons(iconSetters, state.engines, icons))
+    .catch(() => {});
 }
 
 /**
@@ -199,13 +211,8 @@ async function handleRefreshIcons() {
       return;
     }
 
-    const response = await api.runtime.sendMessage({ type: 'refreshIcons' });
-    if (response?.error) throw new Error(response.error);
-    const icons = response?.data || {};
-    for (const engine of state.engines) {
-      const setIcon = iconSetters.get(engine.id);
-      if (setIcon) setIcon(icons[engine.id] || engine.icon);
-    }
+    const icons = await requestEngineIcons({ type: 'refreshIcons' });
+    applyEngineIcons(iconSetters, state.engines, icons);
     setStatus(msg('statusIconsRefreshed'));
     clearStatusSoon();
   } catch (error) {
