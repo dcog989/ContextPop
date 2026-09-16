@@ -11,6 +11,7 @@
   const { applyTheme, positionMenu, applyAnimationOrigin, focusTile, moveFocus, focusEdge } =
     globalThis.__contextPopMenuLayout;
   const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
+  const prefersReducedMotion = () => globalThis.__contextPopTheme?.prefersReducedMotion() ?? false;
 
   /** @type {MenuState} */
   const menuState = {
@@ -38,10 +39,6 @@
 
   function isMenuOpen() {
     return menuState.open;
-  }
-
-  function prefersReducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   /**

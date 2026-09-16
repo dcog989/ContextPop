@@ -142,6 +142,7 @@ type MessageResponse<T> = { data: T } | { error: string };
 interface ThemeApi {
   TOKENS: Readonly<{ accent: string; fontFamily: string }>;
   applyTokens(target: HTMLElement | null): void;
+  prefersReducedMotion(): boolean;
 }
 
 interface MenuI18nApi {

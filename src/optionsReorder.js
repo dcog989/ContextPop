@@ -19,7 +19,7 @@ function captureRowPositions(container) {
  * @param {Map<string | undefined, number>} first
  */
 function playRowReorder(container, first) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (globalThis.__contextPopTheme?.prefersReducedMotion()) return;
   for (const node of container.children) {
     const el = /** @type {HTMLElement} */ (node);
     const oldTop = first.get(el.dataset.rowId);

@@ -15,7 +15,7 @@
 - `src/menuI18n.js` — localized-string lookup with fallback (`__contextPopMenuI18n`).
 - `src/menuLayout.js` — theme class, on-screen positioning, animation origin, roving focus (`__contextPopMenuLayout`).
 - `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
-- `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()`, loaded by both the options page and the content scripts.
+- `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()` and `prefersReducedMotion()`, loaded by both the options page and the content scripts.
 - `src/storage.js` — shared storage schema and helpers (`api`, `HTTP_URL_PATTERN`, engines, settings, onboarding flag, host-access request).
 - `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
 - `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`).

@@ -27,5 +27,9 @@
     }
   }
 
-  globalThis.__contextPopTheme = { TOKENS, applyTokens };
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  globalThis.__contextPopTheme = { TOKENS, applyTokens, prefersReducedMotion };
 })();

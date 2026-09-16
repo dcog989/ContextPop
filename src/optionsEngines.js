@@ -117,7 +117,7 @@ function removeEngine(index) {
  */
 function deleteEngine(index) {
   const row = /** @type {HTMLElement | undefined} */ (elements.list.children[index]);
-  if (!row || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!row || globalThis.__contextPopTheme?.prefersReducedMotion()) {
     removeEngine(index);
     return;
   }
