@@ -1,8 +1,7 @@
 // Built-in action catalog and normalization: the action definitions (ids, contexts,
 // templates, icons) plus the helpers that normalize stored values against them and turn
 // settings into the ordered ActionItem list the menu consumes. Unwrapped bare globals
-// shared with sibling content-script files. builtinActionList() calls normalizeSettings()
-// from storage.js at runtime; this file only needs to load before that call happens.
+// shared with sibling content-script files.
 
 var THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
 
@@ -100,17 +99,18 @@ function normalizeActionOrder(order) {
 }
 
 /**
+ * Expects already-normalized settings (see normalizeSettings in storage.js); callers must
+ * not pass raw stored values, which may omit action entries.
  * @param {Settings} settings
  * @returns {ActionItem[]}
  */
 function builtinActionList(settings) {
-  const normalized = normalizeSettings(settings || {});
   const byId = new Map(BUILTIN_ACTION_DEFS.map((def) => [def.id, def]));
-  return normalized.actionOrder
+  return settings.actionOrder
     .map((id) => byId.get(id))
     .filter((def) => def !== undefined)
     .map((def) => {
-      const value = normalized.builtinActions[def.id];
+      const value = settings.builtinActions[def.id];
       return {
         id: def.id,
         template: value.template ?? def.template ?? '',
