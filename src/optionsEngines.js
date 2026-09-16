@@ -101,6 +101,14 @@ async function loadEngineIcons() {
   applyEngineIcons(iconSetters, state.engines, engineIcons);
 }
 
+// Clears the background icon cache and re-fetches. Used after host access is granted so
+// icons attempted without permission (recorded as unavailable) are retried.
+async function refreshEngineIcons() {
+  const icons = await requestEngineIcons({ type: 'refreshIcons' });
+  engineIcons = icons;
+  applyEngineIcons(iconSetters, state.engines, icons);
+}
+
 function renderEngines() {
   elements.list.replaceChildren();
   iconSetters = new Map();
@@ -223,9 +231,7 @@ async function handleRefreshIcons() {
       return;
     }
 
-    const icons = await requestEngineIcons({ type: 'refreshIcons' });
-    engineIcons = icons;
-    applyEngineIcons(iconSetters, state.engines, icons);
+    await refreshEngineIcons();
     setStatus(msg('statusIconsRefreshed'));
     clearStatusSoon();
   } catch (error) {

@@ -15,9 +15,12 @@ function bindOnboarding() {
     elements.onboarding.hidden = true;
   });
   elements.onboardingGrant.addEventListener('click', async () => {
-    if (await requestHostAccess()) {
-      updateHostAccess(true);
-      await loadEngineIcons();
+    if (!(await requestHostAccess())) return;
+    updateHostAccess(true);
+    try {
+      await refreshEngineIcons();
+    } catch {
+      // Leave the letter fallbacks in place until the user retries.
     }
   });
 }
