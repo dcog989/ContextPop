@@ -17,7 +17,7 @@
 - `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
 - `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()` and `prefersReducedMotion()`, loaded by both the options page and the content scripts.
 - `src/util.js` — shared string/URL/id helpers (`errorMessage`, `capitalize`, `buildSearchUrl`, `isHttpUrl`, `templateHasSearchTerms`, `generateId`).
-- `src/actions.js` — built-in action catalog and normalization (`ACTION_ICONS`, `BUILTIN_ACTION_DEFS`, `normalizeBuiltinActions`, `normalizeActionOrder`, `builtinActionList`, `matchesContext`).
+- `src/actions.js` — built-in action catalog and normalization (`ACTION_ICONS`, `BUILTIN_ACTION_DEFS`, `normalizeBuiltinActions`, `normalizeActionOrder`, `builtinActionList`, `matchesContext`). Each def's `kind` (`clipboard`/`reference`/`link`) drives menu dispatch and its `usesText`/`tooltipKey` drive labels, so adding an action means adding a def (plus its locale strings), not editing menu switches.
 - `src/storage.js` — storage schema, settings/engine normalization, and load/save helpers (`api`, `HTTP_URL_PATTERN`, keys, `defaultSettings`, `loadEngines`/`saveEngines`, `loadSettings`/`saveSettings`, onboarding, host-access request).
 - `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
 - `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`).

@@ -24,24 +24,31 @@ var ACTION_ICONS = Object.freeze({
 
 /** @type {ReadonlyArray<BuiltinAction>} */
 var BUILTIN_ACTION_DEFS = Object.freeze([
-  { id: 'copyPlain', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyPlain },
-  { id: 'copyLink', contexts: ['link'], icon: ACTION_ICONS.copyLink },
-  { id: 'copyRich', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyRich },
+  { id: 'copyPlain', kind: 'clipboard', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyPlain },
+  { id: 'copyLink', kind: 'clipboard', contexts: ['link'], icon: ACTION_ICONS.copyLink },
+  { id: 'copyRich', kind: 'clipboard', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyRich },
   {
     id: 'define',
+    kind: 'reference',
     contexts: ['word'],
     template: 'https://en.wiktionary.org/wiki/{searchTerms}',
     icon: ACTION_ICONS.define,
+    usesText: true,
+    tooltipKey: 'actionDefineTooltip',
   },
-  { id: 'openLink', contexts: ['link'], icon: ACTION_ICONS.openLink },
+  { id: 'openLink', kind: 'link', contexts: ['link'], icon: ACTION_ICONS.openLink },
   {
     id: 'thesaurus',
+    kind: 'reference',
     contexts: ['word'],
     template: THESAURUS_TEMPLATE,
     icon: ACTION_ICONS.thesaurus,
+    usesText: true,
+    tooltipKey: 'actionThesaurusTooltip',
   },
   {
     id: 'translate',
+    kind: 'reference',
     contexts: ['text', 'word'],
     template: 'https://translate.google.com/?sl=auto&tl=en&text={searchTerms}&op=translate',
     icon: ACTION_ICONS.translate,
@@ -113,10 +120,13 @@ function builtinActionList(settings) {
       const value = settings.builtinActions[def.id];
       return {
         id: def.id,
+        kind: def.kind,
         template: value.template ?? def.template ?? '',
         enabled: value.enabled,
         contexts: [...def.contexts],
         icon: def.icon || '',
+        usesText: def.usesText === true,
+        tooltipKey: def.tooltipKey ?? '',
       };
     });
 }

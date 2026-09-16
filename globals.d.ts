@@ -25,11 +25,16 @@ interface Engine {
   icon: string;
 }
 
+type ActionKind = 'clipboard' | 'reference' | 'link';
+
 interface BuiltinAction {
   id: string;
+  kind: ActionKind;
   contexts: string[];
   template?: string;
   icon: string;
+  usesText?: boolean;
+  tooltipKey?: string;
 }
 
 interface BuiltinActionValue {
@@ -55,10 +60,13 @@ interface Settings {
 
 interface ActionItem {
   id: string;
+  kind: ActionKind;
   template: string;
   enabled: boolean;
   contexts: string[];
   icon: string;
+  usesText: boolean;
+  tooltipKey: string;
   disabled?: boolean;
 }
 

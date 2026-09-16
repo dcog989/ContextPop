@@ -13,14 +13,8 @@
    * @returns {string}
    */
   function actionLabel(action, text) {
-    switch (action.id) {
-      case 'define':
-        return t('actionDefine', 'Dictionary $1$', [text]);
-      case 'thesaurus':
-        return t('actionThesaurus', 'Thesaurus $1$', [text]);
-      default:
-        return t(`action${capitalize(action.id)}`, action.id);
-    }
+    const key = `action${capitalize(action.id)}`;
+    return action.usesText ? t(key, action.id, [text]) : t(key, action.id);
   }
 
   /**
@@ -29,14 +23,8 @@
    * @returns {string}
    */
   function actionTooltip(action, text) {
-    switch (action.id) {
-      case 'define':
-        return t('actionDefineTooltip', 'Dictionary "$1$"', [text]);
-      case 'thesaurus':
-        return t('actionThesaurusTooltip', 'Thesaurus "$1$"', [text]);
-      default:
-        return actionLabel(action, text);
-    }
+    const key = action.tooltipKey || `action${capitalize(action.id)}`;
+    return action.usesText ? t(key, action.id, [text]) : t(key, action.id);
   }
 
   /**

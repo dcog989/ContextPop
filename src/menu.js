@@ -173,18 +173,14 @@
     if (!action) return;
     const method = resolveMethod(event, menuState.settings?.openMethod);
 
-    switch (id) {
-      case 'copyRich':
-      case 'copyPlain':
-      case 'copyLink':
-        await menuState.handlers?.[id]?.();
+    switch (action.kind) {
+      case 'clipboard':
+        await menuState.handlers?.[action.id]?.();
         break;
-      case 'openLink':
+      case 'link':
         await send({ type: 'openLink', url: menuState.href, method });
         break;
-      case 'define':
-      case 'thesaurus':
-      case 'translate':
+      case 'reference':
         await send({ type: 'openReference', template: action.template, terms: menuState.text });
         break;
       default:
