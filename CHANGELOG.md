@@ -2,6 +2,60 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.7.0 - 2026-09-16
+
+#### Features
+
+- (c5f979f) add host-access grant to the onboarding callout - dcog989
+
+- (9d86542) add favicon to options - dcog989
+
+#### Bug Fixes
+
+- (f20ed84) re-fetch engine icons after granting site access - dcog989
+
+- (0a73f3b) normalize state in place when saving - dcog989
+
+- (781176a) evict the animating host before opening a new menu - dcog989
+
+- (474c5d5) surface action failures instead of swallowing them - dcog989
+
+- (3cd0e1d) only arm mouseup suppression on left click - dcog989
+
+- (49e196b) reseed default engines on non-array storage - dcog989
+
+- (0e58a8f) clamp columns only in normalizeSettings - dcog989
+
+#### Performance Improvements
+
+- (867a4b4) cache engine icons across list re-renders - dcog989
+
+- (42c6b4e) stop re-normalizing settings in builtinActionList - dcog989
+
+#### Refactoring
+
+- (e696fc9) keep background messaging out of the DOM renderer - dcog989
+
+- (ade07f7) drive dispatch and labels from action metadata - dcog989
+
+- (647485c) split action catalog and utils into modules - dcog989
+
+- (ace0ccb) drop unreachable matchesContext fallback - dcog989
+
+- (1970fbb) narrow published module surfaces - dcog989
+
+- (75985be) drop unused linkText from the selection pipeline - dcog989
+
+- (77d4988) add templateHasSearchTerms predicate - dcog989
+
+- (e582743) centralize the reduced-motion check - dcog989
+
+- (e6ed007) share one HTTP URL scheme check - dcog989
+
+- (531e304) drop unused openOptions message type - dcog989
+
+- - -
+
 ## v0.6.3 - 2026-09-13
 
 - - -
