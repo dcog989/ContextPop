@@ -277,6 +277,7 @@
    * @param {MouseEvent} event
    */
   function handleMouseDown(event) {
+    if (event.button !== 0) return;
     if (isMenuOpen() && !(menuState.host && event.composedPath().includes(menuState.host))) {
       closeMenu({ reason: 'outside' });
       contentState.suppressMouseUp = true;
