@@ -117,7 +117,6 @@ interface MessageMap {
   search: { type: 'search'; engineId: string; terms: string; method: string };
   openLink: { type: 'openLink'; url: string; method: string };
   openReference: { type: 'openReference'; template: string; terms: string };
-  openOptions: { type: 'openOptions' };
 }
 
 type MessageType = keyof MessageMap;
@@ -134,7 +133,6 @@ interface MessageResultMap {
   search: { ok: boolean };
   openLink: { ok: boolean };
   openReference: { ok: boolean };
-  openOptions: { ok: boolean };
 }
 
 type MessageResponse<T> = { data: T } | { error: string };

@@ -180,9 +180,6 @@ async function handleMessage(message, sender) {
     case 'openReference':
       await openReference({ template: message.template, terms: message.terms });
       return { ok: true };
-    case 'openOptions':
-      await api.runtime.openOptionsPage();
-      return { ok: true };
     default:
       throw new Error(`Unknown message type: ${/** @type {any} */ (message).type}`);
   }
