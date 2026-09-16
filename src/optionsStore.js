@@ -120,7 +120,7 @@ async function save() {
     return;
   }
 
-  state.engines.forEach((engine) => Object.assign(engine, normalizeEngine(engine)));
+  for (const engine of state.engines) Object.assign(engine, normalizeEngine(engine));
   normalizeSettingsInPlace(state.settings);
 
   try {
