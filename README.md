@@ -2,6 +2,9 @@
 
 Launches a customizable popup on text selection for instant search, copy to clipboard, dictionary, thesaurus, and links.
 
+![screenshot 1](assets/screen-1.webp)
+![screenshot 2](assets/screen-2.webp)
+
 ## Features
 
 - Popup tile grid on text selection, keyboard navigable (arrows, Home/End, Tab, Escape)
