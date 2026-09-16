@@ -4,6 +4,11 @@
 /** @type {Map<string, (source: string | null | undefined) => void>} */
 let iconSetters = new Map();
 
+// Last fetched engine icon map, reused across re-renders so add/delete/reorder do not
+// re-query the background. Refreshed on initial load and by the Refresh icons button.
+/** @type {Record<string, string>} */
+let engineIcons = {};
+
 /**
  * @param {Engine} engine
  * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
@@ -87,6 +92,15 @@ async function requestEngineIcons(message) {
   return response?.data || {};
 }
 
+async function loadEngineIcons() {
+  try {
+    engineIcons = await requestEngineIcons({ type: 'getIcons' });
+  } catch {
+    engineIcons = {};
+  }
+  applyEngineIcons(iconSetters, state.engines, engineIcons);
+}
+
 function renderEngines() {
   elements.list.replaceChildren();
   iconSetters = new Map();
@@ -95,9 +109,7 @@ function renderEngines() {
     elements.list.appendChild(fragment);
     iconSetters.set(engine.id, setIcon);
   });
-  requestEngineIcons({ type: 'getIcons' })
-    .then((icons) => applyEngineIcons(iconSetters, state.engines, icons))
-    .catch(() => {});
+  applyEngineIcons(iconSetters, state.engines, engineIcons);
 }
 
 /**
@@ -212,6 +224,7 @@ async function handleRefreshIcons() {
     }
 
     const icons = await requestEngineIcons({ type: 'refreshIcons' });
+    engineIcons = icons;
     applyEngineIcons(iconSetters, state.engines, icons);
     setStatus(msg('statusIconsRefreshed'));
     clearStatusSoon();
