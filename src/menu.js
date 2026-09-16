@@ -31,6 +31,11 @@
 
   const CLOSE_ANIM_MS = 200;
 
+  // Host left in the DOM by an in-progress exit animation, tracked so a subsequent
+  // open can evict it before mounting the next menu.
+  /** @type {{ host: HTMLElement, timer: ReturnType<typeof setTimeout> } | null} */
+  let pendingClose = null;
+
   function isMenuOpen() {
     return menuState.open;
   }
@@ -58,6 +63,13 @@
     if (response && 'error' in response) throw new Error(response.error);
   }
 
+  function removePendingClose() {
+    if (!pendingClose) return;
+    clearTimeout(pendingClose.timer);
+    pendingClose.host.remove();
+    pendingClose = null;
+  }
+
   /**
    * @param {{ restoreFocus?: boolean, reason?: string }} [options]
    */
@@ -81,20 +93,27 @@
     onClose?.(reason);
 
     const menu = root?.querySelector?.('.cs-menu');
-    if (menu && menuState.settings?.popupAnimation && !prefersReducedMotion()) {
-      menu.classList.remove('cs-anim-in');
-      menu.classList.add('cs-anim-out');
-      let settled = false;
-      const finish = () => {
-        if (settled) return;
-        settled = true;
-        host?.remove();
-      };
-      menu.addEventListener('animationend', finish, { once: true });
-      setTimeout(finish, CLOSE_ANIM_MS);
-    } else {
+    if (reason === 'replace' || !menu || !host || !menuState.settings?.popupAnimation || prefersReducedMotion()) {
       host?.remove();
+      return;
     }
+
+    removePendingClose();
+    menu.classList.remove('cs-anim-in');
+    menu.classList.add('cs-anim-out');
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (pendingClose?.host === host) {
+        clearTimeout(pendingClose.timer);
+        pendingClose = null;
+      }
+      host.remove();
+    };
+    const timer = setTimeout(finish, CLOSE_ANIM_MS);
+    pendingClose = { host, timer };
+    menu.addEventListener('animationend', finish, { once: true });
   }
 
   /**
@@ -252,6 +271,7 @@
    * @param {OpenMenuOptions} options
    */
   function openMenu({ text, html, context, href, linkText, rect, point, engines, settings, handlers, onClose }) {
+    removePendingClose();
     closeMenu({ reason: 'replace' });
 
     menuState.text = text;
