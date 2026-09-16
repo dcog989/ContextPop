@@ -32,7 +32,6 @@ var requestHostAccess = async () => {
   }
 };
 
-var CONTEXTS = Object.freeze(['text', 'word', 'link']);
 var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 var POPUP_SIZES = Object.freeze(['compact', 'standard', 'large', 'luxury']);
@@ -242,13 +241,12 @@ function builtinActionList(settings) {
 }
 
 /**
- * @param {any} item
+ * @param {ActionItem} item
  * @param {string} context
  * @returns {boolean}
  */
 function matchesContext(item, context) {
-  const contexts = Array.isArray(item?.contexts) ? item.contexts : CONTEXTS;
-  return contexts.includes(context);
+  return item.contexts.includes(context);
 }
 
 /**
