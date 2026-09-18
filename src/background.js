@@ -92,9 +92,11 @@ async function openBrowserSearch(engine, query, openMethod, sender) {
     try {
       await api.search.search({ engine: engine.browserEngineName, query, tabId: tab.id });
     } catch (error) {
-      await api.tabs
-        .remove(tab.id)
-        .catch((removeError) => console.error('ContextPop: failed to close orphaned search tab', removeError));
+      try {
+        await api.tabs.remove(tab.id);
+      } catch (removeError) {
+        console.error('ContextPop: failed to close orphaned search tab', removeError);
+      }
       throw error;
     }
     return;

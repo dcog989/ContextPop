@@ -42,9 +42,10 @@
 
 - Install: none. Dev tooling expects the system `biome`, `lefthook`, and `cog` binaries.
 - Dev: reload the unpacked extension after edits.
-- Test: manual, load unpacked (see README).
+- Test: manual, load unpacked (see README); plus `node --test test/*.test.js` for the pure/shared logic (zero-dep harness in `test/`).
 - Lint/format: `biome check` (`biome check --write` to fix).
 - Type-check: `tsc --noEmit -p jsconfig.json` (strict `checkJs`; `globals.d.ts` supplies platform and shared-global types).
+- CI: `.github/workflows/ci.yml` runs `biome ci`, `tsc`, the unit tests, `web-ext lint`, and `scripts/package.sh` on push/PR.
 - Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files, runs `tsc` on staged JS, and runs `cog verify` on commit messages.
 - Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so both manifests stay in sync.
 - Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-{firefox,chrome}.zip`.

@@ -36,6 +36,9 @@ jobs:
       - name: Type-check
         run: npx --yes -p typescript@7.0.2 tsc --noEmit -p jsconfig.json
 
+      - name: Unit tests
+        run: node --test test/*.test.js
+
       - name: Lint WebExtension
         run: npx --yes web-ext@10.6.0 lint --source-dir src --output text
 

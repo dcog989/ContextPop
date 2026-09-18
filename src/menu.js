@@ -153,7 +153,7 @@
    * Runs an action and reports its outcome: close the menu on success, or keep it
    * open with an inline error when the request is rejected.
    * @param {HTMLElement | null} host
-   * @param {Promise<void>} request
+   * @param {Promise<unknown>} request
    */
   async function runWithFeedback(host, request) {
     try {

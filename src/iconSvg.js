@@ -2,7 +2,7 @@
 // accent rather than displayed in its own colors. Pure string analysis, shared with the
 // DOM renderer in iconRender.js.
 
-var SVG_COLOR_PATTERN = /\b(?:fill|stroke|stop-color|color)\s*[:=]\s*["']?\s*([^"';\s>)]+)/gi;
+var SVG_COLOR_PATTERN = /\b(?:fill|stroke|stop-color|color)\s*[:=]\s*["']?\s*([^"';\s>)}]+)/gi;
 var MONOCHROME_SVG_COLORS = new Set([
   'none',
   'transparent',
