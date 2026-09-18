@@ -2,6 +2,28 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.7.2 - 2026-09-18
+
+#### Bug Fixes
+
+- (9e0b994) stop capability filter from pruning saved engines - dcog989
+
+- (5d31923) close orphaned background tab when browser search fails - dcog989
+
+#### Refactoring
+
+- (e4e313e) type the WebExtension platform boundary - dcog989
+
+- (d923d51) move host-access grant out of the storage layer - dcog989
+
+- (6935992) clamp columns directly instead of rebuilding settings - dcog989
+
+- (3bda3f1) derive favicon fallback letter inside createFaviconIcon - dcog989
+
+- (2429e80) centralize sendMessage envelope handling in util - dcog989
+
+- - -
+
 ## v0.7.1 - 2026-09-16
 
 - - -
