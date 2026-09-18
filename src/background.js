@@ -89,7 +89,14 @@ async function openBrowserSearch(engine, query, openMethod, sender) {
     // and have the search run in it via tabId. The tab never takes focus,
     // matching template engines' tabs.create({ active: false }).
     const tab = await api.tabs.create({ active: false, openerTabId: sender?.tab?.id });
-    await api.search.search({ engine: engine.browserEngineName, query, tabId: tab.id });
+    try {
+      await api.search.search({ engine: engine.browserEngineName, query, tabId: tab.id });
+    } catch (error) {
+      await api.tabs
+        .remove(tab.id)
+        .catch((removeError) => console.error('ContextPop: failed to close orphaned search tab', removeError));
+      throw error;
+    }
     return;
   }
   await api.search.search({ engine: engine.browserEngineName, query, disposition: dispositionFor(openMethod) });
