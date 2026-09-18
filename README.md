@@ -2,6 +2,8 @@
 
 Browser extension that launches a customizable popup on text selection for instant search, copy to clipboard, dictionary, thesaurus, and links.
 
+Install: [Firefox ContextPop](https://addons.mozilla.org/en-GB/firefox/addon/contextpop/) + *Chrome coming soon*.
+
 ![screenshot 1](assets/screen-1.webp)
 ![screenshot 2](assets/screen-2.webp)
 
