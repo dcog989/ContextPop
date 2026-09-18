@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.7.3 - 2026-09-18
+
+#### Bug Fixes
+
+- (3850401) require Firefox for Android 142 for data_collection_permissions - dcog989
+
+- - -
+
 ## v0.7.2 - 2026-09-18
 
 #### Bug Fixes
