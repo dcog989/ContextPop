@@ -136,6 +136,16 @@ function supportsBrowserEngineSearch() {
 }
 
 /**
+ * Drops engines this context cannot search. Kept out of loadEngines() so a
+ * capability-filtered list never flows back into saveEngines().
+ * @param {Engine[]} engines
+ * @returns {Engine[]}
+ */
+function filterUsableEngines(engines) {
+  return engines.filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
+}
+
+/**
  * @returns {Promise<Engine[]>}
  */
 async function loadEngines() {
@@ -146,7 +156,7 @@ async function loadEngines() {
     await saveEngines(engines);
     return engines;
   }
-  return stored.map(normalizeEngine).filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
+  return stored.map(normalizeEngine);
 }
 
 /**

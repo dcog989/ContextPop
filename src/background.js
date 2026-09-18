@@ -164,7 +164,7 @@ async function openLink({ url, method }, sender) {
 async function handleMessage(message, sender) {
   switch (message.type) {
     case 'getEngines':
-      return loadEngines();
+      return filterUsableEngines(await loadEngines());
     case 'getSettings':
       return loadSettings();
     case 'getIcons': {

@@ -45,9 +45,7 @@ function readConfigFile(file, apply) {
  */
 function importConfig(file) {
   readConfigFile(file, (parsed, incoming) => {
-    state.engines = incoming
-      .map(normalizeEngine)
-      .filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
+    state.engines = filterUsableEngines(incoming.map(normalizeEngine));
     state.settings = normalizeSettings({ ...state.settings, ...(parsed.settings || {}) });
     renderActions();
     renderEngines();
