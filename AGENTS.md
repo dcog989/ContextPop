@@ -33,7 +33,7 @@
 - `src/chrome_manifest.json` — Chrome MV3 manifest.
 - `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi); the manifests and pages use these via `__MSG_*__` / `api.i18n`.
 - `biome.json` / `lefthook.yml` / `cog.toml` / `changelog.tpl` — dev tooling config.
-- `jsconfig.json` / `globals.d.ts` — TypeScript `checkJs` config and hand-written ambient types (WebExtension `browser`/`chrome`, IIFE-published globals, shared domain typedefs).
+- `jsconfig.json` / `globals.d.ts` — TypeScript `checkJs` config and hand-written ambient types (a minimal Promise-based WebExtension `browser`/`chrome` surface, IIFE-published globals, shared domain typedefs).
 - `scripts/package.sh` — validates manifest drift, then writes both store zips to `dist/`.
 - `scripts/sync_version.sh` — updates the version in both manifests (called by cog).
 - `PRIVACY.md` — store privacy disclosure.

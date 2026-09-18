@@ -3,10 +3,64 @@
 // stay import/export-free so every entry remains part of the same global scope.
 
 // --- WebExtension platform -------------------------------------------------
-// The API surface is broad and partially promise/callback based. Keep the boundary
-// deliberately loose and put type effort into our own data structures instead.
+// Hand-typed to the namespaces this extension calls. Method signatures are
+// Promise-based, matching Firefox and Chrome MV3; payload types stay loose where
+// the platforms differ. Namespaces are required so the runtime feature guards
+// (`typeof api.search?.get === 'function'`) read as checks against the platform
+// rather than optional-property narrowing.
+
+interface WebExtensionEvent<Listener extends (...args: any[]) => any> {
+  addListener(listener: Listener): void;
+  removeListener(listener: Listener): void;
+  hasListener(listener: Listener): boolean;
+}
+
+interface WebExtensionStorageArea {
+  get(keys?: string | string[] | Record<string, any> | null): Promise<Record<string, any>>;
+  set(items: Record<string, any>): Promise<void>;
+  remove(keys: string | string[]): Promise<void>;
+  getKeys?(): Promise<string[]>;
+}
+
+interface WebExtensionTab {
+  id: number;
+}
+
 interface WebExtensionApi {
-  [namespace: string]: any;
+  storage: {
+    local: WebExtensionStorageArea;
+    onChanged: WebExtensionEvent<(changes: Record<string, any>, areaName: string) => void>;
+  };
+  tabs: {
+    create(props: { url?: string; active?: boolean; openerTabId?: number }): Promise<WebExtensionTab>;
+    update(tabId: number, props: { url?: string; active?: boolean }): Promise<WebExtensionTab>;
+    remove(tabId: number): Promise<void>;
+  };
+  windows: {
+    create(props: { url?: string; type?: string; width?: number; height?: number }): Promise<WebExtensionTab>;
+  };
+  search: {
+    search(props: { engine?: string; query?: string; tabId?: number; disposition?: string }): Promise<void>;
+    get(): Promise<Array<{ name?: string; favIconUrl?: string }>>;
+  };
+  permissions: {
+    request(permissions: { origins?: readonly string[] }): Promise<boolean>;
+    contains(permissions: { origins?: readonly string[] }): Promise<boolean>;
+  };
+  runtime: {
+    sendMessage(message: any): Promise<any>;
+    getManifest(): { version: string };
+    openOptionsPage(): Promise<void>;
+    onInstalled: WebExtensionEvent<(details: { reason?: string }) => void>;
+    onStartup: WebExtensionEvent<() => void>;
+    onMessage: WebExtensionEvent<(message: any, sender: any, sendResponse: (response?: any) => void) => unknown>;
+  };
+  action: {
+    onClicked: WebExtensionEvent<() => void>;
+  };
+  i18n: {
+    getMessage(name: string, substitutions?: string | Array<string | number>): string;
+  };
 }
 
 declare var browser: WebExtensionApi;
