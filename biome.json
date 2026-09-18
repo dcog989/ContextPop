@@ -21,12 +21,29 @@
       "preset": "recommended",
       "complexity": {
         "noImportantStyles": "off"
-      },
-      "correctness": {
-        "noUnusedVariables": "off"
       }
     }
   },
+  "overrides": [
+    {
+      "includes": [
+        "src/util.js",
+        "src/actions.js",
+        "src/defaultEngines.js",
+        "src/storage.js",
+        "src/permissions.js",
+        "src/icon*.js",
+        "src/options*.js"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    }
+  ],
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
