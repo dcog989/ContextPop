@@ -70,6 +70,8 @@ lefthook install               # enable git hooks once per clone
 cog bump --auto                # version + changelog; syncs both manifests
 ```
 
+CI (`.github/workflows/ci.yml`) runs the same checks on push and pull requests, plus `web-ext lint` and `scripts/package.sh` (manifest-drift validation).
+
 ## Engine template
 
 Each engine has a URL template containing `{searchTerms}`, for example:
