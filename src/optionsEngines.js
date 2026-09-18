@@ -16,7 +16,7 @@ let engineIcons = {};
 function createEngineIcon(engine) {
   const { element, setSource } = createFaviconIcon({
     prefix: 'engine',
-    label: (engine.name || '?').trim().charAt(0).toUpperCase(),
+    name: engine.name,
   });
   element.className = 'engine-icon';
   return { element, setSource };

@@ -70,7 +70,7 @@
   function createIcon(engine) {
     const { element, setSource } = createFaviconIcon({
       prefix: 'cs',
-      label: (engine.name || '?').trim().charAt(0).toUpperCase(),
+      name: engine.name,
     });
     element.className = 'cs-icon';
     return { element, setSource };

@@ -14,17 +14,17 @@ function createSvgIcon(markup) {
 }
 
 /**
- * @param {{ prefix: string, label: string }} options
+ * @param {{ prefix: string, name: string }} options
  * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
  */
-function createFaviconIcon({ prefix, label }) {
+function createFaviconIcon({ prefix, name }) {
   const wrapper = document.createElement('span');
   const mask = document.createElement('span');
   mask.className = `${prefix}-mask`;
   mask.hidden = true;
   const fallback = document.createElement('span');
   fallback.className = `${prefix}-letter`;
-  fallback.textContent = label;
+  fallback.textContent = (name || '?').trim().charAt(0).toUpperCase();
   const img = document.createElement('img');
   img.alt = '';
   img.referrerPolicy = 'no-referrer';
