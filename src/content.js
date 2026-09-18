@@ -19,25 +19,11 @@
     suppressMouseUp: false,
   };
 
-  /**
-   * @template {MessageType} K
-   * @param {Message & { type: K }} message
-   * @returns {Promise<MessageResultMap[K]>}
-   */
-  function request(message) {
-    return api.runtime.sendMessage(message).then(
-      /** @param {MessageResponse<MessageResultMap[K]>} [response] */ (response) => {
-        if (response && 'error' in response) throw new Error(response.error);
-        return /** @type {MessageResultMap[K]} */ (response?.data);
-      },
-    );
-  }
-
   async function loadConfig() {
     try {
       const [settings, engines] = await Promise.all([
-        request({ type: 'getSettings' }),
-        request({ type: 'getEngines' }),
+        sendMessage({ type: 'getSettings' }),
+        sendMessage({ type: 'getEngines' }),
       ]);
       contentState.settings = settings;
       contentState.engines = engines;

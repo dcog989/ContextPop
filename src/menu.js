@@ -5,7 +5,6 @@
 (() => {
   if (globalThis.__contextPopMenu) return;
 
-  const api = globalThis.browser ?? globalThis.chrome;
   const { t } = globalThis.__contextPopMenuI18n;
   const { css: MENU_CSS } = globalThis.__contextPopMenuStyles;
   const { applyTheme, positionMenu, applyAnimationOrigin, focusTile, moveFocus, focusEdge } =
@@ -59,23 +58,12 @@
   }
 
   /**
-   * @param {Message} message
-   * @returns {Promise<void>}
-   */
-  async function send(message) {
-    const response = await api.runtime.sendMessage(message);
-    if (response && 'error' in response) throw new Error(response.error);
-  }
-
-  /**
    * Fetches engine icons for the open menu; failures fall back to the letter tiles.
    * @returns {Promise<Record<string, string>>}
    */
   async function requestIcons() {
     try {
-      const response = await api.runtime.sendMessage({ type: 'getIcons' });
-      if (response?.error) throw new Error(response.error);
-      return response?.data || {};
+      return (await sendMessage({ type: 'getIcons' })) || {};
     } catch {
       return {};
     }
@@ -192,10 +180,10 @@
         await menuState.handlers?.[action.id]?.();
         break;
       case 'link':
-        await send({ type: 'openLink', url: menuState.href, method });
+        await sendMessage({ type: 'openLink', url: menuState.href, method });
         break;
       case 'reference':
-        await send({ type: 'openReference', template: action.template, terms: menuState.text });
+        await sendMessage({ type: 'openReference', template: action.template, terms: menuState.text });
         break;
       default:
         break;
@@ -217,7 +205,7 @@
     const method = resolveMethod(event, menuState.settings?.openMethod);
     runWithFeedback(
       menuState.host,
-      send({
+      sendMessage({
         type: 'search',
         engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
         terms: menuState.text,
@@ -234,7 +222,7 @@
     event.preventDefault();
     runWithFeedback(
       menuState.host,
-      send({
+      sendMessage({
         type: 'search',
         engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
         terms: menuState.text,

@@ -16,6 +16,23 @@ function errorMessage(error) {
 }
 
 /**
+ * Sends a background message and unwraps the `{ data } | { error }` envelope,
+ * throwing on failure so callers only handle the success payload.
+ * @template {MessageType} K
+ * @param {Message & { type: K }} message
+ * @returns {Promise<MessageResultMap[K]>}
+ */
+function sendMessage(message) {
+  const runtime = globalThis.browser ?? globalThis.chrome;
+  return runtime.runtime.sendMessage(message).then(
+    /** @param {MessageResponse<MessageResultMap[K]>} [response] */ (response) => {
+      if (response && 'error' in response) throw new Error(response.error);
+      return /** @type {MessageResultMap[K]} */ (response?.data);
+    },
+  );
+}
+
+/**
  * @param {string} value
  * @returns {string}
  */

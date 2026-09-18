@@ -87,9 +87,7 @@ function createRow(engine, index) {
  * @returns {Promise<Record<string, string>>}
  */
 async function requestEngineIcons(message) {
-  const response = await api.runtime.sendMessage(message);
-  if (response?.error) throw new Error(response.error);
-  return response?.data || {};
+  return (await sendMessage(message)) || {};
 }
 
 async function loadEngineIcons() {
