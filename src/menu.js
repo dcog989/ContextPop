@@ -176,9 +176,12 @@
     const method = resolveMethod(event, menuState.settings?.openMethod);
 
     switch (action.kind) {
-      case 'clipboard':
-        await menuState.handlers?.[action.id]?.();
+      case 'clipboard': {
+        const handler = menuState.handlers?.[action.id];
+        if (!handler) throw new Error(`No clipboard handler for action "${action.id}"`);
+        await handler();
         break;
+      }
       case 'link':
         await sendMessage({ type: 'openLink', url: menuState.href, method });
         break;

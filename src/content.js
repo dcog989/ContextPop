@@ -200,6 +200,12 @@
     await copyPlain();
   }
 
+  // Clipboard action implementations, keyed by their BUILTIN_ACTION_DEFS id (see actions.js).
+  // dispatchAction resolves menuState.handlers[action.id], so every `kind: 'clipboard'` def needs
+  // a matching entry here; a missing key now throws in menu.js instead of silently no-opping.
+  /** @type {Readonly<Record<string, () => Promise<void>>>} */
+  const CLIPBOARD_HANDLERS = Object.freeze({ copyRich, copyPlain, copyLink });
+
   /**
    * @param {MouseEvent} event
    * @returns {boolean}
@@ -232,7 +238,7 @@
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines.filter((engine) => engine.enabled !== false),
       settings: contentState.settings ?? defaultSettings(),
-      handlers: { copyRich, copyPlain, copyLink },
+      handlers: CLIPBOARD_HANDLERS,
       onClose: handleMenuClose,
     });
   }
