@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.7.4 - 2026-09-22
+
+#### Bug Fixes
+
+- (a3b23eb) make clipboard action→handler mapping explicit and fail loudly - dcog989
+
+#### Refactoring
+
+- (530aea3) collapse duplicate favicon wrappers into createFaviconTileIcon - dcog989
+
+- (dc509af) derive animation fallback timings from shared DURATIONS tokens - dcog989
+
+- - -
+
 ## v0.7.3 - 2026-09-18
 
 #### Bug Fixes
