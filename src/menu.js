@@ -28,7 +28,9 @@
     onClose: null,
   };
 
-  const CLOSE_ANIM_MS = 200;
+  // Extra time past the CSS cs-shrink animation before forcing removal, covering a missed
+  // animationend.
+  const CLOSE_ANIM_MARGIN_MS = 40;
 
   // Host left in the DOM by an in-progress exit animation, tracked so a subsequent
   // open can evict it before mounting the next menu.
@@ -117,7 +119,7 @@
       }
       host.remove();
     };
-    const timer = setTimeout(finish, CLOSE_ANIM_MS);
+    const timer = setTimeout(finish, (globalThis.__contextPopTheme?.DURATIONS.menuCloseMs ?? 0) + CLOSE_ANIM_MARGIN_MS);
     pendingClose = { host, timer };
     menu.addEventListener('animationend', finish, { once: true });
   }

@@ -177,7 +177,7 @@ button.is-loading::before {
 }
 
 .engine-row.row-removing {
-  animation: row-remove 160ms ease forwards;
+  animation: row-remove var(--row-remove-ms) ease forwards;
   pointer-events: none;
 }
 

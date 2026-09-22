@@ -4,7 +4,7 @@
 
 - Name: ContextPop
 - Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox and Chrome, Manifest V3.
-- Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, lefthook, cocogitto, and TypeScript (`tsc`) binaries.
+- Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, Lefthook, Cocogitto, and TypeScript (`tsc`) binaries.
 
 ### Key Files
 
@@ -15,7 +15,7 @@
 - `src/menuI18n.js` — localized-string lookup with fallback (`__contextPopMenuI18n`).
 - `src/menuLayout.js` — theme class, on-screen positioning, animation origin, roving focus (`__contextPopMenuLayout`).
 - `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
-- `src/theme.js` — shared design tokens (single source for the accent); publishes `globalThis.__contextPopTheme` with `applyTokens()` and `prefersReducedMotion()`, loaded by both the options page and the content scripts.
+- `src/theme.js` — shared design tokens (single source for the accent and animation durations); publishes `globalThis.__contextPopTheme` with `TOKENS`, `DURATIONS`, `applyTokens()`, and `prefersReducedMotion()`, loaded by both the options page and the content scripts.
 - `src/util.js` — shared string/URL/id helpers (`errorMessage`, `sendMessage`, `capitalize`, `buildSearchUrl`, `isHttpUrl`, `templateHasSearchTerms`, `generateId`).
 - `src/actions.js` — built-in action catalog and normalization (`ACTION_ICONS`, `BUILTIN_ACTION_DEFS`, `normalizeBuiltinActions`, `normalizeActionOrder`, `builtinActionList`, `matchesContext`). Each def's `kind` (`clipboard`/`reference`/`link`) drives menu dispatch and its `usesText`/`tooltipKey` drive labels, so adding an action means adding a def (plus its locale strings), not editing menu switches.
 - `src/storage.js` — storage schema, settings/engine normalization, and load/save helpers (`api`, `HTTP_URL_PATTERN`, keys, `defaultSettings`, `loadEngines`/`saveEngines`, `loadSettings`/`saveSettings`, onboarding).
@@ -58,7 +58,7 @@
 - Because those sibling scripts reference each other's bare globals across files, `noUnusedVariables` is disabled for them, plus `permissions.js` and the `options*.js` modules, by the `biome.json` `overrides` entry. Add a shared-global file to that list (or it will false-positive), but leave it enabled for IIFE/entry files.
 - Icon modules load per context: the background imports source/parse/cache/fetch + `icons.js`; content scripts and the options page load `iconSvg.js` + `iconRender.js` instead. Keep the `background.scripts`, `chrome_manifest` `importScripts`, and `content_scripts.js` lists in sync when adding a module.
 - Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('util.js', 'actions.js', 'defaultEngines.js', 'storage.js', 'iconSource.js', 'iconParse.js', 'iconCache.js', 'iconFetch.js', 'icons.js')` before `background.js` runs.
-- Design tokens (accent, font family) live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
+- Design tokens (accent, font family) and animation durations live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` / `var(--*-ms)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access
 
@@ -92,7 +92,7 @@
 ### Author Environment
 
 - CachyOS, KDE Plasma 6, Wayland, Btrfs.
-- fish shell, Ghostty terminal, Fresh TUI editor, yay package manager, bun npm manager, Firefox, and Zed code editor.
+- fish shell, Ghostty terminal, Fresh TUI editor, yay package manager, Bun npm manager, Firefox, and Zed code editor.
 
 ### Testing
 

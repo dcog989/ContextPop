@@ -6,6 +6,11 @@
     fontFamily: 'system-ui, sans-serif',
   });
 
+  const DURATIONS = Object.freeze({
+    rowRemoveMs: 160,
+    menuCloseMs: 160,
+  });
+
   /**
    * @param {string} name
    * @returns {string}
@@ -25,11 +30,14 @@
     for (const [name, value] of Object.entries(TOKENS)) {
       target.style.setProperty(toCssVariable(name), value);
     }
+    for (const [name, value] of Object.entries(DURATIONS)) {
+      target.style.setProperty(toCssVariable(name), `${value}ms`);
+    }
   }
 
   function prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  globalThis.__contextPopTheme = { TOKENS, applyTokens, prefersReducedMotion };
+  globalThis.__contextPopTheme = { TOKENS, DURATIONS, applyTokens, prefersReducedMotion };
 })();

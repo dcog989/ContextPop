@@ -181,7 +181,7 @@
   animation: cs-expand 180ms ease-out;
 }
 .cs-menu.cs-anim-out {
-  animation: cs-shrink 160ms ease-in forwards;
+  animation: cs-shrink var(--menu-close-ms) ease-in forwards;
   pointer-events: none;
 }
 @keyframes cs-expand {
