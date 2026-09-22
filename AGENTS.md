@@ -26,7 +26,7 @@
 - `src/iconFetch.js` — favicon / markup / manifest fetches and data-URL encoding.
 - `src/iconCache.js` — in-memory + `storage.local` favicon cache (`readIconCache`, `pruneIconCache`, `clearIconCache`).
 - `src/iconSvg.js` — SVG monochrome analysis (`svgDataUrlIsMonochrome`).
-- `src/iconRender.js` — DOM icon rendering (`createSvgIcon`, `createFaviconIcon`, `applyEngineIcons`); loaded by content scripts and the options page, not the background.
+- `src/iconRender.js` — DOM icon rendering (`createSvgIcon`, `createFaviconIcon`, `createFaviconTileIcon`, `applyEngineIcons`); loaded by content scripts and the options page, not the background.
 - `src/defaultEngines.js` — seed engines.
 - `src/options.html` / `src/options.css` / `src/options*.js` — options page. `options.js` is the entry (DOM registry + wiring); concerns are split into `optionsI18n.js`, `optionsStore.js` (state/save/validate), `optionsReorder.js`, `optionsActions.js`, `optionsEngines.js`, `optionsConfig.js`, `optionsSettings.js`, and `optionsOnboarding.js` (first-run callout and host-access grant), loaded in that order by `options.html`. Host-access granting itself lives in `permissions.js`, loaded after `storage.js`. The background opens this page on install.
 - `src/manifest.json` — Firefox MV3 manifest.

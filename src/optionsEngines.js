@@ -15,19 +15,6 @@ const ROW_REMOVE_MARGIN_MS = 240;
 
 /**
  * @param {Engine} engine
- * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
- */
-function createEngineIcon(engine) {
-  const { element, setSource } = createFaviconIcon({
-    prefix: 'engine',
-    name: engine.name,
-  });
-  element.className = 'engine-icon';
-  return { element, setSource };
-}
-
-/**
- * @param {Engine} engine
  * @param {number} index
  * @returns {{ fragment: DocumentFragment, setIcon: (source: string | null | undefined) => void }}
  */
@@ -46,7 +33,7 @@ function createRow(engine, index) {
   });
   syncDisabled();
 
-  const icon = createEngineIcon(engine);
+  const icon = createFaviconTileIcon(engine, 'engine');
   /** @type {Element} */ (fragment.querySelector('.engine-icon')).replaceWith(icon.element);
 
   const name = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-name'));

@@ -57,6 +57,19 @@ function createFaviconIcon({ prefix, name }) {
 }
 
 /**
+ * Favicon icon wrapped with the context's `<prefix>-icon` class; the shared shape used by
+ * both the popup engine tiles and the options-page engine rows.
+ * @param {Engine} engine
+ * @param {string} prefix
+ * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
+ */
+function createFaviconTileIcon(engine, prefix) {
+  const { element, setSource } = createFaviconIcon({ prefix, name: engine.name });
+  element.className = `${prefix}-icon`;
+  return { element, setSource };
+}
+
+/**
  * Applies an already-fetched icon map to the engine tiles. Pure rendering: callers own
  * the background request so this module stays free of messaging.
  * @param {Map<string, (source: string | null | undefined) => void>} iconSetters

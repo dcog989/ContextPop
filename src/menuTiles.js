@@ -64,19 +64,6 @@
   }
 
   /**
-   * @param {Engine} engine
-   * @returns {{ element: HTMLElement, setSource: (source: string | null | undefined) => void }}
-   */
-  function createIcon(engine) {
-    const { element, setSource } = createFaviconIcon({
-      prefix: 'cs',
-      name: engine.name,
-    });
-    element.className = 'cs-icon';
-    return { element, setSource };
-  }
-
-  /**
    * @param {ActionItem} action
    * @param {string} text
    * @param {boolean} showLabels
@@ -105,7 +92,7 @@
     decorateTile(tile, engine.name, showLabels);
     tile.dataset.engineId = engine.id;
 
-    const icon = createIcon(engine);
+    const icon = createFaviconTileIcon(engine, 'cs');
     tile.prepend(icon.element);
     tile.addEventListener('click', handlers.onClick);
     tile.addEventListener('auxclick', handlers.onAuxClick);
