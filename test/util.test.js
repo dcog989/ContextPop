@@ -4,7 +4,8 @@ const vm = require('node:vm');
 const { loadScripts } = require('./helpers/loadScripts');
 
 const context = loadScripts(['util.js']);
-const { buildSearchUrl, isHttpUrl, templateHasSearchTerms, capitalize, errorMessage } = context;
+const { buildSearchUrl, isHttpUrl, looksLikeUrl, normalizeHttpUrl, templateHasSearchTerms, capitalize, errorMessage } =
+  context;
 
 test('buildSearchUrl substitutes and encodes every occurrence', () => {
   assert.equal(
@@ -20,6 +21,28 @@ test('isHttpUrl accepts only http and https', () => {
   assert.equal(isHttpUrl('ftp://example.com'), false);
   assert.equal(isHttpUrl('javascript:alert(1)'), false);
   assert.equal(isHttpUrl('not a url'), false);
+});
+
+test('looksLikeUrl recognizes scheme-less hosts with a known TLD', () => {
+  assert.equal(looksLikeUrl('donkeys.org'), true);
+  assert.equal(looksLikeUrl('fishing.net/trout'), true);
+  assert.equal(looksLikeUrl('www.example.co.uk/path?q=1'), true);
+  assert.equal(looksLikeUrl('example.com:8080'), true);
+});
+
+test('looksLikeUrl rejects non-URLs and unknown TLDs', () => {
+  assert.equal(looksLikeUrl(''), false);
+  assert.equal(looksLikeUrl('not a url'), false);
+  assert.equal(looksLikeUrl('file.txt'), false);
+  assert.equal(looksLikeUrl('user@example.com'), false);
+  assert.equal(looksLikeUrl('https://example.com'), false);
+});
+
+test('normalizeHttpUrl defaults scheme-less URLs to https and passes through http(s)', () => {
+  assert.equal(normalizeHttpUrl('donkeys.org'), 'https://donkeys.org');
+  assert.equal(normalizeHttpUrl('fishing.net/trout'), 'https://fishing.net/trout');
+  assert.equal(normalizeHttpUrl('http://example.com'), 'http://example.com');
+  assert.equal(normalizeHttpUrl('not a url'), '');
 });
 
 test('templateHasSearchTerms requires the literal token', () => {

@@ -93,7 +93,7 @@
       text,
       rect,
       html: serializeSelection(range),
-      href: anchorHref || (isHttpUrl(text) ? text : ''),
+      href: anchorHref || normalizeHttpUrl(text),
     };
   }
 
