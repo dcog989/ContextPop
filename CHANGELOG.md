@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.8.0 - 2026-09-24
+
+#### Features
+
+- (6ebdae1) recognize scheme-less URLs in selected text - dcog989
+
+- - -
+
 ## v0.7.4 - 2026-09-22
 
 #### Bug Fixes
