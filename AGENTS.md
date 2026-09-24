@@ -8,35 +8,14 @@
 
 ### Key Files
 
-- `src/background.js` — stateless background (Firefox event page / Chrome service worker); storage seeding, tab opening, message routing.
-- `src/content.js` — selection detection and trigger handling.
-- `src/menu.js` — popup shell: private `menuState`, open/close lifecycle, action dispatch; publishes `globalThis.__contextPopMenu`.
-- `src/menuStyles.js` — popup CSS string (`__contextPopMenuStyles`).
-- `src/menuI18n.js` — localized-string lookup with fallback (`__contextPopMenuI18n`).
-- `src/menuLayout.js` — theme class, on-screen positioning, animation origin, roving focus (`__contextPopMenuLayout`).
-- `src/menuTiles.js` — action/engine tile construction (`__contextPopMenuTiles`).
-- `src/theme.js` — shared design tokens (single source for the accent and animation durations); publishes `globalThis.__contextPopTheme` with `TOKENS`, `DURATIONS`, `applyTokens()`, and `prefersReducedMotion()`, loaded by both the options page and the content scripts.
-- `src/util.js` — shared string/URL/id helpers (`errorMessage`, `sendMessage`, `capitalize`, `buildSearchUrl`, `isHttpUrl`, `looksLikeUrl`, `normalizeHttpUrl`, `templateHasSearchTerms`, `generateId`). `looksLikeUrl`/`normalizeHttpUrl` recognize scheme-less selections (e.g. `donkeys.org`, `fishing.net/trout`) against the curated `KNOWN_TLDS` list, defaulting them to `https://`.
-- `src/actions.js` — built-in action catalog and normalization (`ACTION_ICONS`, `BUILTIN_ACTION_DEFS`, `normalizeBuiltinActions`, `normalizeActionOrder`, `builtinActionList`, `matchesContext`). Each def's `kind` (`clipboard`/`reference`/`link`) drives menu dispatch and its `usesText`/`tooltipKey` drive labels, so adding an action means adding a def (plus its locale strings), not editing menu switches.
-- `src/storage.js` — storage schema, settings/engine normalization, and load/save helpers (`api`, `HTTP_URL_PATTERN`, keys, `defaultSettings`, `loadEngines`/`saveEngines`, `loadSettings`/`saveSettings`, onboarding).
-- `src/permissions.js` — optional host-access grant (`HOST_ORIGINS`, `requestHostAccess`); options-page only, loaded after `storage.js` for the shared `api`.
-- `src/icons.js` — favicon orchestration (`loadIconMap`, `resolveEngineIcon`); composes the modules below.
-- `src/iconSource.js` — engine host / icon-source resolution (`engineIconSource`, `templateHost`, `browserEngineHost`).
-- `src/iconParse.js` — favicon candidate and web-app-manifest discovery from fetched markup.
-- `src/iconFetch.js` — favicon / markup / manifest fetches and data-URL encoding.
-- `src/iconCache.js` — in-memory + `storage.local` favicon cache (`readIconCache`, `pruneIconCache`, `clearIconCache`).
-- `src/iconSvg.js` — SVG monochrome analysis (`svgDataUrlIsMonochrome`).
-- `src/iconRender.js` — DOM icon rendering (`createSvgIcon`, `createFaviconIcon`, `createFaviconTileIcon`, `applyEngineIcons`); loaded by content scripts and the options page, not the background.
-- `src/defaultEngines.js` — seed engines.
-- `src/options.html` / `src/options.css` / `src/options*.js` — options page. `options.js` is the entry (DOM registry + wiring); concerns are split into `optionsI18n.js`, `optionsStore.js` (state/save/validate), `optionsReorder.js`, `optionsActions.js`, `optionsEngines.js`, `optionsConfig.js`, `optionsSettings.js`, and `optionsOnboarding.js` (first-run callout and host-access grant), loaded in that order by `options.html`. Host-access granting itself lives in `permissions.js`, loaded after `storage.js`. The background opens this page on install.
-- `src/manifest.json` — Firefox MV3 manifest.
-- `src/chrome_manifest.json` — Chrome MV3 manifest.
-- `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi); the manifests and pages use these via `__MSG_*__` / `api.i18n`.
-- `biome.json` / `lefthook.yml` / `cog.toml` / `changelog.tpl` — dev tooling config.
-- `jsconfig.json` / `globals.d.ts` — TypeScript `checkJs` config and hand-written ambient types (a minimal Promise-based WebExtension `browser`/`chrome` surface, IIFE-published globals, shared domain typedefs).
-- `scripts/package.sh` — validates manifest drift, then writes both store zips to `dist/`.
-- `scripts/sync_version.sh` — updates the version in both manifests (called by cog).
-- `PRIVACY.md` — store privacy disclosure.
+- `src/background.js` — stateless (Firefox event page / Chrome service worker); storage seeding, tab opening, message routing.
+- `src/util.js` — shared string/URL/id helpers. `looksLikeUrl`/`normalizeHttpUrl` recognize scheme-less selections (e.g. `donkeys.org`, `fishing.net/trout`) against the curated `KNOWN_TLDS` list, defaulting them to `https://`.
+- `src/actions.js` — built-in action catalog; a def's `kind` (`clipboard`/`reference`/`link`) drives menu dispatch and its `usesText`/`tooltipKey` drive labels, so adding an action means adding a def (plus its locale strings), not editing menu switches.
+- `src/permissions.js` — optional host-access grant; options-page only, loaded after `storage.js` for the shared `api`.
+- `src/options.html` / `src/options*.js` — options page; `options.js` is the entry and the remaining modules load in a fixed order from the HTML. The background opens this page on install.
+- `src/manifest.json` / `src/chrome_manifest.json` — Firefox/Chrome MV3 manifests; `scripts/package.sh` fails on drift between them.
+- `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi), used via `__MSG_*__` / `api.i18n`.
+- `jsconfig.json` / `globals.d.ts` — `checkJs` config and hand-written ambient types (the WebExtension `browser`/`chrome` surface, IIFE-published globals, shared domain typedefs).
 
 ### Workflow
 
