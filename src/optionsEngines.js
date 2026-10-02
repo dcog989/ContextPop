@@ -143,12 +143,14 @@ function deleteEngine(index) {
     return;
   }
 
+  const engineId = row.dataset.rowId ?? '';
   const first = captureRowPositions(elements.list);
   let settled = false;
   const finish = () => {
     if (settled) return;
     settled = true;
-    removeEngine(index);
+    const currentIndex = state.engines.findIndex((engine) => engine.id === engineId);
+    if (currentIndex !== -1) removeEngine(currentIndex);
     playRowReorder(elements.list, first);
   };
 
