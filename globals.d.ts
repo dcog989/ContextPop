@@ -202,7 +202,14 @@ type MessageResponse<T> = { data: T } | { error: string };
 
 interface ThemeApi {
   TOKENS: Readonly<{ accent: string; fontFamily: string }>;
-  DURATIONS: Readonly<{ rowRemoveMs: number; menuCloseMs: number }>;
+  DURATIONS: Readonly<{
+    rowRemoveMs: number;
+    rowReorderMs: number;
+    menuCloseMs: number;
+    menuOpenMs: number;
+    fadeMs: number;
+    spinnerMs: number;
+  }>;
   applyTokens(target: HTMLElement | null): void;
   prefersReducedMotion(): boolean;
 }

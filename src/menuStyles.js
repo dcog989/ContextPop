@@ -74,7 +74,7 @@
   cursor: pointer;
   outline: none;
   opacity: var(--cs-alpha, 1);
-  transition: opacity 120ms ease;
+  transition: opacity var(--fade-ms) ease;
 }
 .cs-tile:not(:disabled):hover,
 .cs-menu.kb .cs-tile:not(:disabled):focus {
@@ -178,7 +178,7 @@
   color: #ff6b6b;
 }
 .cs-menu.cs-anim-in {
-  animation: cs-expand 180ms ease-out;
+  animation: cs-expand var(--menu-open-ms) ease-out;
 }
 .cs-menu.cs-anim-out {
   animation: cs-shrink var(--menu-close-ms) ease-in forwards;

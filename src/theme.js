@@ -8,7 +8,11 @@
 
   const DURATIONS = Object.freeze({
     rowRemoveMs: 160,
+    rowReorderMs: 180,
     menuCloseMs: 160,
+    menuOpenMs: 180,
+    fadeMs: 120,
+    spinnerMs: 600,
   });
 
   /**

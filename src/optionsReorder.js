@@ -30,7 +30,7 @@ function playRowReorder(container, first) {
     el.style.transform = `translateY(${delta}px)`;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        el.style.transition = 'transform 180ms ease';
+        el.style.transition = 'transform var(--row-reorder-ms) ease';
         el.style.transform = '';
       });
     });
