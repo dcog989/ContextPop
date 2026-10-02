@@ -16,7 +16,6 @@
   const menuState = {
     open: false,
     text: '',
-    contexts: [],
     href: '',
     actions: [],
     settings: null,
@@ -281,7 +280,6 @@
     closeMenu({ reason: 'replace' });
 
     menuState.text = text;
-    menuState.contexts = contexts;
     menuState.href = href;
     menuState.handlers = handlers;
     menuState.onClose = onClose ?? null;

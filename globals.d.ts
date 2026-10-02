@@ -257,7 +257,6 @@ interface MenuTilesApi {
 interface MenuState {
   open: boolean;
   text: string;
-  contexts: string[];
   href: string;
   actions: ActionItem[];
   settings: Settings | null;
