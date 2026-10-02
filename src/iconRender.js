@@ -40,16 +40,25 @@ function createFaviconIcon({ prefix, name }) {
   const setSource = (source) => {
     if (!source || !wrapper.isConnected) return;
     if (svgDataUrlIsMonochrome(source)) {
-      mask.style.webkitMaskImage = `url("${source}")`;
-      mask.style.maskImage = `url("${source}")`;
-      mask.hidden = false;
+      // Probe through the <img> so an invalid SVG falls back to the letter: a masked
+      // span has no error event of its own.
+      img.onload = () => {
+        if (!wrapper.isConnected) return;
+        mask.style.webkitMaskImage = `url("${source}")`;
+        mask.style.maskImage = `url("${source}")`;
+        mask.hidden = false;
+        img.hidden = true;
+        fallback.hidden = true;
+      };
+      img.src = source;
       img.hidden = true;
     } else {
+      img.onload = null;
       img.src = source;
       img.hidden = false;
       mask.hidden = true;
+      fallback.hidden = true;
     }
-    fallback.hidden = true;
   };
 
   wrapper.append(img, mask, fallback);
