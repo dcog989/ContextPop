@@ -16,7 +16,6 @@
   const menuState = {
     open: false,
     text: '',
-    html: '',
     contexts: [],
     href: '',
     actions: [],
@@ -277,12 +276,11 @@
   /**
    * @param {OpenMenuOptions} options
    */
-  function openMenu({ text, html, contexts, href, rect, point, engines, settings, handlers, onClose }) {
+  function openMenu({ text, contexts, href, rect, point, engines, settings, handlers, onClose }) {
     removePendingClose();
     closeMenu({ reason: 'replace' });
 
     menuState.text = text;
-    menuState.html = html;
     menuState.contexts = contexts;
     menuState.href = href;
     menuState.handlers = handlers;

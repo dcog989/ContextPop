@@ -127,7 +127,7 @@ interface ActionItem {
 interface SelectionInfo {
   text: string;
   rect: DOMRect;
-  html: string;
+  range: Range;
   href: string;
   contexts?: string[];
 }
@@ -257,7 +257,6 @@ interface MenuTilesApi {
 interface MenuState {
   open: boolean;
   text: string;
-  html: string;
   contexts: string[];
   href: string;
   actions: ActionItem[];
@@ -271,7 +270,6 @@ interface MenuState {
 
 interface OpenMenuOptions {
   text: string;
-  html: string;
   contexts: string[];
   href: string;
   rect: DOMRect | null;

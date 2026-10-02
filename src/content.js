@@ -92,7 +92,7 @@
     return {
       text,
       rect,
-      html: serializeSelection(range),
+      range: range.cloneRange(),
       href: anchorHref || normalizeHttpUrl(text),
     };
   }
@@ -182,8 +182,17 @@
    * @returns {Promise<void>}
    */
   async function copyRich() {
-    const plain = contentState.selection?.text || '';
-    const html = contentState.selection?.html?.trim() ? contentState.selection.html : plain;
+    const selection = contentState.selection;
+    const plain = selection?.text || '';
+    let html = plain;
+    if (selection) {
+      try {
+        const serialized = serializeSelection(selection.range).trim();
+        if (serialized) html = serialized;
+      } catch {
+        // Deferred serialization fails if the selected nodes have since been removed.
+      }
+    }
     try {
       if (navigator.clipboard?.write && globalThis.ClipboardItem) {
         await navigator.clipboard.write([
@@ -231,7 +240,6 @@
     contentState.selection = info;
     openMenu({
       text: info.text,
-      html: info.html,
       contexts: info.contexts,
       href: info.href,
       rect: info.rect,
