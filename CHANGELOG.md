@@ -2,6 +2,32 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.8.1 - 2026-10-02
+
+#### Bug Fixes
+
+- (c8520ac) fall back to letter tile when a masked svg icon fails - dcog989
+
+- (1bd8a9d) keep word actions enabled for single-word link selections - dcog989
+
+- (ecab296) validate trigger, openMethod, and theme enums on load - dcog989
+
+- (6a6adbd) resolve engine delete by id to avoid stale-index race - dcog989
+
+#### Performance Improvements
+
+- (ca2d1fd) serialize rich selection only when copying - dcog989
+
+#### Refactoring
+
+- (b013a59) remove all Chrome support, Firefox-only - dcog989
+
+- (53e80dc) remove unused menuState.contexts field - dcog989
+
+- (f2ebf52) source animation durations from theme tokens - dcog989
+
+- - -
+
 ## v0.8.0 - 2026-09-24
 
 #### Features
