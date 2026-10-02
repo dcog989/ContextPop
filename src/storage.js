@@ -18,6 +18,9 @@ var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
 var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
 var POPUP_SIZES = Object.freeze(['compact', 'standard', 'large', 'luxury']);
 var POPUP_POSITIONS = Object.freeze(['below', 'under']);
+var TRIGGERS = Object.freeze(['mouseup', 'alt', 'ctrl', 'shift']);
+var OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'newWindow']);
+var THEMES = Object.freeze(['auto', 'light', 'dark']);
 var MIN_COLUMNS = 1;
 var MAX_COLUMNS = 12;
 
@@ -84,6 +87,9 @@ function normalizeSettings(stored) {
     ? Math.min(MAX_COLUMNS, Math.max(MIN_COLUMNS, Math.round(columns)))
     : DEFAULT_SETTINGS.columns;
   settings.popupSize = POPUP_SIZES.includes(input.popupSize) ? input.popupSize : DEFAULT_SETTINGS.popupSize;
+  settings.trigger = TRIGGERS.includes(input.trigger) ? input.trigger : DEFAULT_SETTINGS.trigger;
+  settings.openMethod = OPEN_METHODS.includes(input.openMethod) ? input.openMethod : DEFAULT_SETTINGS.openMethod;
+  settings.theme = THEMES.includes(input.theme) ? input.theme : DEFAULT_SETTINGS.theme;
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
   if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {

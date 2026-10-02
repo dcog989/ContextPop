@@ -13,7 +13,6 @@ if (typeof DEFAULT_ENGINES === 'undefined' && typeof importScripts === 'function
   );
 }
 
-const OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'newWindow']);
 const POPUP_WIDTH = 520;
 const POPUP_HEIGHT = 720;
 
