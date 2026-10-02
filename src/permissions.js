@@ -5,9 +5,9 @@
 
 var HOST_ORIGINS = Object.freeze(['http://*/*', 'https://*/*']);
 
-// Host access is revocable: Firefox MV3 host permissions are opt-in, and Chrome
-// can withhold required hosts. Both browsers only allow request() from inside a
-// user-gesture handler, so callers must invoke this from a click/keypress.
+// Host access is revocable: Firefox MV3 host permissions are opt-in, and it
+// only allows request() from inside a user-gesture handler, so callers must
+// invoke this from a click/keypress.
 var requestHostAccess = async () => {
   if (!api.permissions?.request) return true;
   // Call request() before any await: an async boundary consumes the user

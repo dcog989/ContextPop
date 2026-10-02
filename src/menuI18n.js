@@ -4,7 +4,7 @@
 (() => {
   if (globalThis.__contextPopMenuI18n) return;
 
-  const api = globalThis.browser ?? globalThis.chrome;
+  const api = globalThis.browser;
 
   /**
    * @param {string} name

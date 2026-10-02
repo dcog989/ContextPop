@@ -9,7 +9,7 @@
   globalThis.__contextPopInitialized = true;
 
   const { openMenu, closeMenu, isMenuOpen, isEventInsideMenu } = menuApi;
-  const api = globalThis.browser ?? globalThis.chrome;
+  const api = globalThis.browser;
 
   /** @type {{ settings: Settings | null, engines: Engine[], selection: SelectionInfo | null, suppressMouseUp: boolean }} */
   const contentState = {

@@ -3,19 +3,19 @@
 ## Project Specifics
 
 - Name: ContextPop
-- Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox and Chrome, Manifest V3.
+- Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox, Manifest V3.
 - Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, Lefthook, Cocogitto, and TypeScript (`tsc`) binaries.
 
 ### Key Files
 
-- `src/background.js` — stateless (Firefox event page / Chrome service worker); storage seeding, tab opening, message routing.
+- `src/background.js` — stateless event page; storage seeding, tab opening, message routing.
 - `src/util.js` — shared string/URL/id helpers. `looksLikeUrl`/`normalizeHttpUrl` recognize scheme-less selections (e.g. `donkeys.org`, `fishing.net/trout`) against the curated `KNOWN_TLDS` list, defaulting them to `https://`.
 - `src/actions.js` — built-in action catalog; a def's `kind` (`clipboard`/`reference`/`link`) drives menu dispatch and its `usesText`/`tooltipKey` drive labels, so adding an action means adding a def (plus its locale strings), not editing menu switches.
 - `src/permissions.js` — optional host-access grant; options-page only, loaded after `storage.js` for the shared `api`.
 - `src/options.html` / `src/options*.js` — options page; `options.js` is the entry and the remaining modules load in a fixed order from the HTML. The background opens this page on install.
-- `src/manifest.json` / `src/chrome_manifest.json` — Firefox/Chrome MV3 manifests; `scripts/package.sh` fails on drift between them.
+- `src/manifest.json` — Firefox MV3 manifest.
 - `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi), used via `__MSG_*__` / `api.i18n`.
-- `jsconfig.json` / `globals.d.ts` — `checkJs` config and hand-written ambient types (the WebExtension `browser`/`chrome` surface, IIFE-published globals, shared domain typedefs).
+- `jsconfig.json` / `globals.d.ts` — `checkJs` config and hand-written ambient types (the WebExtension `browser` surface, IIFE-published globals, shared domain typedefs).
 
 ### Workflow
 
@@ -26,8 +26,8 @@
 - Type-check: `tsc --noEmit -p jsconfig.json` (strict `checkJs`; `globals.d.ts` supplies platform and shared-global types).
 - CI: `.github/workflows/ci.yml` runs `biome ci`, `tsc`, the unit tests, `web-ext lint`, and `scripts/package.sh` on push/PR.
 - Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files, runs `tsc` on staged JS, and runs `cog verify` on commit messages.
-- Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so both manifests stay in sync.
-- Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-{firefox,chrome}.zip`.
+- Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so the manifest version stays in sync.
+- Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-firefox.zip`.
 
 ### Common Patterns
 
@@ -35,8 +35,8 @@
 - Storage: all state lives in `browser.storage.local`; background and options share the helpers in `src/storage.js`.
 - Content scripts share one isolated world per frame. `util.js`, `actions.js`, `storage.js`, `defaultEngines.js`, and the icon modules (`icons.js`, `iconSource.js`, `iconParse.js`, `iconFetch.js`, `iconCache.js`, `iconSvg.js`, `iconRender.js`) are deliberately unwrapped and declare top-level `var`/`function`, so their bare-name globals are shared with siblings — do not wrap them in an IIFE. `theme.js`, the menu modules (`menuStyles.js`, `menuI18n.js`, `menuLayout.js`, `menuTiles.js`, `menu.js`), and `content.js` are IIFEs: `theme.js` publishes `globalThis.__contextPopTheme`, the menu modules publish `globalThis.__contextPopMenu*`, `menu.js` publishes `globalThis.__contextPopMenu`, and `content.js` consumes it.
 - Because those sibling scripts reference each other's bare globals across files, `noUnusedVariables` is disabled for them, plus `permissions.js` and the `options*.js` modules, by the `biome.json` `overrides` entry. Add a shared-global file to that list (or it will false-positive), but leave it enabled for IIFE/entry files.
-- Icon modules load per context: the background imports source/parse/cache/fetch + `icons.js`; content scripts and the options page load `iconSvg.js` + `iconRender.js` instead. Keep the `background.scripts`, `chrome_manifest` `importScripts`, and `content_scripts.js` lists in sync when adding a module.
-- Background: Firefox loads the manifest `background.scripts` list; Chrome's service worker calls `importScripts('util.js', 'actions.js', 'defaultEngines.js', 'storage.js', 'iconSource.js', 'iconParse.js', 'iconCache.js', 'iconFetch.js', 'icons.js')` before `background.js` runs.
+- Icon modules load per context: the background imports source/parse/cache/fetch + `icons.js`; content scripts and the options page load `iconSvg.js` + `iconRender.js` instead. Keep the `background.scripts` and `content_scripts.js` lists in sync when adding a module.
+- Background: Firefox loads the manifest `background.scripts` list before `background.js` runs.
 - Design tokens (accent, font family) and animation durations live only in `src/theme.js`; stylesheets consume `var(--accent)` / `var(--font-family)` / `var(--*-ms)` and each context applies the tokens (`theme.applyTokens`). Never hard-code a token value in CSS or JS.
 
 ### File System Access

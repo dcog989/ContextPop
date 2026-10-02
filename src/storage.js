@@ -4,7 +4,7 @@
 // here run. var (not const) throughout: top-level bindings are shared, bare-name globals
 // across sibling content-script files, and must tolerate re-injection into the same
 // document without throwing a SyntaxError on redeclaration.
-var api = globalThis.browser ?? globalThis.chrome;
+var api = globalThis.browser;
 
 var HTTP_URL_PATTERN = /^https?:\/\//i;
 

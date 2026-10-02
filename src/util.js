@@ -172,7 +172,7 @@ function errorMessage(error) {
  * @returns {Promise<MessageResultMap[K]>}
  */
 function sendMessage(message) {
-  const runtime = globalThis.browser ?? globalThis.chrome;
+  const runtime = globalThis.browser;
   return runtime.runtime.sendMessage(message).then(
     /** @param {MessageResponse<MessageResultMap[K]>} [response] */ (response) => {
       if (response && 'error' in response) throw new Error(response.error);

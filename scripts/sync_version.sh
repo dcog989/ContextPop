@@ -19,4 +19,3 @@ apply() {
 }
 
 apply src/manifest.json "s|\"version\": \"[0-9][0-9.]*\"|\"version\": \"$version\"|"
-apply src/chrome_manifest.json "s|\"version\": \"[0-9][0-9.]*\"|\"version\": \"$version\"|"

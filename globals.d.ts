@@ -4,8 +4,8 @@
 
 // --- WebExtension platform -------------------------------------------------
 // Hand-typed to the namespaces this extension calls. Method signatures are
-// Promise-based, matching Firefox and Chrome MV3; payload types stay loose where
-// the platforms differ. Namespaces are required so the runtime feature guards
+// Promise-based, matching Firefox MV3; payload types stay loose where
+// the platform differs. Namespaces are required so the runtime feature guards
 // (`typeof api.search?.get === 'function'`) read as checks against the platform
 // rather than optional-property narrowing.
 
@@ -64,8 +64,6 @@ interface WebExtensionApi {
 }
 
 declare var browser: WebExtensionApi;
-declare var chrome: WebExtensionApi;
-declare function importScripts(...urls: string[]): void;
 
 // --- Domain types ----------------------------------------------------------
 
