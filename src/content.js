@@ -99,12 +99,12 @@
 
   /**
    * @param {SelectionInfo} info
-   * @returns {string}
+   * @returns {string[]}
    */
   function classify(info) {
-    if (info.href) return 'link';
-    if (/^\S+$/.test(info.text)) return 'word';
-    return 'text';
+    const isWord = /^\S+$/.test(info.text);
+    if (info.href) return isWord ? ['link', 'word'] : ['link'];
+    return isWord ? ['word'] : ['text'];
   }
 
   /**
@@ -118,12 +118,12 @@
   }
 
   /**
-   * @returns {(SelectionInfo & { context: string }) | null}
+   * @returns {(SelectionInfo & { contexts: string[] }) | null}
    */
   function buildActivation() {
     const info = readSelection();
     if (!info) return null;
-    return { ...info, context: classify(info) };
+    return { ...info, contexts: classify(info) };
   }
 
   /**
@@ -224,7 +224,7 @@
   }
 
   /**
-   * @param {SelectionInfo & { context: string }} info
+   * @param {SelectionInfo & { contexts: string[] }} info
    * @param {MouseEvent | null} event
    */
   function showMenu(info, event) {
@@ -232,7 +232,7 @@
     openMenu({
       text: info.text,
       html: info.html,
-      context: info.context,
+      contexts: info.contexts,
       href: info.href,
       rect: info.rect,
       point: event ? { x: event.clientX, y: event.clientY } : null,

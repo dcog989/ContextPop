@@ -129,7 +129,7 @@ interface SelectionInfo {
   rect: DOMRect;
   html: string;
   href: string;
-  context?: string;
+  contexts?: string[];
 }
 
 interface AnchorRect {
@@ -251,7 +251,7 @@ interface MenuState {
   open: boolean;
   text: string;
   html: string;
-  context: string;
+  contexts: string[];
   href: string;
   actions: ActionItem[];
   settings: Settings | null;
@@ -265,7 +265,7 @@ interface MenuState {
 interface OpenMenuOptions {
   text: string;
   html: string;
-  context: string;
+  contexts: string[];
   href: string;
   rect: DOMRect | null;
   point: { x: number; y: number } | null;

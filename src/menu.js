@@ -17,7 +17,7 @@
     open: false,
     text: '',
     html: '',
-    context: '',
+    contexts: [],
     href: '',
     actions: [],
     settings: null,
@@ -277,13 +277,13 @@
   /**
    * @param {OpenMenuOptions} options
    */
-  function openMenu({ text, html, context, href, rect, point, engines, settings, handlers, onClose }) {
+  function openMenu({ text, html, contexts, href, rect, point, engines, settings, handlers, onClose }) {
     removePendingClose();
     closeMenu({ reason: 'replace' });
 
     menuState.text = text;
     menuState.html = html;
-    menuState.context = context;
+    menuState.contexts = contexts;
     menuState.href = href;
     menuState.handlers = handlers;
     menuState.onClose = onClose ?? null;
@@ -292,7 +292,7 @@
     const allActions = builtinActionList(settings);
     const actions = allActions
       .filter((action) => action.enabled)
-      .map((action) => ({ ...action, disabled: !matchesContext(action, context) }));
+      .map((action) => ({ ...action, disabled: !matchesContext(action, contexts) }));
 
     const host = document.createElement('div');
     host.style.position = 'fixed';

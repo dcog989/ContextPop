@@ -133,9 +133,9 @@ function builtinActionList(settings) {
 
 /**
  * @param {ActionItem} item
- * @param {string} context
+ * @param {string[]} contexts
  * @returns {boolean}
  */
-function matchesContext(item, context) {
-  return item.contexts.includes(context);
+function matchesContext(item, contexts) {
+  return item.contexts.some((value) => contexts.includes(value));
 }
