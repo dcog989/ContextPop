@@ -56,6 +56,30 @@ async function downscaleImageToDataUrl(buffer, contentType) {
 }
 
 /**
+ * Fetch with the shared no-referrer/omit-credentials policy under the icon timeout. The
+ * timeout stays armed while `consume` reads the body (e.g. streaming markup), aborting a
+ * stalled reader.
+ * @template T
+ * @param {string} url
+ * @param {(response: Response) => Promise<T>} consume
+ * @returns {Promise<T>}
+ */
+async function fetchWithTimeout(url, consume) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal,
+    });
+    return await consume(response);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
  * @param {string} url
  * @returns {Promise<FetchResult>}
  */
@@ -64,32 +88,25 @@ async function fetchImage(url) {
   if (url.startsWith('data:')) return { dataUrl: url, definitive: true };
   if (!HTTP_URL_PATTERN.test(url)) return { dataUrl: null, definitive: true };
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
   try {
-    const response = await fetch(url, {
-      credentials: 'omit',
-      referrerPolicy: 'no-referrer',
-      signal: controller.signal,
-    });
-    const contentType = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
-    const declaredLength = Number(response.headers.get('content-length') || 0);
-    const withinLimit = !declaredLength || declaredLength <= MAX_ICON_BYTES;
-    if (response.ok && contentType.startsWith('image/') && withinLimit) {
-      const buffer = await response.arrayBuffer();
-      if (buffer.byteLength <= MAX_ICON_BYTES) {
-        const downscaled = await downscaleImageToDataUrl(buffer, contentType);
-        return { dataUrl: downscaled ?? arrayBufferToDataUrl(buffer, contentType), definitive: true };
+    return await fetchWithTimeout(url, async (response) => {
+      const contentType = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+      const declaredLength = Number(response.headers.get('content-length') || 0);
+      const withinLimit = !declaredLength || declaredLength <= MAX_ICON_BYTES;
+      if (response.ok && contentType.startsWith('image/') && withinLimit) {
+        const buffer = await response.arrayBuffer();
+        if (buffer.byteLength <= MAX_ICON_BYTES) {
+          const downscaled = await downscaleImageToDataUrl(buffer, contentType);
+          return { dataUrl: downscaled ?? arrayBufferToDataUrl(buffer, contentType), definitive: true };
+        }
+        return { dataUrl: null, definitive: true };
       }
-      return { dataUrl: null, definitive: true };
-    }
-    // Any non-image 2xx (e.g. an SPA catch-all serving HTML for /favicon.ico) is a
-    // definitive "no icon here"; only 5xx/transient failures should be retried later.
-    return { dataUrl: null, definitive: response.status < 500 };
+      // Any non-image 2xx (e.g. an SPA catch-all serving HTML for /favicon.ico) is a
+      // definitive "no icon here"; only 5xx/transient failures should be retried later.
+      return { dataUrl: null, definitive: response.status < 500 };
+    });
   } catch {
     return { dataUrl: null, definitive: false };
-  } finally {
-    clearTimeout(timer);
   }
 }
 
@@ -98,38 +115,31 @@ async function fetchImage(url) {
  * @returns {Promise<MenuContent>}
  */
 async function fetchMarkup(url) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
   try {
-    const response = await fetch(url, {
-      credentials: 'omit',
-      referrerPolicy: 'no-referrer',
-      signal: controller.signal,
+    return await fetchWithTimeout(url, async (response) => {
+      if (!response.ok) {
+        return { markup: null, baseUrl: url, definitive: response.status >= 400 && response.status < 500 };
+      }
+      const reader = response.body?.getReader();
+      if (!reader) {
+        const text = await response.text();
+        return { markup: text.slice(0, MAX_MARKUP_BYTES), baseUrl: response.url || url, definitive: true };
+      }
+      const decoder = new TextDecoder();
+      let received = 0;
+      let markup = '';
+      while (received < MAX_MARKUP_BYTES) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        received += value.byteLength;
+        markup += decoder.decode(value, { stream: true });
+        if (markup.includes('</head>')) break;
+      }
+      reader.cancel().catch(() => {});
+      return { markup, baseUrl: response.url || url, definitive: true };
     });
-    if (!response.ok) {
-      return { markup: null, baseUrl: url, definitive: response.status >= 400 && response.status < 500 };
-    }
-    const reader = response.body?.getReader();
-    if (!reader) {
-      const text = await response.text();
-      return { markup: text.slice(0, MAX_MARKUP_BYTES), baseUrl: response.url || url, definitive: true };
-    }
-    const decoder = new TextDecoder();
-    let received = 0;
-    let markup = '';
-    while (received < MAX_MARKUP_BYTES) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      received += value.byteLength;
-      markup += decoder.decode(value, { stream: true });
-      if (markup.includes('</head>')) break;
-    }
-    reader.cancel().catch(() => {});
-    return { markup, baseUrl: response.url || url, definitive: true };
   } catch {
     return { markup: null, baseUrl: url, definitive: false };
-  } finally {
-    clearTimeout(timer);
   }
 }
 
@@ -138,37 +148,30 @@ async function fetchMarkup(url) {
  * @returns {Promise<IconCandidate[]>}
  */
 async function fetchManifestIcons(manifestUrl) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ICON_FETCH_TIMEOUT_MS);
   try {
-    const response = await fetch(manifestUrl, {
-      credentials: 'omit',
-      referrerPolicy: 'no-referrer',
-      signal: controller.signal,
-    });
-    if (!response.ok) return [];
-    const data = await response.json();
-    const icons = Array.isArray(data?.icons) ? data.icons : [];
-    /** @type {IconCandidate[]} */
-    const candidates = [];
-    for (const icon of icons) {
-      if (typeof icon?.src !== 'string' || !icon.src) continue;
-      const purpose = String(icon.purpose || '').toLowerCase();
-      if (purpose.includes('monochrome') || purpose.includes('maskable')) continue;
-      try {
-        candidates.push({
-          url: new URL(icon.src, manifestUrl).href,
-          vector: isVectorIcon(icon, icon.src),
-          size: iconSize(icon),
-        });
-      } catch {
-        // Ignore icons with unresolvable src.
+    return await fetchWithTimeout(manifestUrl, async (response) => {
+      if (!response.ok) return [];
+      const data = await response.json();
+      const icons = Array.isArray(data?.icons) ? data.icons : [];
+      /** @type {IconCandidate[]} */
+      const candidates = [];
+      for (const icon of icons) {
+        if (typeof icon?.src !== 'string' || !icon.src) continue;
+        const purpose = String(icon.purpose || '').toLowerCase();
+        if (purpose.includes('monochrome') || purpose.includes('maskable')) continue;
+        try {
+          candidates.push({
+            url: new URL(icon.src, manifestUrl).href,
+            vector: isVectorIcon(icon, icon.src),
+            size: iconSize(icon),
+          });
+        } catch {
+          // Ignore icons with unresolvable src.
+        }
       }
-    }
-    return candidates;
+      return candidates;
+    });
   } catch {
     return [];
-  } finally {
-    clearTimeout(timer);
   }
 }
