@@ -38,6 +38,16 @@ test('looksLikeUrl rejects non-URLs and unknown TLDs', () => {
   assert.equal(looksLikeUrl('https://example.com'), false);
 });
 
+test('looksLikeUrl does not treat file names with ambiguous TLDs as URLs', () => {
+  assert.equal(looksLikeUrl('main.py'), false);
+  assert.equal(looksLikeUrl('lib.rs'), false);
+  assert.equal(looksLikeUrl('script.pl'), false);
+  assert.equal(looksLikeUrl('index.js'), false);
+  assert.equal(looksLikeUrl('readme.md'), false);
+  assert.equal(looksLikeUrl('www.donkeys.ai'), true);
+  assert.equal(looksLikeUrl('donkeys.ai/path'), true);
+});
+
 test('normalizeHttpUrl defaults scheme-less URLs to https and passes through http(s)', () => {
   assert.equal(normalizeHttpUrl('donkeys.org'), 'https://donkeys.org');
   assert.equal(normalizeHttpUrl('fishing.net/trout'), 'https://fishing.net/trout');
