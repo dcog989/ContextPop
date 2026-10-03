@@ -38,8 +38,8 @@
       top = rect.top - size.height - margin;
     }
 
-    left = Math.min(Math.max(margin, left), Math.max(margin, viewportWidth - size.width - margin));
-    top = Math.min(Math.max(margin, top), Math.max(margin, viewportHeight - size.height - margin));
+    left = clamp(left, margin, Math.max(margin, viewportWidth - size.width - margin));
+    top = clamp(top, margin, Math.max(margin, viewportHeight - size.height - margin));
 
     menu.style.left = `${Math.round(left)}px`;
     menu.style.top = `${Math.round(top)}px`;
@@ -56,8 +56,8 @@
       anchor.position === POPUP_POSITION.under && anchor.point
         ? anchor.point
         : { x: (rect?.left ?? 0) + (rect?.width ?? 0) / 2, y: rect?.bottom ?? 0 };
-    const x = Math.min(Math.max(0, point.x - box.left), box.width);
-    const y = Math.min(Math.max(0, point.y - box.top), box.height);
+    const x = clamp(point.x - box.left, 0, box.width);
+    const y = clamp(point.y - box.top, 0, box.height);
     menu.style.transformOrigin = `${Math.round(x)}px ${Math.round(y)}px`;
   }
 

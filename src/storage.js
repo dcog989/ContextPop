@@ -126,10 +126,7 @@ function normalizeSettings(stored) {
   const base = defaultSettings();
   const input = stored && typeof stored === 'object' ? stored : {};
   const settings = { ...base, ...input };
-  const columns = Number(input.columns);
-  settings.columns = Number.isFinite(columns)
-    ? Math.min(MAX_COLUMNS, Math.max(MIN_COLUMNS, Math.round(columns)))
-    : DEFAULT_SETTINGS.columns;
+  settings.columns = clampInt(input.columns, MIN_COLUMNS, MAX_COLUMNS, DEFAULT_SETTINGS.columns);
   settings.popupSize = pickEnum(input.popupSize, POPUP_SIZES, DEFAULT_SETTINGS.popupSize);
   settings.trigger = pickEnum(input.trigger, TRIGGERS, DEFAULT_SETTINGS.trigger);
   settings.openMethod = pickEnum(input.openMethod, OPEN_METHODS, DEFAULT_SETTINGS.openMethod);
@@ -139,10 +136,7 @@ function normalizeSettings(stored) {
   settings.actionsPosition = pickEnum(settings.actionsPosition, ACTIONS_POSITIONS, DEFAULT_SETTINGS.actionsPosition);
   settings.popupPosition = pickEnum(settings.popupPosition, POPUP_POSITIONS, DEFAULT_SETTINGS.popupPosition);
   settings.popupAnimation = settings.popupAnimation === true;
-  const opacity = Number(input.popupOpacity);
-  settings.popupOpacity = Number.isFinite(opacity)
-    ? Math.min(100, Math.max(0, Math.round(opacity)))
-    : DEFAULT_SETTINGS.popupOpacity;
+  settings.popupOpacity = clampInt(input.popupOpacity, 0, 100, DEFAULT_SETTINGS.popupOpacity);
   return settings;
 }
 

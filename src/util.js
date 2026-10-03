@@ -178,6 +178,30 @@ function capitalize(value) {
 }
 
 /**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+/**
+ * Rounds `value` to an integer and clamps it to [min, max], returning `fallback` when it
+ * is not a finite number.
+ * @param {unknown} value
+ * @param {number} min
+ * @param {number} max
+ * @param {number} fallback
+ * @returns {number}
+ */
+function clampInt(value, min, max, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? clamp(Math.round(number), min, max) : fallback;
+}
+
+/**
  * Returns `value` when it is one of `allowed`, otherwise `fallback`.
  * @template T
  * @param {unknown} value

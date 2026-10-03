@@ -16,16 +16,6 @@ let saveTimer = null;
 let statusTimer = null;
 
 /**
- * @param {number} value
- * @param {number} min
- * @param {number} max
- * @returns {number}
- */
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
-
-/**
  * @param {string} message
  * @param {boolean} [isError]
  */

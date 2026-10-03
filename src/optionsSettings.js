@@ -29,7 +29,7 @@ function bindSettings() {
     markDirty(STORAGE_KEYS.settings);
   });
   elements.columns.addEventListener('change', () => {
-    state.settings.columns = clamp(Math.round(Number(elements.columns.value) || 0), MIN_COLUMNS, MAX_COLUMNS);
+    state.settings.columns = clampInt(elements.columns.value, MIN_COLUMNS, MAX_COLUMNS, DEFAULT_SETTINGS.columns);
     elements.columns.value = String(state.settings.columns);
     markDirty(STORAGE_KEYS.settings);
   });
@@ -58,7 +58,7 @@ function bindSettings() {
     markDirty(STORAGE_KEYS.settings);
   });
   elements.popupOpacity.addEventListener('input', () => {
-    state.settings.popupOpacity = clamp(Number(elements.popupOpacity.value) || 0, 0, 100);
+    state.settings.popupOpacity = clampInt(elements.popupOpacity.value, 0, 100, DEFAULT_SETTINGS.popupOpacity);
     elements.popupOpacityValue.textContent = `${state.settings.popupOpacity}%`;
     markDirty(STORAGE_KEYS.settings);
   });

@@ -43,7 +43,7 @@
    */
   function applyOpacity(host, percent) {
     const value = Number(percent);
-    const alpha = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) / 100 : 1;
+    const alpha = Number.isFinite(value) ? clamp(value, 0, 100) / 100 : 1;
     host.style.setProperty('--cs-alpha', String(alpha));
   }
 
