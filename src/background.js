@@ -45,7 +45,7 @@ async function openUrl(url, method, sender) {
       await api.tabs.create({ url, active: false, openerTabId });
       break;
     case OPEN_METHOD.newWindow:
-      await api.windows.create({ url });
+      await api.windows.create({ url, incognito: sender?.tab?.incognito });
       break;
     default:
       await api.tabs.create({ url, active: true, openerTabId });
@@ -111,9 +111,10 @@ async function openSearch({ engine, terms, method }, sender) {
 
 /**
  * @param {{ template: string, terms: string }} message
+ * @param {any} sender
  * @returns {Promise<void>}
  */
-async function openReference({ template, terms }) {
+async function openReference({ template, terms }, sender) {
   const value = String(template ?? '');
   assertTemplate(value, 'Provider');
   await api.windows.create({
@@ -121,6 +122,7 @@ async function openReference({ template, terms }) {
     type: 'popup',
     width: POPUP_WIDTH,
     height: POPUP_HEIGHT,
+    incognito: sender?.tab?.incognito,
   });
 }
 
@@ -166,7 +168,7 @@ async function handleMessage(message, sender) {
       await openLink({ url: message.url, method: message.method }, sender);
       return { ok: true };
     case 'openReference':
-      await openReference({ template: message.template, terms: message.terms });
+      await openReference({ template: message.template, terms: message.terms }, sender);
       return { ok: true };
     default:
       throw new Error(`Unknown message type: ${/** @type {any} */ (message).type}`);

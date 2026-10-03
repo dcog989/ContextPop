@@ -37,7 +37,7 @@ interface WebExtensionApi {
     remove(tabId: number): Promise<void>;
   };
   windows: {
-    create(props: { url?: string; type?: string; width?: number; height?: number }): Promise<WebExtensionTab>;
+    create(props: { url?: string; type?: string; width?: number; height?: number; incognito?: boolean }): Promise<WebExtensionTab>;
   };
   search: {
     search(props: { engine?: string; query?: string; tabId?: number; disposition?: string }): Promise<void>;
