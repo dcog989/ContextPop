@@ -65,8 +65,7 @@ function isMonochromeSvgText(text) {
  * @param {string} dataUrl
  * @returns {boolean}
  */
-function svgDataUrlIsMonochrome(dataUrl) {
-  if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/svg+xml')) return false;
+function computeSvgDataUrlMonochrome(dataUrl) {
   try {
     const comma = dataUrl.indexOf(',');
     const meta = dataUrl.slice(0, comma);
@@ -76,4 +75,27 @@ function svgDataUrlIsMonochrome(dataUrl) {
   } catch {
     return false;
   }
+}
+
+// Same data URLs recur across menu opens and tiles, so the atob+regex pass is memoized.
+// Bounded to keep a long-lived frame from accumulating stale entries.
+var MONO_SVG_CACHE_LIMIT = 128;
+/** @type {Map<string, boolean>} */
+var monoSvgCache = new Map();
+
+/**
+ * @param {string} dataUrl
+ * @returns {boolean}
+ */
+function svgDataUrlIsMonochrome(dataUrl) {
+  if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/svg+xml')) return false;
+  const cached = monoSvgCache.get(dataUrl);
+  if (cached !== undefined) return cached;
+  const result = computeSvgDataUrlMonochrome(dataUrl);
+  if (monoSvgCache.size >= MONO_SVG_CACHE_LIMIT) {
+    const oldest = monoSvgCache.keys().next().value;
+    if (oldest !== undefined) monoSvgCache.delete(oldest);
+  }
+  monoSvgCache.set(dataUrl, result);
+  return result;
 }
