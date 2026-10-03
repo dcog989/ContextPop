@@ -11,12 +11,11 @@
   const { openMenu, closeMenu, isMenuOpen, isEventInsideMenu } = menuApi;
   const api = globalThis.browser;
 
-  /** @type {{ settings: Settings | null, engines: Engine[], selection: SelectionInfo | null, suppressMouseUp: boolean }} */
+  /** @type {{ settings: Settings | null, engines: Engine[], selection: SelectionInfo | null }} */
   const contentState = {
     settings: null,
     engines: [],
     selection: null,
-    suppressMouseUp: false,
   };
 
   async function loadConfig() {
@@ -257,11 +256,6 @@
   function handleMouseUp(event) {
     if (event.button !== 0) return;
 
-    if (contentState.suppressMouseUp) {
-      contentState.suppressMouseUp = false;
-      return;
-    }
-
     if (isMenuOpen()) return;
     if (!triggerMatches(event)) return;
     if (isEventInsideMenu(event)) return;
@@ -278,7 +272,6 @@
     if (event.button !== 0) return;
     if (isMenuOpen() && !isEventInsideMenu(event)) {
       closeMenu({ reason: 'outside' });
-      contentState.suppressMouseUp = true;
     }
   }
 
