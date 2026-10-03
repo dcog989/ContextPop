@@ -185,40 +185,10 @@
 
   /**
    * @param {string} text
-   */
-  function fallbackCopy(text) {
-    const container = document.body || document.documentElement;
-    if (!container) throw new Error('Copy failed');
-    const area = document.createElement('textarea');
-    area.value = text;
-    area.setAttribute('readonly', '');
-    area.style.position = 'fixed';
-    area.style.top = '-1000px';
-    area.style.opacity = '0';
-    container.appendChild(area);
-    area.select();
-
-    let copied = false;
-    try {
-      copied = document.execCommand('copy');
-    } catch {
-      copied = false;
-    }
-    area.remove();
-
-    if (!copied) throw new Error('Copy failed');
-  }
-
-  /**
-   * @param {string} text
    * @returns {Promise<void>}
    */
   async function writeClipboardText(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      fallbackCopy(text);
-    }
+    await navigator.clipboard.writeText(text);
   }
 
   /**
@@ -251,17 +221,15 @@
       }
     }
     try {
-      if (navigator.clipboard?.write && globalThis.ClipboardItem) {
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            'text/html': new Blob([html], { type: 'text/html' }),
-            'text/plain': new Blob([plain], { type: 'text/plain' }),
-          }),
-        ]);
-        return;
-      }
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([plain], { type: 'text/plain' }),
+        }),
+      ]);
+      return;
     } catch {
-      // Clipboard Item unavailable or rejected; fall back to a plain-text copy.
+      // Clipboard Item rejected; fall back to a plain-text copy.
     }
     await copyPlain();
   }

@@ -9,7 +9,6 @@ var HOST_ORIGINS = Object.freeze(['http://*/*', 'https://*/*']);
 // only allows request() from inside a user-gesture handler, so callers must
 // invoke this from a click/keypress.
 var requestHostAccess = async () => {
-  if (!api.permissions?.request) return true;
   // Call request() before any await: an async boundary consumes the user
   // gesture, and Firefox rejects a request made without one.
   try {

@@ -19,7 +19,7 @@ interface WebExtensionStorageArea {
   get(keys?: string | string[] | Record<string, any> | null): Promise<Record<string, any>>;
   set(items: Record<string, any>): Promise<void>;
   remove(keys: string | string[]): Promise<void>;
-  getKeys?(): Promise<string[]>;
+  getKeys(): Promise<string[]>;
 }
 
 interface WebExtensionTab {
