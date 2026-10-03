@@ -225,6 +225,24 @@ function defineEnum(values) {
 }
 
 /**
+ * Template-validation failure codes, shared by the options page and the background.
+ * @type {Readonly<{ ok: string, missingTerms: string, scheme: string }>}
+ */
+var TEMPLATE_PROBLEM = defineEnum({ ok: 'ok', missingTerms: 'missingTerms', scheme: 'scheme' });
+
+/**
+ * Classifies a search URL template. Returns `TEMPLATE_PROBLEM.ok` when valid,
+ * otherwise the first failing code: a missing `{searchTerms}` token or a non-http(s) scheme.
+ * @param {string} template
+ * @returns {string}
+ */
+function templateProblem(template) {
+  if (!templateHasSearchTerms(template)) return TEMPLATE_PROBLEM.missingTerms;
+  if (!HTTP_URL_PATTERN.test(template)) return TEMPLATE_PROBLEM.scheme;
+  return TEMPLATE_PROBLEM.ok;
+}
+
+/**
  * @param {string} template
  * @param {string} terms
  * @returns {string}

@@ -43,6 +43,18 @@ function markDirty(key) {
 }
 
 /**
+ * @param {string} name
+ * @param {string} template
+ * @returns {string | null}
+ */
+function templateError(name, template) {
+  const problem = templateProblem(template);
+  if (problem === TEMPLATE_PROBLEM.missingTerms) return msg('errorTemplateTerms', name);
+  if (problem === TEMPLATE_PROBLEM.scheme) return msg('errorTemplateScheme', name);
+  return null;
+}
+
+/**
  * @returns {string | null}
  */
 function validate() {
@@ -50,17 +62,16 @@ function validate() {
     if (engine.enabled === false) continue;
     if (!engine.name.trim()) return msg('errorNameRequired');
     if (engine.source === ENGINE_SOURCE.browser) continue;
-    if (!templateHasSearchTerms(engine.template)) return msg('errorTemplateTerms', engine.name);
-    if (!HTTP_URL_PATTERN.test(engine.template)) return msg('errorTemplateScheme', engine.name);
+    const problem = templateError(engine.name, engine.template);
+    if (problem) return problem;
   }
   for (const def of BUILTIN_ACTION_DEFS) {
     if (!def.template) continue;
     const value = state.settings.builtinActions[def.id];
     if (!value?.enabled) continue;
-    const template = String(value.template ?? '');
     const name = (msg(`action${capitalize(def.id)}`) || capitalize(def.id)).trim();
-    if (!templateHasSearchTerms(template)) return msg('errorTemplateTerms', name);
-    if (!HTTP_URL_PATTERN.test(template)) return msg('errorTemplateScheme', name);
+    const problem = templateError(name, String(value.template ?? ''));
+    if (problem) return problem;
   }
   return null;
 }

@@ -3,9 +3,18 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const { loadScripts } = require('./helpers/loadScripts');
 
-const context = loadScripts(['util.js']);
-const { buildSearchUrl, isHttpUrl, looksLikeUrl, normalizeHttpUrl, templateHasSearchTerms, capitalize, errorMessage } =
-  context;
+const context = loadScripts(['storage.js', 'util.js']);
+const {
+  buildSearchUrl,
+  isHttpUrl,
+  looksLikeUrl,
+  normalizeHttpUrl,
+  templateHasSearchTerms,
+  templateProblem,
+  TEMPLATE_PROBLEM,
+  capitalize,
+  errorMessage,
+} = context;
 
 test('buildSearchUrl substitutes and encodes every occurrence', () => {
   assert.equal(
@@ -58,6 +67,12 @@ test('normalizeHttpUrl defaults scheme-less URLs to https and passes through htt
 test('templateHasSearchTerms requires the literal token', () => {
   assert.equal(templateHasSearchTerms('https://x/?q={searchTerms}'), true);
   assert.equal(templateHasSearchTerms('https://x/?q=hello'), false);
+});
+
+test('templateProblem classifies valid, missing-terms, and scheme failures', () => {
+  assert.equal(templateProblem('https://x/?q={searchTerms}'), TEMPLATE_PROBLEM.ok);
+  assert.equal(templateProblem('https://x/?q=hello'), TEMPLATE_PROBLEM.missingTerms);
+  assert.equal(templateProblem('ftp://x/?q={searchTerms}'), TEMPLATE_PROBLEM.scheme);
 });
 
 test('capitalize upper-cases the first character only', () => {

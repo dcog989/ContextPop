@@ -9,7 +9,7 @@
 ### Key Files
 
 - `src/background.js` — stateless event page; storage seeding, tab opening, message routing.
-- `src/util.js` — shared string/URL/id helpers. `looksLikeUrl`/`normalizeHttpUrl` recognize scheme-less selections (e.g. `donkeys.org`, `fishing.net/trout`) against the curated `KNOWN_TLDS` list, defaulting them to `https://`.
+- `src/util.js` — shared string/URL/id helpers. `looksLikeUrl`/`normalizeHttpUrl` recognize scheme-less selections (e.g. `donkeys.org`, `fishing.net/trout`) against the curated `KNOWN_TLDS` list, defaulting them to `https://`. `templateProblem` classifies a search-template URL into `TEMPLATE_PROBLEM` codes (`ok`/`missingTerms`/`scheme`) for the background and options validation.
 - `src/actions.js` — built-in action catalog; a def's `kind` (`clipboard`/`reference`/`link`) drives menu dispatch and its `usesText`/`tooltipKey` drive labels, so adding an action means adding a def (plus its locale strings), not editing menu switches.
 - `src/permissions.js` — optional host-access grant; options-page only, loaded after `storage.js` for the shared `api`.
 - `src/options.html` / `src/options*.js` — options page; `options.js` is the entry and the remaining modules load in a fixed order from the HTML. The background opens this page on install.
