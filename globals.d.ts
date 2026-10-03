@@ -125,7 +125,7 @@ interface ActionItem {
 interface SelectionInfo {
   text: string;
   rect: DOMRect;
-  range: Range;
+  ranges: Range[];
   href: string;
   contexts?: string[];
 }

@@ -67,12 +67,12 @@
   }
 
   /**
-   * @param {Range} range
+   * @param {Range[]} ranges
    * @returns {string}
    */
-  function serializeSelection(range) {
+  function serializeSelection(ranges) {
     const container = document.createElement('div');
-    container.appendChild(range.cloneContents());
+    for (const range of ranges) container.appendChild(range.cloneContents());
     return container.innerHTML;
   }
 
@@ -96,10 +96,14 @@
       findAnchor(range.endContainer, range);
     const anchorHref = anchor?.href && isHttpUrl(anchor.href) ? anchor.href : '';
 
+    const ranges = Array.from({ length: selection.rangeCount }, (_, index) =>
+      selection.getRangeAt(index).cloneRange(),
+    );
+
     return {
       text,
       rect,
-      range: range.cloneRange(),
+      ranges,
       href: anchorHref || normalizeHttpUrl(text),
     };
   }
@@ -194,7 +198,7 @@
     let html = plain;
     if (selection) {
       try {
-        const serialized = serializeSelection(selection.range).trim();
+        const serialized = serializeSelection(selection.ranges).trim();
         if (serialized) html = serialized;
       } catch {
         // Deferred serialization fails if the selected nodes have since been removed.
