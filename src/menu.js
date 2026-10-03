@@ -7,7 +7,8 @@
 
   const { t } = globalThis.__contextPopMenuI18n;
   const { css: MENU_CSS } = globalThis.__contextPopMenuStyles;
-  const { applyTheme, positionMenu, applyAnimationOrigin, moveFocus, focusEdge } = globalThis.__contextPopMenuLayout;
+  const { applyTheme, positionMenu, applyAnimationOrigin, enabledTiles, moveFocus, focusEdge } =
+    globalThis.__contextPopMenuLayout;
   const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
   const prefersReducedMotion = () => globalThis.__contextPopTheme?.prefersReducedMotion() ?? false;
 
@@ -332,7 +333,7 @@
 
     if (tiles.childElementCount) menu.appendChild(tiles);
 
-    if (!menu.querySelector('.cs-tile:not(:disabled)')) {
+    if (!enabledTiles(menu).length) {
       const empty = document.createElement('div');
       empty.className = 'cs-empty';
       empty.textContent = t('menuNoActions', 'Nothing available for this selection');

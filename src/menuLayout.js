@@ -62,6 +62,14 @@
   }
 
   /**
+   * @param {HTMLElement} menu
+   * @returns {HTMLElement[]}
+   */
+  function enabledTiles(menu) {
+    return [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
+  }
+
+  /**
    * @param {HTMLElement} tile
    */
   function focusTile(tile) {
@@ -77,7 +85,7 @@
    * @param {number} delta
    */
   function moveFocus(menu, delta) {
-    const tiles = /** @type {HTMLElement[]} */ ([...menu.querySelectorAll('.cs-tile:not(:disabled)')]);
+    const tiles = enabledTiles(menu);
     if (!tiles.length) return;
     const current = tiles.indexOf(/** @type {HTMLElement} */ (menu.querySelector('.cs-tile:focus')));
     let next = current + delta;
@@ -91,7 +99,7 @@
    * @param {boolean} last
    */
   function focusEdge(menu, last) {
-    const tiles = /** @type {HTMLElement[]} */ ([...menu.querySelectorAll('.cs-tile:not(:disabled)')]);
+    const tiles = enabledTiles(menu);
     if (tiles.length) focusTile(last ? tiles[tiles.length - 1] : tiles[0]);
   }
 
@@ -99,6 +107,7 @@
     applyTheme,
     positionMenu,
     applyAnimationOrigin,
+    enabledTiles,
     focusTile,
     moveFocus,
     focusEdge,
