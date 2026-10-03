@@ -144,9 +144,7 @@
       findAnchor(range.endContainer, range);
     const anchorHref = anchor?.href && isHttpUrl(anchor.href) ? anchor.href : '';
 
-    const ranges = Array.from({ length: selection.rangeCount }, (_, index) =>
-      selection.getRangeAt(index).cloneRange(),
-    );
+    const ranges = Array.from({ length: selection.rangeCount }, (_, index) => selection.getRangeAt(index).cloneRange());
 
     return {
       text,

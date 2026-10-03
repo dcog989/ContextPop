@@ -7,8 +7,7 @@
 
   const { t } = globalThis.__contextPopMenuI18n;
   const { css: MENU_CSS } = globalThis.__contextPopMenuStyles;
-  const { applyTheme, positionMenu, applyAnimationOrigin, moveFocus, focusEdge } =
-    globalThis.__contextPopMenuLayout;
+  const { applyTheme, positionMenu, applyAnimationOrigin, moveFocus, focusEdge } = globalThis.__contextPopMenuLayout;
   const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
   const prefersReducedMotion = () => globalThis.__contextPopTheme?.prefersReducedMotion() ?? false;
 

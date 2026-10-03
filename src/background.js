@@ -126,7 +126,7 @@ async function openSearch({ engine, terms, method }, sender) {
 async function openReference({ actionId, terms }, sender) {
   const settings = await loadSettings();
   const action = builtinActionList(settings).find((item) => item.id === actionId);
-  if (!action || action.kind !== 'reference') throw new Error(`Unknown reference action: ${actionId}`);
+  if (action?.kind !== 'reference') throw new Error(`Unknown reference action: ${actionId}`);
   assertTemplate(action.template, 'Provider');
   await api.windows.create({
     url: buildSearchUrl(action.template, normalizeTerms(terms)),
