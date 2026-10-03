@@ -67,12 +67,55 @@
   }
 
   /**
+   * Rewrites relative href/src/srcset URLs to absolute so the serialized markup is
+   * self-contained once pasted outside the page.
+   * @param {Document} doc
+   */
+  function absolutizeUrls(doc) {
+    for (const element of doc.querySelectorAll('[href], [src], [srcset]')) {
+      const href = element.getAttribute('href');
+      const src = element.getAttribute('src');
+      const srcset = element.getAttribute('srcset');
+      if (href != null) {
+        try {
+          element.setAttribute('href', new URL(href, document.baseURI).href);
+        } catch {
+          // Leave non-resolvable values (e.g. "#", "javascript:") untouched.
+        }
+      }
+      if (src != null) {
+        try {
+          element.setAttribute('src', new URL(src, document.baseURI).href);
+        } catch {
+          // Leave non-resolvable values untouched.
+        }
+      }
+      if (srcset != null) {
+        const resolved = srcset
+          .split(',')
+          .map((candidate) => {
+            const [url, ...descriptor] = candidate.trim().split(/\s+/);
+            try {
+              return [new URL(url, document.baseURI).href, ...descriptor].join(' ');
+            } catch {
+              return candidate.trim();
+            }
+          })
+          .join(', ');
+        element.setAttribute('srcset', resolved);
+      }
+    }
+  }
+
+  /**
    * @param {Range[]} ranges
    * @returns {string}
    */
   function serializeSelection(ranges) {
-    const container = document.createElement('div');
-    for (const range of ranges) container.appendChild(range.cloneContents());
+    const doc = document.implementation.createHTMLDocument('');
+    const container = doc.body;
+    for (const range of ranges) container.appendChild(doc.importNode(range.cloneContents(), true));
+    absolutizeUrls(doc);
     return container.innerHTML;
   }
 
