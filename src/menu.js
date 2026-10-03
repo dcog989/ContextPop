@@ -7,7 +7,7 @@
 
   const { t } = globalThis.__contextPopMenuI18n;
   const { css: MENU_CSS } = globalThis.__contextPopMenuStyles;
-  const { applyTheme, positionMenu, applyAnimationOrigin, focusTile, moveFocus, focusEdge } =
+  const { applyTheme, positionMenu, applyAnimationOrigin, moveFocus, focusEdge } =
     globalThis.__contextPopMenuLayout;
   const { appendActionTiles, appendEngineTiles } = globalThis.__contextPopMenuTiles;
   const prefersReducedMotion = () => globalThis.__contextPopTheme?.prefersReducedMotion() ?? false;
@@ -365,8 +365,8 @@
       menu.classList.add('cs-anim-in');
     }
 
-    const firstTile = /** @type {HTMLElement | null} */ (menu.querySelector('.cs-tile:not(:disabled)'));
-    if (firstTile) focusTile(firstTile);
+    menu.tabIndex = -1;
+    menu.focus({ preventScroll: true });
 
     // Apply each engine's stored icon immediately so imported/custom favicons show at
     // once (as the options list does), then upgrade with the background-resolved map.
