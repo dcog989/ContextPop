@@ -14,25 +14,47 @@ var STORAGE_KEYS = Object.freeze({
   onboarding: 'onboarding',
 });
 
-var ENGINE_SOURCES = Object.freeze(['template', 'browser']);
-var ACTIONS_POSITIONS = Object.freeze(['before', 'after']);
-var POPUP_SIZES = Object.freeze(['compact', 'standard', 'large', 'luxury']);
-var POPUP_POSITIONS = Object.freeze(['below', 'under']);
-var TRIGGERS = Object.freeze(['mouseup', 'alt', 'ctrl', 'shift']);
-var OPEN_METHODS = Object.freeze(['newTab', 'backgroundTab', 'currentTab', 'newWindow']);
-var THEMES = Object.freeze(['auto', 'light', 'dark']);
+var ENGINE_SOURCE = Object.freeze({ template: 'template', browser: 'browser' });
+var ACTIONS_POSITION = Object.freeze({ before: 'before', after: 'after' });
+var POPUP_SIZE = Object.freeze({ compact: 'compact', standard: 'standard', large: 'large', luxury: 'luxury' });
+var POPUP_POSITION = Object.freeze({ below: 'below', under: 'under' });
+var TRIGGER = Object.freeze({ mouseup: 'mouseup', alt: 'alt', ctrl: 'ctrl', shift: 'shift' });
+var OPEN_METHOD = Object.freeze({
+  newTab: 'newTab',
+  backgroundTab: 'backgroundTab',
+  currentTab: 'currentTab',
+  newWindow: 'newWindow',
+});
+var THEME = Object.freeze({ auto: 'auto', light: 'light', dark: 'dark' });
+
+var ENGINE_SOURCES = Object.freeze(Object.values(ENGINE_SOURCE));
+var ACTIONS_POSITIONS = Object.freeze(Object.values(ACTIONS_POSITION));
+var POPUP_SIZES = Object.freeze(Object.values(POPUP_SIZE));
+var POPUP_POSITIONS = Object.freeze(Object.values(POPUP_POSITION));
+var TRIGGERS = Object.freeze(Object.values(TRIGGER));
+var OPEN_METHODS = Object.freeze(Object.values(OPEN_METHOD));
+var THEMES = Object.freeze(Object.values(THEME));
+
+// Browser search dispositions per open method; openBrowserSearch special-cases backgroundTab.
+/** @type {Record<string, string>} */
+var OPEN_METHOD_DISPOSITIONS = Object.freeze({
+  [OPEN_METHOD.newTab]: 'NEW_TAB',
+  [OPEN_METHOD.currentTab]: 'CURRENT_TAB',
+  [OPEN_METHOD.newWindow]: 'NEW_WINDOW',
+});
+
 var MIN_COLUMNS = 1;
 var MAX_COLUMNS = 12;
 
 var DEFAULT_SETTINGS = Object.freeze({
-  trigger: 'mouseup',
-  openMethod: 'newTab',
+  trigger: TRIGGER.mouseup,
+  openMethod: OPEN_METHOD.newTab,
   columns: 6,
-  theme: 'auto',
+  theme: THEME.auto,
   showLabels: false,
-  actionsPosition: 'before',
-  popupSize: 'standard',
-  popupPosition: 'below',
+  actionsPosition: ACTIONS_POSITION.before,
+  popupSize: POPUP_SIZE.standard,
+  popupPosition: POPUP_POSITION.below,
   popupAnimation: false,
   popupOpacity: 100,
   accentBorder: false,
@@ -62,7 +84,7 @@ function defaultSettings() {
  * @returns {Engine}
  */
 function normalizeEngine(engine) {
-  const source = ENGINE_SOURCES.includes(engine?.source) ? engine.source : 'template';
+  const source = ENGINE_SOURCES.includes(engine?.source) ? engine.source : ENGINE_SOURCE.template;
   return {
     id: engine?.id || generateId(),
     name: String(engine?.name ?? ''),
@@ -127,7 +149,7 @@ function supportsBrowserEngineSearch() {
  * @returns {Engine[]}
  */
 function filterUsableEngines(engines) {
-  return engines.filter((engine) => engine.source !== 'browser' || supportsBrowserEngineSearch());
+  return engines.filter((engine) => engine.source !== ENGINE_SOURCE.browser || supportsBrowserEngineSearch());
 }
 
 /**

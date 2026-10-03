@@ -220,12 +220,12 @@
    * @returns {boolean}
    */
   function triggerMatches(event) {
-    switch (contentState.settings?.trigger ?? 'mouseup') {
-      case 'alt':
+    switch (contentState.settings?.trigger ?? TRIGGER.mouseup) {
+      case TRIGGER.alt:
         return event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
-      case 'ctrl':
+      case TRIGGER.ctrl:
         return event.ctrlKey || event.metaKey;
-      case 'shift':
+      case TRIGGER.shift:
         return event.shiftKey;
       default:
         return true;

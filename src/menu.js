@@ -128,9 +128,9 @@
    * @returns {string}
    */
   function resolveMethod(event, base) {
-    if (event.shiftKey) return 'newWindow';
-    if (event.ctrlKey || event.metaKey) return 'backgroundTab';
-    return base || 'newTab';
+    if (event.shiftKey) return OPEN_METHOD.newWindow;
+    if (event.ctrlKey || event.metaKey) return OPEN_METHOD.backgroundTab;
+    return base || OPEN_METHOD.newTab;
   }
 
   /**
@@ -229,7 +229,7 @@
         type: 'search',
         engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
         terms: menuState.text,
-        method: 'backgroundTab',
+        method: OPEN_METHOD.backgroundTab,
       }),
     );
   }
@@ -311,7 +311,7 @@
     menu.style.visibility = 'hidden';
 
     if (settings.showLabels) menu.classList.add('has-labels');
-    menu.classList.add(`size-${settings.popupSize || 'standard'}`);
+    menu.classList.add(`size-${settings.popupSize || POPUP_SIZE.standard}`);
     if (settings.accentBorder) menu.classList.add('accent-border');
     applyTheme(menu, settings.theme);
 
@@ -322,7 +322,7 @@
     tiles.className = 'cs-tiles';
     tiles.style.gridTemplateColumns = `repeat(${Math.max(1, Number(settings.columns) || 1)}, minmax(0, 1fr))`;
 
-    const actionsFirst = settings.actionsPosition !== 'after';
+    const actionsFirst = settings.actionsPosition !== ACTIONS_POSITION.after;
     const engineHandlers = { onClick: handleEngineClick, onAuxClick: handleEngineAuxClick };
     if (actionsFirst) appendActionTiles(tiles, actions, text, settings.showLabels, handleActionClick);
     appendEngineTiles(tiles, engines, settings.showLabels, iconSetters, engineHandlers);

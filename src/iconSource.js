@@ -89,7 +89,7 @@ function templateHost(template) {
  */
 function engineIconSource(engine) {
   const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
-  if (engine.source === 'browser') {
+  if (engine.source === ENGINE_SOURCE.browser) {
     if (hasIcon && HTTP_URL_PATTERN.test(engine.icon)) return { key: engine.icon, kind: 'image' };
     const host = browserEngineHost(engine.name);
     if (host) return { key: `https://${host}/`, kind: 'markup' };

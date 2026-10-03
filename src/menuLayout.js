@@ -9,7 +9,8 @@
    * @param {string} theme
    */
   function applyTheme(menu, theme) {
-    const dark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const dark =
+      theme === THEME.dark || (theme === THEME.auto && window.matchMedia('(prefers-color-scheme: dark)').matches);
     menu.classList.toggle('dark', dark);
   }
 
@@ -25,7 +26,7 @@
     let left = rect.left;
     let top = rect.bottom + margin;
 
-    if (anchor.position === 'under' && anchor.point) {
+    if (anchor.position === POPUP_POSITION.under && anchor.point) {
       const tileRect = menu.querySelector('.cs-tile:not(:disabled)')?.getBoundingClientRect();
       const offsetX = tileRect ? tileRect.left - size.left + tileRect.width / 2 : 0;
       const offsetY = tileRect ? tileRect.top - size.top + tileRect.height / 2 : 0;
@@ -50,7 +51,7 @@
     const box = menu.getBoundingClientRect();
     const rect = anchor.rect;
     const point =
-      anchor.position === 'under' && anchor.point
+      anchor.position === POPUP_POSITION.under && anchor.point
         ? anchor.point
         : { x: (rect?.left ?? 0) + (rect?.width ?? 0) / 2, y: rect?.bottom ?? 0 };
     const x = Math.min(Math.max(0, point.x - box.left), box.width);

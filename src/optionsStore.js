@@ -54,7 +54,7 @@ function validate() {
   for (const engine of state.engines) {
     if (engine.enabled === false) continue;
     if (!engine.name.trim()) return msg('errorNameRequired');
-    if (engine.source === 'browser') continue;
+    if (engine.source === ENGINE_SOURCE.browser) continue;
     if (!templateHasSearchTerms(engine.template)) return msg('errorTemplateTerms', engine.name);
     if (!HTTP_URL_PATTERN.test(engine.template)) return msg('errorTemplateScheme', engine.name);
   }

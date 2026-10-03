@@ -1,13 +1,6 @@
 const POPUP_WIDTH = 520;
 const POPUP_HEIGHT = 720;
 
-/** @type {Record<string, string>} */
-const DISPOSITIONS = Object.freeze({
-  newTab: 'NEW_TAB',
-  currentTab: 'CURRENT_TAB',
-  newWindow: 'NEW_WINDOW',
-});
-
 async function seedStorage() {
   await loadEngines();
 
@@ -22,7 +15,7 @@ async function seedStorage() {
  */
 function resolveOpenMethod(method, sender) {
   let resolved = OPEN_METHODS.includes(method) ? method : DEFAULT_SETTINGS.openMethod;
-  if (resolved === 'currentTab' && sender?.tab?.id == null) resolved = 'newTab';
+  if (resolved === OPEN_METHOD.currentTab && sender?.tab?.id == null) resolved = OPEN_METHOD.newTab;
   return resolved;
 }
 
@@ -31,7 +24,7 @@ function resolveOpenMethod(method, sender) {
  * @returns {string}
  */
 function dispositionFor(method) {
-  return DISPOSITIONS[method] ?? DISPOSITIONS.newTab;
+  return OPEN_METHOD_DISPOSITIONS[method] ?? OPEN_METHOD_DISPOSITIONS[OPEN_METHOD.newTab];
 }
 
 /**
@@ -45,13 +38,13 @@ async function openUrl(url, method, sender) {
   const openerTabId = sender?.tab?.id;
 
   switch (openMethod) {
-    case 'currentTab':
+    case OPEN_METHOD.currentTab:
       await api.tabs.update(openerTabId, { url });
       break;
-    case 'backgroundTab':
+    case OPEN_METHOD.backgroundTab:
       await api.tabs.create({ url, active: false, openerTabId });
       break;
-    case 'newWindow':
+    case OPEN_METHOD.newWindow:
       await api.windows.create({ url });
       break;
     default:
@@ -68,7 +61,7 @@ async function openUrl(url, method, sender) {
  * @returns {Promise<void>}
  */
 async function openBrowserSearch(engine, query, openMethod, sender) {
-  if (openMethod === 'backgroundTab') {
+  if (openMethod === OPEN_METHOD.backgroundTab) {
     // The search API has no unfocused disposition, so open a background tab
     // and have the search run in it via tabId. The tab never takes focus,
     // matching template engines' tabs.create({ active: false }).
@@ -105,7 +98,7 @@ function assertTemplate(value, label) {
 async function openSearch({ engine, terms, method }, sender) {
   const query = String(terms ?? '');
 
-  if (engine.source === 'browser') {
+  if (engine.source === ENGINE_SOURCE.browser) {
     if (!supportsBrowserEngineSearch()) throw new Error('Browser engine search is unavailable');
     await openBrowserSearch(engine, query, resolveOpenMethod(method, sender), sender);
     return;

@@ -45,7 +45,7 @@ function createRow(engine, index) {
 
   const template = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-template'));
   template.value = engine.template;
-  if (engine.source === 'browser') {
+  if (engine.source === ENGINE_SOURCE.browser) {
     template.disabled = true;
     template.dataset.i18nPlaceholder = 'templatePlaceholderBrowser';
     template.placeholder = msg('templatePlaceholderBrowser');
@@ -153,7 +153,9 @@ function deleteEngine(index) {
 }
 
 function addEngine() {
-  state.engines.push(normalizeEngine({ id: generateId(), name: '', source: 'template', template: '', icon: '' }));
+  state.engines.push(
+    normalizeEngine({ id: generateId(), name: '', source: ENGINE_SOURCE.template, template: '', icon: '' }),
+  );
   renderEngines();
   markDirty();
 }
@@ -187,7 +189,7 @@ async function importBrowserEngines() {
       normalizeEngine({
         id: generateId(),
         name: item.name,
-        source: 'browser',
+        source: ENGINE_SOURCE.browser,
         browserEngineName: item.name,
         icon: item.favIconUrl || '',
       }),
