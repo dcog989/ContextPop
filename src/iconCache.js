@@ -50,12 +50,8 @@ function markIconUnavailable(key) {
  * @returns {Promise<string[]>}
  */
 async function iconCacheKeys() {
-  const area = api.storage.local;
-  if (typeof area.getKeys === 'function') {
-    return /** @type {string[]} */ (await area.getKeys()).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
-  }
-  const all = await area.get(null);
-  return Object.keys(all).filter((key) => key.startsWith(ICON_CACHE_PREFIX));
+  const keys = await api.storage.local.getKeys();
+  return keys.filter((key) => key.startsWith(ICON_CACHE_PREFIX));
 }
 
 /**
