@@ -162,8 +162,8 @@ async function fetchManifestIcons(manifestUrl) {
         try {
           candidates.push({
             url: new URL(icon.src, manifestUrl).href,
-            vector: isVectorIcon(icon, icon.src),
-            size: iconSize(icon),
+            vector: isVectorIcon(icon.type, icon.src),
+            size: iconSize(icon.sizes),
           });
         } catch {
           // Ignore icons with unresolvable src.
