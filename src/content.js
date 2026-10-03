@@ -369,6 +369,11 @@
         contentState.settings = null;
         contentState.engines = [];
       }
+      // Engine edits change the id set the icon map is keyed by; resolved icons arrive as
+      // icon:* writes. Both must drop the frame's cached map.
+      if (changes[STORAGE_KEYS.engines] || Object.keys(changes).some((key) => key.startsWith(ICON_CACHE_PREFIX))) {
+        menuApi.invalidateIcons();
+      }
     });
   }
 

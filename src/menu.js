@@ -57,16 +57,40 @@
     host.style.setProperty('--cs-alpha', String(alpha));
   }
 
+  // Cache-only icon map for the frame, invalidated when the background writes resolved
+  // icons (icon:* storage changes). A generation counter drops an in-flight reply that
+  // was invalidated before it landed.
+  /** @type {Record<string, string> | null} */
+  let cachedIcons = null;
+  /** @type {Promise<Record<string, string>> | null} */
+  let iconRequest = null;
+  let iconGeneration = 0;
+
   /**
-   * Fetches engine icons for the open menu; failures fall back to the letter tiles.
+   * Fetches engine icons for the open menu, reusing the frame-local map; failures fall
+   * back to the letter tiles.
    * @returns {Promise<Record<string, string>>}
    */
-  async function requestIcons() {
-    try {
-      return await sendMessageOrEmpty({ type: 'getIcons' });
-    } catch {
-      return {};
+  function requestIcons() {
+    if (cachedIcons) return Promise.resolve(cachedIcons);
+    if (!iconRequest) {
+      const generation = iconGeneration;
+      iconRequest = sendMessageOrEmpty({ type: 'getIcons' })
+        .then((icons) => {
+          if (generation === iconGeneration) cachedIcons = icons;
+          return icons;
+        })
+        .catch(() => ({}))
+        .finally(() => {
+          iconRequest = null;
+        });
     }
+    return iconRequest;
+  }
+
+  function invalidateIcons() {
+    cachedIcons = null;
+    iconGeneration += 1;
   }
 
   function removePendingClose() {
@@ -374,5 +398,5 @@
     requestIcons().then((icons) => applyEngineIcons(iconSetters, engines, icons));
   }
 
-  globalThis.__contextPopMenu = { openMenu, closeMenu, isMenuOpen, isEventInsideMenu };
+  globalThis.__contextPopMenu = { openMenu, closeMenu, isMenuOpen, isEventInsideMenu, invalidateIcons };
 })();

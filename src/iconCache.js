@@ -1,8 +1,8 @@
 // Engine favicon cache: an in-memory Map backed by api.storage.local, so resolved icons
 // survive the background worker being suspended. Storage failures are non-fatal - the
-// in-memory layer keeps working for the current worker lifetime.
+// in-memory layer keeps working for the current worker lifetime. ICON_CACHE_PREFIX is
+// defined in storage.js, which loads before this file.
 
-var ICON_CACHE_PREFIX = 'icon:';
 /** @type {Map<string, string | null>} */
 var iconMemoryCache = new Map();
 

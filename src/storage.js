@@ -14,6 +14,11 @@ var STORAGE_KEYS = Object.freeze({
   onboarding: 'onboarding',
 });
 
+// Storage-key prefix for cached engine favicons. The cache module (iconCache.js) owns the
+// values; the prefix lives here so both the background and content scripts can recognize
+// icon:* changes.
+var ICON_CACHE_PREFIX = 'icon:';
+
 var ENGINE_SOURCE = Object.freeze({ template: 'template', browser: 'browser' });
 var ACTIONS_POSITION = Object.freeze({ before: 'before', after: 'after' });
 var POPUP_SIZE = Object.freeze({ compact: 'compact', standard: 'standard', large: 'large', luxury: 'luxury' });

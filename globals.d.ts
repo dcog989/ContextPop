@@ -284,6 +284,7 @@ interface MenuApi {
   closeMenu(options?: { restoreFocus?: boolean; reason?: string }): void;
   isMenuOpen(): boolean;
   isEventInsideMenu(event: Event): boolean;
+  invalidateIcons(): void;
 }
 
 declare var __contextPopTheme: ThemeApi;
