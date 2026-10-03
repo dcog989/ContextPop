@@ -182,6 +182,19 @@ function sendMessage(message) {
 }
 
 /**
+ * Like `sendMessage`, but normalizes a missing payload to `{}` instead of `undefined`.
+ * @template {MessageType} K
+ * @param {Message & { type: K }} message
+ * @returns {Promise<MessageResultMap[K]>}
+ */
+function sendMessageOrEmpty(message) {
+  return sendMessage(message).then(
+    /** @param {MessageResultMap[K]} data */
+    (data) => data || /** @type {MessageResultMap[K]} */ ({}),
+  );
+}
+
+/**
  * @param {string} value
  * @returns {string}
  */

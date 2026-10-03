@@ -63,7 +63,7 @@
    */
   async function requestIcons() {
     try {
-      return (await sendMessage({ type: 'getIcons' })) || {};
+      return await sendMessageOrEmpty({ type: 'getIcons' });
     } catch {
       return {};
     }

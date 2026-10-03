@@ -73,17 +73,9 @@ function createRow(engine, index) {
   return { fragment, setIcon: icon.setSource };
 }
 
-/**
- * @param {{ type: 'getIcons' | 'refreshIcons' }} message
- * @returns {Promise<Record<string, string>>}
- */
-async function requestEngineIcons(message) {
-  return (await sendMessage(message)) || {};
-}
-
 async function loadEngineIcons() {
   try {
-    engineIcons = await requestEngineIcons({ type: 'getIcons' });
+    engineIcons = await sendMessageOrEmpty({ type: 'getIcons' });
   } catch {
     engineIcons = {};
   }
@@ -93,7 +85,7 @@ async function loadEngineIcons() {
 // Clears the background icon cache and re-fetches. Used after host access is granted so
 // icons attempted without permission (recorded as unavailable) are retried.
 async function refreshEngineIcons() {
-  const icons = await requestEngineIcons({ type: 'refreshIcons' });
+  const icons = await sendMessageOrEmpty({ type: 'refreshIcons' });
   engineIcons = icons;
   applyEngineIcons(iconSetters, state.engines, icons);
 }
