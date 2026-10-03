@@ -11,12 +11,6 @@ function normalizeTerms(terms) {
   return value.length > MAX_QUERY_CHARS ? value.slice(0, MAX_QUERY_CHARS) : value;
 }
 
-async function seedStorage() {
-  const result = await api.storage.local.get([STORAGE_KEYS.engines, STORAGE_KEYS.settings]);
-  if (!Array.isArray(result[STORAGE_KEYS.engines])) await saveEngines(defaultEngineList());
-  if (!result[STORAGE_KEYS.settings]) await saveSettings(defaultSettings());
-}
-
 /**
  * @param {string} method
  * @param {any} sender
@@ -195,12 +189,7 @@ async function handleMessage(message, sender) {
   }
 }
 
-function seedStorageOnFailure() {
-  seedStorage().catch((error) => console.error('ContextPop: seed failed', error));
-}
-
 api.runtime.onInstalled.addListener((/** @type {any} */ details) => {
-  seedStorageOnFailure();
   // Send first-time installs to the options page so the onboarding callout is seen.
   if (details?.reason === 'install') api.runtime.openOptionsPage();
 });
@@ -209,7 +198,7 @@ api.runtime.onInstalled.addListener((/** @type {any} */ details) => {
 // listener here forces that run every browser session, otherwise the first
 // action click that wakes the suspended page is dropped and the options page
 // does not open until a second click.
-api.runtime.onStartup.addListener(seedStorageOnFailure);
+api.runtime.onStartup.addListener(() => {});
 
 // Keep this handler synchronous: an awaited permission/storage call before or after
 // openOptionsPage() loses the click on a waking event page, so the first press is
