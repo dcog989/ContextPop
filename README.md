@@ -54,7 +54,7 @@ lefthook install               # enable git hooks once per clone
 cog bump --auto                # version + changelog; syncs both manifests
 ```
 
-CI (`.github/workflows/ci.yml`) runs the same checks on push and pull requests, plus `web-ext lint` and `scripts/package.sh` (manifest-drift validation).
+CI (`.github/workflows/ci.yml`) runs the same checks on push and pull requests, plus `web-ext lint` and `scripts/package.sh` (manifest-drift validation). Pushing a `v*` tag triggers `.github/workflows/release.yml`, which packages the extension and publishes a GitHub Release with the matching `CHANGELOG.md` section.
 
 ## Engine template
 

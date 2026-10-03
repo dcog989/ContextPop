@@ -25,6 +25,7 @@
 - Lint/format: `biome check` (`biome check --write` to fix).
 - Type-check: `tsc --noEmit -p jsconfig.json` (strict `checkJs`; `globals.d.ts` supplies platform and shared-global types).
 - CI: `.github/workflows/ci.yml` runs `biome ci`, `tsc`, the unit tests, `web-ext lint`, and `scripts/package.sh` on push/PR.
+- Release: pushing a `v*` tag (from `cog bump`) triggers `.github/workflows/release.yml`, which packages the extension and publishes a GitHub Release using the matching `CHANGELOG.md` section.
 - Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files, runs `tsc` on staged JS, and runs `cog verify` on commit messages.
 - Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so the manifest version stays in sync.
 - Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-firefox.zip`.
