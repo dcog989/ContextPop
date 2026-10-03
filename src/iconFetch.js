@@ -48,7 +48,9 @@ async function fetchImage(url) {
       }
       return { dataUrl: null, definitive: true };
     }
-    return { dataUrl: null, definitive: response.status >= 400 && response.status < 500 };
+    // Any non-image 2xx (e.g. an SPA catch-all serving HTML for /favicon.ico) is a
+    // definitive "no icon here"; only 5xx/transient failures should be retried later.
+    return { dataUrl: null, definitive: response.status < 500 };
   } catch {
     return { dataUrl: null, definitive: false };
   } finally {

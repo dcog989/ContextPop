@@ -75,7 +75,7 @@ function createRow(engine, index) {
 
 async function loadEngineIcons() {
   try {
-    engineIcons = await sendMessageOrEmpty({ type: 'getIcons' });
+    engineIcons = await sendMessageOrEmpty({ type: 'resolveIcons' });
   } catch {
     engineIcons = {};
   }

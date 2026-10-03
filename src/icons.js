@@ -49,13 +49,14 @@ async function fetchBestIcon(homeUrl) {
   return { dataUrl: null, definitive: definitive && candidates.length > 0 };
 }
 
+/** @type {Map<string, Promise<{ dataUrl: string | null, fetched: boolean }>>} */
+var iconInflight = new Map();
+
 /**
- * @param {Engine} engine
+ * @param {IconSource} source
  * @returns {Promise<{ dataUrl: string | null, fetched: boolean }>}
  */
-async function resolveEngineIcon(engine) {
-  const source = engineIconSource(engine);
-  if (!source) return { dataUrl: null, fetched: false };
+async function resolveEngineIconBySource(source) {
   if (source.key.startsWith('data:')) return { dataUrl: source.key, fetched: false };
 
   const cached = await readIconCache(source.key);
@@ -68,10 +69,52 @@ async function resolveEngineIcon(engine) {
 }
 
 /**
+ * Resolves one icon source, sharing the in-flight promise across concurrent callers so a
+ * given host is never fetched twice (e.g. menu open racing the background warm-up).
+ * @param {IconSource} source
+ * @returns {Promise<{ dataUrl: string | null, fetched: boolean }>}
+ */
+function resolveEngineIcon(source) {
+  const inflight = iconInflight.get(source.key);
+  if (inflight) return inflight;
+  const pending = resolveEngineIconBySource(source).finally(() => {
+    if (iconInflight.get(source.key) === pending) iconInflight.delete(source.key);
+  });
+  iconInflight.set(source.key, pending);
+  return pending;
+}
+
+/**
+ * Cache-only icon map for rendering paths that must stay instant. Never touches the
+ * network; unresolved engines simply fall back to their letter tile.
  * @param {Engine[]} engines
  * @returns {Promise<Record<string, string>>}
  */
-async function loadIconMap(engines) {
+async function cachedIconMap(engines) {
+  /** @type {Record<string, string>} */
+  const icons = {};
+  await Promise.all(
+    engines.map(async (engine) => {
+      const source = engineIconSource(engine);
+      if (!source) return;
+      if (source.key.startsWith('data:')) {
+        icons[engine.id] = source.key;
+        return;
+      }
+      const cached = await readIconCache(source.key);
+      if (typeof cached === 'string' && cached) icons[engine.id] = cached;
+    }),
+  );
+  return icons;
+}
+
+/**
+ * Resolves every engine's icon over the network, writing results (including definitive
+ * misses) to the cache, then prunes entries no longer referenced.
+ * @param {Engine[]} engines
+ * @returns {Promise<Record<string, string>>}
+ */
+async function resolveIconMap(engines) {
   /** @type {Record<string, string>} */
   const icons = {};
   /** @type {Set<string>} */
@@ -80,13 +123,14 @@ async function loadIconMap(engines) {
     const source = engineIconSource(engine);
     if (source) referenced.add(source.key);
   }
-  const outcomes = await Promise.all(
+  await Promise.all(
     engines.map(async (engine) => {
-      const { dataUrl, fetched } = await resolveEngineIcon(engine);
+      const source = engineIconSource(engine);
+      if (!source) return;
+      const { dataUrl } = await resolveEngineIcon(source);
       if (dataUrl) icons[engine.id] = dataUrl;
-      return fetched;
     }),
   );
-  if (outcomes.some(Boolean)) await pruneIconCache(referenced);
+  await pruneIconCache(referenced);
   return icons;
 }

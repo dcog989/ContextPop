@@ -172,6 +172,7 @@ interface MessageMap {
   getEngines: { type: 'getEngines' };
   getSettings: { type: 'getSettings' };
   getIcons: { type: 'getIcons' };
+  resolveIcons: { type: 'resolveIcons' };
   refreshIcons: { type: 'refreshIcons' };
   search: { type: 'search'; engineId: string; terms: string; method: string };
   openLink: { type: 'openLink'; url: string; method: string };
@@ -188,6 +189,7 @@ interface MessageResultMap {
   getEngines: Engine[];
   getSettings: Settings;
   getIcons: IconMap;
+  resolveIcons: IconMap;
   refreshIcons: IconMap;
   search: { ok: boolean };
   openLink: { ok: boolean };

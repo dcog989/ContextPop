@@ -161,12 +161,20 @@ async function handleMessage(message, sender) {
       return loadSettings();
     case 'getIcons': {
       const engines = await loadEngines();
-      return loadIconMap(engines);
+      const icons = await cachedIconMap(engines);
+      // Warm the cache off the response path so a slow or offline host never delays
+      // rendering; de-duped, so concurrent opens share the same fetches.
+      resolveIconMap(engines).catch((error) => console.error('ContextPop: icon warm-up failed', error));
+      return icons;
+    }
+    case 'resolveIcons': {
+      const engines = await loadEngines();
+      return resolveIconMap(engines);
     }
     case 'refreshIcons': {
       const engines = await loadEngines();
       await clearIconCache();
-      return loadIconMap(engines);
+      return resolveIconMap(engines);
     }
     case 'search': {
       const engines = await loadEngines();
