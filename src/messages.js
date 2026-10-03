@@ -6,7 +6,7 @@
  * Sends a background message and unwraps the `{ data } | { error }` envelope,
  * throwing on failure so callers only handle the success payload.
  * @template {MessageType} K
- * @param {Message & { type: K }} message
+ * @param {MessageMap[K]} message
  * @returns {Promise<MessageResultMap[K]>}
  */
 function sendMessage(message) {
@@ -22,7 +22,7 @@ function sendMessage(message) {
 /**
  * Like `sendMessage`, but normalizes a missing payload to `{}` instead of `undefined`.
  * @template {MessageType} K
- * @param {Message & { type: K }} message
+ * @param {MessageMap[K]} message
  * @returns {Promise<MessageResultMap[K]>}
  */
 function sendMessageOrEmpty(message) {

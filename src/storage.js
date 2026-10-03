@@ -37,6 +37,7 @@ var ACTIONS_POSITIONS = Object.freeze(Object.values(ACTIONS_POSITION));
 var POPUP_SIZES = Object.freeze(Object.values(POPUP_SIZE));
 var POPUP_POSITIONS = Object.freeze(Object.values(POPUP_POSITION));
 var TRIGGERS = Object.freeze(Object.values(TRIGGER));
+/** @type {readonly string[]} */
 var OPEN_METHODS = Object.freeze(Object.values(OPEN_METHOD));
 var THEMES = Object.freeze(Object.values(THEME));
 
