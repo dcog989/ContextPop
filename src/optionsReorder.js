@@ -28,19 +28,15 @@ function playRowReorder(container, first) {
     if (delta === 0) continue;
     el.style.transition = 'none';
     el.style.transform = `translateY(${delta}px)`;
+    afterAnimation(el, globalThis.__contextPopTheme?.DURATIONS.rowReorderMs ?? 0).then(() => {
+      el.style.transition = '';
+      el.style.transform = '';
+    });
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         el.style.transition = 'transform var(--row-reorder-ms) ease';
         el.style.transform = '';
       });
     });
-    el.addEventListener(
-      'transitionend',
-      () => {
-        el.style.transition = '';
-        el.style.transform = '';
-      },
-      { once: true },
-    );
   }
 }

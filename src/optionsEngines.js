@@ -9,10 +9,6 @@ let iconSetters = new Map();
 /** @type {Record<string, string>} */
 let engineIcons = {};
 
-// Extra time past the CSS row-remove animation before forcing removal, covering a missed
-// animationend (e.g. the row is no longer rendered).
-const ROW_REMOVE_MARGIN_MS = 240;
-
 /**
  * @param {Engine} engine
  * @param {number} index
@@ -137,19 +133,13 @@ function deleteEngine(index) {
 
   const engineId = row.dataset.rowId ?? '';
   const first = captureRowPositions(elements.list);
-  let settled = false;
-  const finish = () => {
-    if (settled) return;
-    settled = true;
+  const rowRemoveMs = globalThis.__contextPopTheme?.DURATIONS.rowRemoveMs ?? 0;
+  afterAnimation(row, rowRemoveMs, 'row-remove').then(() => {
     const currentIndex = state.engines.findIndex((engine) => engine.id === engineId);
     if (currentIndex !== -1) removeEngine(currentIndex);
     playRowReorder(elements.list, first);
-  };
-
+  });
   row.classList.add('row-removing');
-  row.addEventListener('animationend', finish, { once: true });
-  const rowRemoveMs = globalThis.__contextPopTheme?.DURATIONS.rowRemoveMs ?? 0;
-  setTimeout(finish, rowRemoveMs + ROW_REMOVE_MARGIN_MS);
 }
 
 function addEngine() {

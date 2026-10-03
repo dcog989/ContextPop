@@ -25,15 +25,6 @@
     onClose: null,
   };
 
-  // Extra time past the CSS cs-shrink animation before forcing removal, covering a missed
-  // animationend.
-  const CLOSE_ANIM_MARGIN_MS = 40;
-
-  // Host left in the DOM by an in-progress exit animation, tracked so a subsequent
-  // open can evict it before mounting the next menu.
-  /** @type {{ host: HTMLElement, timer: ReturnType<typeof setTimeout> } | null} */
-  let pendingClose = null;
-
   function isMenuOpen() {
     return menuState.open;
   }
@@ -92,13 +83,6 @@
     iconGeneration += 1;
   }
 
-  function removePendingClose() {
-    if (!pendingClose) return;
-    clearTimeout(pendingClose.timer);
-    pendingClose.host.remove();
-    pendingClose = null;
-  }
-
   /**
    * @param {{ restoreFocus?: boolean, reason?: string }} [options]
    */
@@ -121,28 +105,16 @@
     menuState.onClose = null;
     onClose?.(reason);
 
-    const menu = root?.querySelector?.('.cs-menu');
+    const menu = /** @type {HTMLElement | null} */ (root?.querySelector?.('.cs-menu') ?? null);
     if (reason === 'replace' || !menu || !host || !menuState.settings?.popupAnimation || prefersReducedMotion()) {
       host?.remove();
       return;
     }
 
-    removePendingClose();
+    const closeMs = globalThis.__contextPopTheme?.DURATIONS.menuCloseMs ?? 0;
+    afterAnimation(menu, closeMs, 'cs-shrink').then(() => host.remove());
     menu.classList.remove('cs-anim-in');
     menu.classList.add('cs-anim-out');
-    let settled = false;
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      if (pendingClose?.host === host) {
-        clearTimeout(pendingClose.timer);
-        pendingClose = null;
-      }
-      host.remove();
-    };
-    const timer = setTimeout(finish, (globalThis.__contextPopTheme?.DURATIONS.menuCloseMs ?? 0) + CLOSE_ANIM_MARGIN_MS);
-    pendingClose = { host, timer };
-    menu.addEventListener('animationend', finish, { once: true });
   }
 
   /**
@@ -299,7 +271,6 @@
    * @param {OpenMenuOptions} options
    */
   function openMenu({ text, contexts, href, rect, point, engines, settings, handlers, onClose }) {
-    removePendingClose();
     closeMenu({ reason: 'replace' });
 
     menuState.text = text;

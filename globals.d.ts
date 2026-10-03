@@ -198,6 +198,10 @@ interface MessageResultMap {
 
 type MessageResponse<T> = { data: T } | { error: string };
 
+// --- Shared globals --------------------------------------------------------
+
+declare function afterAnimation(el: HTMLElement, fallbackMs: number, animationName?: string): Promise<void>;
+
 // --- Published globals -----------------------------------------------------
 
 interface ThemeApi {

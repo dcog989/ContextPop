@@ -20,6 +20,7 @@
   "background": {
     "scripts": [
       "util.js",
+      "afterAnimation.js",
       "actionIcons.js",
       "actions.js",
       "defaultEngines.js",
@@ -38,6 +39,7 @@
       "js": [
         "theme.js",
         "util.js",
+        "afterAnimation.js",
         "messages.js",
         "actionIcons.js",
         "actions.js",

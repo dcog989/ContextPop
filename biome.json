@@ -28,6 +28,7 @@
     {
       "includes": [
         "src/util.js",
+        "src/afterAnimation.js",
         "src/messages.js",
         "src/actionIcons.js",
         "src/actions.js",
