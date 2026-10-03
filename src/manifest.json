@@ -38,6 +38,7 @@
       "js": [
         "theme.js",
         "util.js",
+        "messages.js",
         "actionIcons.js",
         "actions.js",
         "defaultEngines.js",
