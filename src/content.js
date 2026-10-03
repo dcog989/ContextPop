@@ -5,6 +5,12 @@
     return;
   }
 
+  const clipboardApi = globalThis.__contextPopClipboard;
+  if (!clipboardApi) {
+    console.error('ContextPop: clipboard module failed to load');
+    return;
+  }
+
   if (globalThis.__contextPopInitialized) return;
   globalThis.__contextPopInitialized = true;
 
@@ -17,6 +23,8 @@
     engines: [],
     selection: null,
   };
+
+  const clipboardHandlers = clipboardApi.createClipboardHandlers(() => contentState.selection);
 
   // Reads config straight from storage (already injected into this frame) instead of
   // messaging the background, so page/iframe loads never wake the event page. Loaded on
@@ -69,59 +77,6 @@
       element = element.parentElement;
     }
     return null;
-  }
-
-  /**
-   * Rewrites relative href/src/srcset URLs to absolute so the serialized markup is
-   * self-contained once pasted outside the page.
-   * @param {Document} doc
-   */
-  function absolutizeUrls(doc) {
-    for (const element of doc.querySelectorAll('[href], [src], [srcset]')) {
-      const href = element.getAttribute('href');
-      const src = element.getAttribute('src');
-      const srcset = element.getAttribute('srcset');
-      if (href != null) {
-        try {
-          element.setAttribute('href', new URL(href, document.baseURI).href);
-        } catch {
-          // Leave non-resolvable values (e.g. "#", "javascript:") untouched.
-        }
-      }
-      if (src != null) {
-        try {
-          element.setAttribute('src', new URL(src, document.baseURI).href);
-        } catch {
-          // Leave non-resolvable values untouched.
-        }
-      }
-      if (srcset != null) {
-        const resolved = srcset
-          .split(',')
-          .map((candidate) => {
-            const [url, ...descriptor] = candidate.trim().split(/\s+/);
-            try {
-              return [new URL(url, document.baseURI).href, ...descriptor].join(' ');
-            } catch {
-              return candidate.trim();
-            }
-          })
-          .join(', ');
-        element.setAttribute('srcset', resolved);
-      }
-    }
-  }
-
-  /**
-   * @param {Range[]} ranges
-   * @returns {string}
-   */
-  function serializeSelection(ranges) {
-    const doc = document.implementation.createHTMLDocument('');
-    const container = doc.body;
-    for (const range of ranges) container.appendChild(doc.importNode(range.cloneContents(), true));
-    absolutizeUrls(doc);
-    return container.innerHTML;
   }
 
   /**
@@ -184,63 +139,6 @@
   }
 
   /**
-   * @param {string} text
-   * @returns {Promise<void>}
-   */
-  async function writeClipboardText(text) {
-    await navigator.clipboard.writeText(text);
-  }
-
-  /**
-   * @returns {Promise<void>}
-   */
-  async function copyPlain() {
-    await writeClipboardText((contentState.selection?.text || '').replace(/\s+/g, ' ').trim());
-  }
-
-  /**
-   * @returns {Promise<void>}
-   */
-  async function copyLink() {
-    await writeClipboardText(contentState.selection?.href || '');
-  }
-
-  /**
-   * @returns {Promise<void>}
-   */
-  async function copyRich() {
-    const selection = contentState.selection;
-    const plain = selection?.text || '';
-    let html = plain;
-    if (selection) {
-      try {
-        const serialized = serializeSelection(selection.ranges).trim();
-        if (serialized) html = serialized;
-      } catch {
-        // Deferred serialization fails if the selected nodes have since been removed.
-      }
-    }
-    try {
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          'text/html': new Blob([html], { type: 'text/html' }),
-          'text/plain': new Blob([plain], { type: 'text/plain' }),
-        }),
-      ]);
-      return;
-    } catch {
-      // Clipboard Item rejected; fall back to a plain-text copy.
-    }
-    await copyPlain();
-  }
-
-  // Clipboard action implementations, keyed by their BUILTIN_ACTION_DEFS id (see actions.js).
-  // dispatchAction resolves menuState.handlers[action.id], so every `kind: 'clipboard'` def needs
-  // a matching entry here; a missing key now throws in menu.js instead of silently no-opping.
-  /** @type {Readonly<Record<string, () => Promise<void>>>} */
-  const CLIPBOARD_HANDLERS = Object.freeze({ copyRich, copyPlain, copyLink });
-
-  /**
    * @param {MouseEvent} event
    * @returns {boolean}
    */
@@ -271,7 +169,7 @@
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines.filter((engine) => engine.enabled !== false),
       settings: contentState.settings ?? defaultSettings(),
-      handlers: CLIPBOARD_HANDLERS,
+      handlers: clipboardHandlers,
       onClose: handleMenuClose,
     });
   }

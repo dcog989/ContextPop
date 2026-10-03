@@ -52,6 +52,7 @@
         "menuLayout.js",
         "menuTiles.js",
         "menu.js",
+        "clipboard.js",
         "content.js"
       ],
       "run_at": "document_idle",

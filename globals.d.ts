@@ -292,10 +292,15 @@ interface MenuApi {
   invalidateIcons(): void;
 }
 
+interface ClipboardApi {
+  createClipboardHandlers(getSelection: () => SelectionInfo | null): Readonly<Record<string, () => Promise<void>>>;
+}
+
 declare var __contextPopTheme: ThemeApi;
 declare var __contextPopMenuI18n: MenuI18nApi;
 declare var __contextPopMenuStyles: { css: string };
 declare var __contextPopMenuLayout: MenuLayoutApi;
 declare var __contextPopMenuTiles: MenuTilesApi;
 declare var __contextPopMenu: MenuApi;
+declare var __contextPopClipboard: ClipboardApi;
 declare var __contextPopInitialized: boolean;
