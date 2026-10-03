@@ -96,13 +96,13 @@ test('filterUsableEngines drops browser engines only when search is unavailable'
   assert.equal(supported.filterUsableEngines(engines).length, 2);
 });
 
-test('loadEngines seeds defaults and persists them when storage is empty', async () => {
+test('loadEngines returns defaults without persisting when storage is empty', async () => {
   const { store, service } = createBrowser();
   const { loadEngines } = loadScripts(FILES, { browser: service });
   const engines = await loadEngines();
   assert.equal(engines.length, 4);
-  assert.equal(store.engines.length, 4);
-  assert.equal(store.engines[0].name, 'DuckDuckGo');
+  assert.equal(store.engines, undefined);
+  assert.equal(engines[0].name, 'DuckDuckGo');
 });
 
 test('loadEngines returns every stored engine, including unsupported browser engines', async () => {

@@ -12,9 +12,8 @@ function normalizeTerms(terms) {
 }
 
 async function seedStorage() {
-  await loadEngines();
-
-  const result = await api.storage.local.get(STORAGE_KEYS.settings);
+  const result = await api.storage.local.get([STORAGE_KEYS.engines, STORAGE_KEYS.settings]);
+  if (!Array.isArray(result[STORAGE_KEYS.engines])) await saveEngines(defaultEngineList());
   if (!result[STORAGE_KEYS.settings]) await saveSettings(defaultSettings());
 }
 
@@ -120,15 +119,17 @@ async function openSearch({ engine, terms, method }, sender) {
 }
 
 /**
- * @param {{ template: string, terms: string }} message
+ * @param {{ actionId: string, terms: string }} message
  * @param {any} sender
  * @returns {Promise<void>}
  */
-async function openReference({ template, terms }, sender) {
-  const value = String(template ?? '');
-  assertTemplate(value, 'Provider');
+async function openReference({ actionId, terms }, sender) {
+  const settings = await loadSettings();
+  const action = builtinActionList(settings).find((item) => item.id === actionId);
+  if (!action || action.kind !== 'reference') throw new Error(`Unknown reference action: ${actionId}`);
+  assertTemplate(action.template, 'Provider');
   await api.windows.create({
-    url: buildSearchUrl(value, normalizeTerms(terms)),
+    url: buildSearchUrl(action.template, normalizeTerms(terms)),
     type: 'popup',
     width: POPUP_WIDTH,
     height: POPUP_HEIGHT,
@@ -178,7 +179,7 @@ async function handleMessage(message, sender) {
       await openLink({ url: message.url, method: message.method }, sender);
       return { ok: true };
     case 'openReference':
-      await openReference({ template: message.template, terms: message.terms }, sender);
+      await openReference({ actionId: message.actionId, terms: message.terms }, sender);
       return { ok: true };
     default:
       throw new Error(`Unknown message type: ${/** @type {any} */ (message).type}`);

@@ -175,7 +175,7 @@ interface MessageMap {
   refreshIcons: { type: 'refreshIcons' };
   search: { type: 'search'; engineId: string; terms: string; method: string };
   openLink: { type: 'openLink'; url: string; method: string };
-  openReference: { type: 'openReference'; template: string; terms: string };
+  openReference: { type: 'openReference'; actionId: string; terms: string };
 }
 
 type MessageType = keyof MessageMap;

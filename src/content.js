@@ -314,7 +314,7 @@
     if (isMenuOpen()) return;
     if (!triggerMatches(event)) return;
     if (isEventInsideMenu(event)) return;
-    if (isEditableElement(event.target)) return;
+    if (isEditableElement(event.composedPath()[0])) return;
 
     const info = buildActivation();
     if (info) showMenu(info, event);

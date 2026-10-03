@@ -22,6 +22,8 @@
     const margin = 8;
     const rect = anchor.rect || { left: margin, top: margin, right: margin, bottom: margin };
     const size = menu.getBoundingClientRect();
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
 
     let left = rect.left;
     let top = rect.bottom + margin;
@@ -32,12 +34,12 @@
       const offsetY = tileRect ? tileRect.top - size.top + tileRect.height / 2 : 0;
       left = anchor.point.x - offsetX;
       top = anchor.point.y - offsetY;
-    } else if (top + size.height > window.innerHeight - margin) {
+    } else if (top + size.height > viewportHeight - margin) {
       top = rect.top - size.height - margin;
     }
 
-    left = Math.min(Math.max(margin, left), Math.max(margin, window.innerWidth - size.width - margin));
-    top = Math.min(Math.max(margin, top), Math.max(margin, window.innerHeight - size.height - margin));
+    left = Math.min(Math.max(margin, left), Math.max(margin, viewportWidth - size.width - margin));
+    top = Math.min(Math.max(margin, top), Math.max(margin, viewportHeight - size.height - margin));
 
     menu.style.left = `${Math.round(left)}px`;
     menu.style.top = `${Math.round(top)}px`;

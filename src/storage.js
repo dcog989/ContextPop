@@ -158,11 +158,7 @@ function filterUsableEngines(engines) {
 async function loadEngines() {
   const result = await api.storage.local.get(STORAGE_KEYS.engines);
   const stored = result[STORAGE_KEYS.engines];
-  if (!Array.isArray(stored)) {
-    const engines = defaultEngineList();
-    await saveEngines(engines);
-    return engines;
-  }
+  if (!Array.isArray(stored)) return defaultEngineList();
   return stored.map(normalizeEngine);
 }
 

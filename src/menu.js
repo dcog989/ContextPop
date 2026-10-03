@@ -186,7 +186,7 @@
         await sendMessage({ type: 'openLink', url: menuState.href, method });
         break;
       case 'reference':
-        await sendMessage({ type: 'openReference', template: action.template, terms: menuState.text });
+        await sendMessage({ type: 'openReference', actionId: action.id, terms: menuState.text });
         break;
       default:
         break;
