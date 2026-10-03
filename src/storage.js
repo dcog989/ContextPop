@@ -19,26 +19,42 @@ var STORAGE_KEYS = Object.freeze({
 // icon:* changes.
 var ICON_CACHE_PREFIX = 'icon:';
 
-var ENGINE_SOURCE = Object.freeze({ template: 'template', browser: 'browser' });
-var ACTIONS_POSITION = Object.freeze({ before: 'before', after: 'after' });
-var POPUP_SIZE = Object.freeze({ compact: 'compact', standard: 'standard', large: 'large', luxury: 'luxury' });
-var POPUP_POSITION = Object.freeze({ below: 'below', under: 'under' });
-var TRIGGER = Object.freeze({ mouseup: 'mouseup', alt: 'alt', ctrl: 'ctrl', shift: 'shift' });
-var OPEN_METHOD = Object.freeze({
+// Each enum is a frozen named lookup; the mutating `defineEnum` result is coerced to the
+// readonly shape the domain typedefs expect, so the annotation (not the call) bounds the
+// property type.
+/** @type {Readonly<{ template: string, browser: string }>} */
+var ENGINE_SOURCE = defineEnum({ template: 'template', browser: 'browser' });
+/** @type {Readonly<{ before: string, after: string }>} */
+var ACTIONS_POSITION = defineEnum({ before: 'before', after: 'after' });
+/** @type {Readonly<{ compact: string, standard: string, large: string, luxury: string }>} */
+var POPUP_SIZE = defineEnum({ compact: 'compact', standard: 'standard', large: 'large', luxury: 'luxury' });
+/** @type {Readonly<{ below: string, under: string }>} */
+var POPUP_POSITION = defineEnum({ below: 'below', under: 'under' });
+/** @type {Readonly<{ mouseup: string, alt: string, ctrl: string, shift: string }>} */
+var TRIGGER = defineEnum({ mouseup: 'mouseup', alt: 'alt', ctrl: 'ctrl', shift: 'shift' });
+/** @type {Readonly<{ newTab: string, backgroundTab: string, currentTab: string, newWindow: string }>} */
+var OPEN_METHOD = defineEnum({
   newTab: 'newTab',
   backgroundTab: 'backgroundTab',
   currentTab: 'currentTab',
   newWindow: 'newWindow',
 });
-var THEME = Object.freeze({ auto: 'auto', light: 'light', dark: 'dark' });
+/** @type {Readonly<{ auto: string, light: string, dark: string }>} */
+var THEME = defineEnum({ auto: 'auto', light: 'light', dark: 'dark' });
 
+/** @type {ReadonlyArray<string>} */
 var ENGINE_SOURCES = Object.freeze(Object.values(ENGINE_SOURCE));
+/** @type {ReadonlyArray<string>} */
 var ACTIONS_POSITIONS = Object.freeze(Object.values(ACTIONS_POSITION));
+/** @type {ReadonlyArray<string>} */
 var POPUP_SIZES = Object.freeze(Object.values(POPUP_SIZE));
+/** @type {ReadonlyArray<string>} */
 var POPUP_POSITIONS = Object.freeze(Object.values(POPUP_POSITION));
+/** @type {ReadonlyArray<string>} */
 var TRIGGERS = Object.freeze(Object.values(TRIGGER));
-/** @type {readonly string[]} */
+/** @type {ReadonlyArray<string>} */
 var OPEN_METHODS = Object.freeze(Object.values(OPEN_METHOD));
+/** @type {ReadonlyArray<string>} */
 var THEMES = Object.freeze(Object.values(THEME));
 
 // Browser search dispositions per open method; openBrowserSearch special-cases backgroundTab.
@@ -90,7 +106,7 @@ function defaultSettings() {
  * @returns {Engine}
  */
 function normalizeEngine(engine) {
-  const source = ENGINE_SOURCES.includes(engine?.source) ? engine.source : ENGINE_SOURCE.template;
+  const source = pickEnum(engine?.source, ENGINE_SOURCES, ENGINE_SOURCE.template);
   return {
     id: engine?.id || generateId(),
     name: String(engine?.name ?? ''),
@@ -114,18 +130,14 @@ function normalizeSettings(stored) {
   settings.columns = Number.isFinite(columns)
     ? Math.min(MAX_COLUMNS, Math.max(MIN_COLUMNS, Math.round(columns)))
     : DEFAULT_SETTINGS.columns;
-  settings.popupSize = POPUP_SIZES.includes(input.popupSize) ? input.popupSize : DEFAULT_SETTINGS.popupSize;
-  settings.trigger = TRIGGERS.includes(input.trigger) ? input.trigger : DEFAULT_SETTINGS.trigger;
-  settings.openMethod = OPEN_METHODS.includes(input.openMethod) ? input.openMethod : DEFAULT_SETTINGS.openMethod;
-  settings.theme = THEMES.includes(input.theme) ? input.theme : DEFAULT_SETTINGS.theme;
+  settings.popupSize = pickEnum(input.popupSize, POPUP_SIZES, DEFAULT_SETTINGS.popupSize);
+  settings.trigger = pickEnum(input.trigger, TRIGGERS, DEFAULT_SETTINGS.trigger);
+  settings.openMethod = pickEnum(input.openMethod, OPEN_METHODS, DEFAULT_SETTINGS.openMethod);
+  settings.theme = pickEnum(input.theme, THEMES, DEFAULT_SETTINGS.theme);
   settings.builtinActions = normalizeBuiltinActions(settings.builtinActions, base.builtinActions);
   settings.actionOrder = normalizeActionOrder(settings.actionOrder);
-  if (!ACTIONS_POSITIONS.includes(settings.actionsPosition)) {
-    settings.actionsPosition = DEFAULT_SETTINGS.actionsPosition;
-  }
-  if (!POPUP_POSITIONS.includes(settings.popupPosition)) {
-    settings.popupPosition = DEFAULT_SETTINGS.popupPosition;
-  }
+  settings.actionsPosition = pickEnum(settings.actionsPosition, ACTIONS_POSITIONS, DEFAULT_SETTINGS.actionsPosition);
+  settings.popupPosition = pickEnum(settings.popupPosition, POPUP_POSITIONS, DEFAULT_SETTINGS.popupPosition);
   settings.popupAnimation = settings.popupAnimation === true;
   const opacity = Number(input.popupOpacity);
   settings.popupOpacity = Number.isFinite(opacity)

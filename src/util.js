@@ -178,6 +178,29 @@ function capitalize(value) {
 }
 
 /**
+ * Returns `value` when it is one of `allowed`, otherwise `fallback`.
+ * @template T
+ * @param {unknown} value
+ * @param {readonly T[]} allowed
+ * @param {T} fallback
+ * @returns {T}
+ */
+function pickEnum(value, allowed, fallback) {
+  return allowed.includes(/** @type {T} */ (value)) ? /** @type {T} */ (value) : fallback;
+}
+
+/**
+ * Freezes a named-value lookup into a runtime enum. Pairs with `pickEnum` for
+ * validation; the caller's JSDoc annotation narrows the returned property types.
+ * @template {Record<string, string>} T
+ * @param {T} values
+ * @returns {Readonly<T>}
+ */
+function defineEnum(values) {
+  return Object.freeze(values);
+}
+
+/**
  * @param {string} template
  * @param {string} terms
  * @returns {string}
