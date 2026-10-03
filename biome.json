@@ -28,6 +28,7 @@
     {
       "includes": [
         "src/util.js",
+        "src/actionIcons.js",
         "src/actions.js",
         "src/defaultEngines.js",
         "src/storage.js",

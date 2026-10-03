@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { loadScripts } = require('./helpers/loadScripts');
 
-const FILES = ['util.js', 'actions.js', 'defaultEngines.js', 'storage.js'];
+const FILES = ['util.js', 'actionIcons.js', 'actions.js', 'defaultEngines.js', 'storage.js'];
 
 function createBrowser(extra = {}) {
   const store = {};

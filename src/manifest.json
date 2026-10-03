@@ -20,6 +20,7 @@
   "background": {
     "scripts": [
       "util.js",
+      "actionIcons.js",
       "actions.js",
       "defaultEngines.js",
       "storage.js",
@@ -37,6 +38,7 @@
       "js": [
         "theme.js",
         "util.js",
+        "actionIcons.js",
         "actions.js",
         "defaultEngines.js",
         "storage.js",
