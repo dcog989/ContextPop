@@ -9,7 +9,8 @@ var WELL_KNOWN_ICONS = [
   { path: '/favicon-32x32.png', vector: false, size: 32 },
   { path: '/favicon.ico', vector: false, size: 16 },
 ];
-var ICON_LINK_SELECTOR = 'link[rel~="icon" i], link[rel~="apple-touch-icon" i], link[rel~="apple-touch-icon-precomposed" i]';
+var ICON_LINK_SELECTOR =
+  'link[rel~="icon" i], link[rel~="apple-touch-icon" i], link[rel~="apple-touch-icon-precomposed" i]';
 var MANIFEST_LINK_SELECTOR = 'link[rel~="manifest" i]';
 
 /**

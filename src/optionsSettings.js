@@ -2,7 +2,12 @@
 
 /** @type {ReadonlyArray<{ el: HTMLElement, key: string, event?: string, read: (el: any) => any, write: (el: any, value: any) => void, after?: () => void }>} */
 const SETTINGS_CONTROLS = [
-  { el: elements.actionsPosition, key: 'actionsPosition', read: (el) => el.value, write: (el, value) => (el.value = value) },
+  {
+    el: elements.actionsPosition,
+    key: 'actionsPosition',
+    read: (el) => el.value,
+    write: (el, value) => (el.value = value),
+  },
   { el: elements.trigger, key: 'trigger', read: (el) => el.value, write: (el, value) => (el.value = value) },
   { el: elements.openMethod, key: 'openMethod', read: (el) => el.value, write: (el, value) => (el.value = value) },
   {
@@ -12,7 +17,12 @@ const SETTINGS_CONTROLS = [
     write: (el, value) => (el.value = String(value)),
   },
   { el: elements.theme, key: 'theme', read: (el) => el.value, write: (el, value) => (el.value = value) },
-  { el: elements.labels, key: 'showLabels', read: (el) => el.checked, write: (el, value) => (el.checked = Boolean(value)) },
+  {
+    el: elements.labels,
+    key: 'showLabels',
+    read: (el) => el.checked,
+    write: (el, value) => (el.checked = Boolean(value)),
+  },
   {
     el: elements.accentBorder,
     key: 'accentBorder',
