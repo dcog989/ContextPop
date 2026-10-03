@@ -19,7 +19,7 @@ Install: [Firefox ContextPop](https://addons.mozilla.org/en-GB/firefox/addon/con
 - Open results in a new tab, background tab, current tab, or new window; dictionary/thesaurus/translate open a popup window
 - Configurable trigger: on selection or while holding Alt, Ctrl/Cmd, or Shift
 - Popup controls: columns, size, position, opacity, animation, accent border, and engine-name labels
-- Light, dark, or follow system theme;
+- Light, dark, or follow system theme
 - Export/import settings as JSON
 - First-run orientation callout on the options page
 - English, Spanish, German, French, and Hindi UI via `_locales`
@@ -51,7 +51,7 @@ biome check --write            # apply fixes
 tsc --noEmit -p jsconfig.json  # type-check the JS
 node --test test/*.test.js     # unit tests for shared/pure logic
 lefthook install               # enable git hooks once per clone
-cog bump --auto                # version + changelog; syncs both manifests
+cog bump --auto                # version + changelog; syncs the manifest version
 ```
 
 CI (`.github/workflows/ci.yml`) runs the same checks on push and pull requests, plus `web-ext lint` and `scripts/package.sh` (manifest-drift validation). Pushing a `v*` tag triggers `.github/workflows/release.yml`, which packages the extension and publishes a GitHub Release with the matching `CHANGELOG.md` section.
