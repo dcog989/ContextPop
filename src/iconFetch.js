@@ -86,7 +86,7 @@ async function fetchWithTimeout(url, consume) {
 async function fetchImage(url) {
   if (!url) return { dataUrl: null, definitive: false };
   if (url.startsWith('data:')) return { dataUrl: url, definitive: true };
-  if (!HTTP_URL_PATTERN.test(url)) return { dataUrl: null, definitive: true };
+  if (!isHttpUrl(url)) return { dataUrl: null, definitive: true };
 
   try {
     return await fetchWithTimeout(url, async (response) => {

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const { loadScripts } = require('./helpers/loadScripts');
 
-const context = loadScripts(['storage.js', 'util.js']);
+const context = loadScripts(['util.js']);
 const {
   buildSearchUrl,
   isHttpUrl,

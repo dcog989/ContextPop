@@ -1,12 +1,10 @@
-// Storage layer: the WebExtension API handle, the URL-scheme pattern, storage keys,
+// Storage layer: the WebExtension API handle, storage keys,
 // settings/engine normalization, and the load/save helpers. The action catalog lives in
 // actions.js and the string/URL helpers in util.js, which must load before the functions
 // here run. var (not const) throughout: top-level bindings are shared, bare-name globals
 // across sibling content-script files, and must tolerate re-injection into the same
 // document without throwing a SyntaxError on redeclaration.
 var api = globalThis.browser;
-
-var HTTP_URL_PATTERN = /^https?:\/\//i;
 
 var STORAGE_KEYS = Object.freeze({
   engines: 'engines',

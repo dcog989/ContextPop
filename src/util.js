@@ -238,7 +238,7 @@ var TEMPLATE_PROBLEM = defineEnum({ ok: 'ok', missingTerms: 'missingTerms', sche
  */
 function templateProblem(template) {
   if (!templateHasSearchTerms(template)) return TEMPLATE_PROBLEM.missingTerms;
-  if (!HTTP_URL_PATTERN.test(template)) return TEMPLATE_PROBLEM.scheme;
+  if (!isHttpUrl(template)) return TEMPLATE_PROBLEM.scheme;
   return TEMPLATE_PROBLEM.ok;
 }
 
