@@ -23,7 +23,7 @@
    * @returns {string}
    */
   function actionLabel(action, text) {
-    const key = `action${capitalize(action.id)}`;
+    const key = actionMessageKey(action.id);
     return action.usesText ? t(key, action.id, [displayText(text)]) : t(key, action.id);
   }
 
@@ -33,7 +33,7 @@
    * @returns {string}
    */
   function actionTooltip(action, text) {
-    const key = action.tooltipKey || `action${capitalize(action.id)}`;
+    const key = action.tooltipKey || actionMessageKey(action.id);
     return action.usesText ? t(key, action.id, [displayText(text)]) : t(key, action.id);
   }
 

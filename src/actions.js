@@ -39,6 +39,15 @@ var BUILTIN_ACTION_DEFS = Object.freeze([
 ]);
 
 /**
+ * The i18n message key for a built-in action's label, e.g. `copyPlain` -> `actionCopyPlain`.
+ * @param {string} id
+ * @returns {string}
+ */
+function actionMessageKey(id) {
+  return `action${capitalize(id)}`;
+}
+
+/**
  * @param {any} stored
  * @param {Record<string, BuiltinActionValue>} base
  * @returns {Record<string, BuiltinActionValue>}

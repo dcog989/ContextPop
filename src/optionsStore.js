@@ -69,7 +69,7 @@ function validate() {
     if (!def.template) continue;
     const value = state.settings.builtinActions[def.id];
     if (!value?.enabled) continue;
-    const name = (msg(`action${capitalize(def.id)}`) || capitalize(def.id)).trim();
+    const name = (msg(actionMessageKey(def.id)) || capitalize(def.id)).trim();
     const problem = templateError(name, String(value.template ?? ''));
     if (problem) return problem;
   }

@@ -22,9 +22,7 @@ function createActionRow(actionId, index) {
 
   const icon = createSvgIcon(def?.icon);
   if (icon) /** @type {HTMLElement} */ (fragment.querySelector('.action-icon')).appendChild(icon);
-  /** @type {HTMLElement} */ (fragment.querySelector('.action-name')).textContent = msg(
-    `action${capitalize(actionId)}`,
-  );
+  /** @type {HTMLElement} */ (fragment.querySelector('.action-name')).textContent = msg(actionMessageKey(actionId));
 
   const templateField = /** @type {HTMLElement} */ (fragment.querySelector('.action-template-field'));
   if (def?.template) {
