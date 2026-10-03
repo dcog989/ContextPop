@@ -18,16 +18,21 @@
     selection: null,
   };
 
-  async function loadConfig() {
+  // Reads config straight from storage (already injected into this frame) instead of
+  // messaging the background, so page/iframe loads never wake the event page. Loaded on
+  // the first valid selection and cached until the storage onChanged listener invalidates.
+  async function ensureConfig() {
+    if (contentState.settings) return;
     try {
-      const [settings, engines] = await Promise.all([
-        sendMessage({ type: 'getSettings' }),
-        sendMessage({ type: 'getEngines' }),
-      ]);
-      contentState.settings = settings;
-      contentState.engines = engines;
+      const result = await api.storage.local.get([STORAGE_KEYS.settings, STORAGE_KEYS.engines]);
+      contentState.settings = normalizeSettings(result[STORAGE_KEYS.settings]);
+      const stored = result[STORAGE_KEYS.engines];
+      const engines = Array.isArray(stored) ? stored.map(normalizeEngine) : defaultEngineList();
+      contentState.engines = filterUsableEngines(engines);
     } catch (error) {
       console.error('ContextPop: failed to load config', error);
+      contentState.settings = defaultSettings();
+      contentState.engines = filterUsableEngines(defaultEngineList());
     }
   }
 
@@ -308,16 +313,22 @@
   /**
    * @param {MouseEvent} event
    */
-  function handleMouseUp(event) {
+  async function handleMouseUp(event) {
     if (event.button !== 0) return;
 
     if (isMenuOpen()) return;
-    if (!triggerMatches(event)) return;
     if (isEventInsideMenu(event)) return;
     if (isEditableElement(event.composedPath()[0])) return;
 
     const info = buildActivation();
-    if (info) showMenu(info, event);
+    if (!info) return;
+
+    // Config is only needed once there is a real selection, so defer the storage read
+    // until here rather than on every frame load.
+    await ensureConfig();
+    if (!triggerMatches(event)) return;
+
+    showMenu(info, event);
   }
 
   /**
@@ -352,10 +363,12 @@
     );
     window.addEventListener('blur', () => closeMenu({ reason: 'blur' }));
 
-    loadConfig();
     api.storage.onChanged.addListener((/** @type {any} */ changes, /** @type {string} */ area) => {
       if (area !== 'local') return;
-      if (changes[STORAGE_KEYS.settings] || changes[STORAGE_KEYS.engines]) loadConfig();
+      if (changes[STORAGE_KEYS.settings] || changes[STORAGE_KEYS.engines]) {
+        contentState.settings = null;
+        contentState.engines = [];
+      }
     });
   }
 
