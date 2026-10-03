@@ -291,8 +291,16 @@
       .map((action) => ({ ...action, disabled: !matchesContext(action, contexts) }));
 
     const host = document.createElement('div');
+    host.popover = 'manual';
     host.style.position = 'fixed';
     host.style.inset = '0';
+    host.style.margin = '0';
+    host.style.padding = '0';
+    host.style.border = '0';
+    host.style.background = 'transparent';
+    host.style.width = '100%';
+    host.style.height = '100%';
+    host.style.overflow = 'visible';
     host.style.zIndex = '2147483647';
     host.style.pointerEvents = 'none';
     globalThis.__contextPopTheme?.applyTokens(host);
@@ -341,6 +349,7 @@
 
     root.appendChild(menu);
     document.documentElement.appendChild(host);
+    host.showPopover();
 
     menuState.open = true;
     menuState.actions = allActions;
