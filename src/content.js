@@ -122,7 +122,7 @@
    * @param {string} reason
    */
   function handleMenuClose(reason) {
-    if (reason === 'escape' || reason === 'replace') return;
+    if (reason === 'escape' || reason === 'replace' || reason === 'scroll' || reason === 'blur') return;
     contentState.selection = null;
     const selection = window.getSelection();
     if (selection) selection.removeAllRanges();
@@ -297,7 +297,16 @@
       },
       true,
     );
-    window.addEventListener('scroll', () => closeMenu({ reason: 'scroll' }), true);
+    window.addEventListener(
+      'scroll',
+      /** @param {Event} event */ (event) => {
+        const target = event.target;
+        if (target === document || target === window || target === document.documentElement) {
+          closeMenu({ reason: 'scroll' });
+        }
+      },
+      { capture: true, passive: true },
+    );
     window.addEventListener('blur', () => closeMenu({ reason: 'blur' }));
 
     loadConfig();
