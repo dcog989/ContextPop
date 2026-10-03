@@ -53,11 +53,7 @@ function actionMessageKey(id) {
  * @returns {Record<string, BuiltinActionValue>}
  */
 function normalizeBuiltinActions(stored, base) {
-  const source = Array.isArray(stored)
-    ? Object.fromEntries(stored.map((item) => [item?.id, item]))
-    : stored && typeof stored === 'object'
-      ? stored
-      : {};
+  const source = stored && typeof stored === 'object' ? stored : {};
 
   return Object.fromEntries(
     BUILTIN_ACTION_DEFS.map((def) => {
