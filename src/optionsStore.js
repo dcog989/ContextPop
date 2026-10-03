@@ -16,18 +16,18 @@ let saveTimer = null;
 let statusTimer = null;
 
 /**
- * @param {string} message
+ * @param {MessageSpec | null} message
  * @param {boolean} [isError]
  */
 function setStatus(message, isError = false) {
-  elements.status.textContent = message;
+  elements.status.textContent = message ? msg(message.key, message.args) : '';
   elements.status.classList.toggle('error', isError);
 }
 
 function clearStatusSoon() {
   if (statusTimer) clearTimeout(statusTimer);
   statusTimer = setTimeout(() => {
-    if (!state.dirty) setStatus('');
+    if (!state.dirty) setStatus(null);
   }, 1500);
 }
 
@@ -37,7 +37,7 @@ function clearStatusSoon() {
 function markDirty(key) {
   state.dirty = true;
   state.dirtyKeys.add(key);
-  setStatus(msg('statusSaving'));
+  setStatus({ key: 'statusSaving' });
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => save(), 400);
 }
@@ -45,22 +45,22 @@ function markDirty(key) {
 /**
  * @param {string} name
  * @param {string} template
- * @returns {string | null}
+ * @returns {MessageSpec | null}
  */
 function templateError(name, template) {
   const problem = templateProblem(template);
-  if (problem === TEMPLATE_PROBLEM.missingTerms) return msg('errorTemplateTerms', name);
-  if (problem === TEMPLATE_PROBLEM.scheme) return msg('errorTemplateScheme', name);
+  if (problem === TEMPLATE_PROBLEM.missingTerms) return { key: 'errorTemplateTerms', args: name };
+  if (problem === TEMPLATE_PROBLEM.scheme) return { key: 'errorTemplateScheme', args: name };
   return null;
 }
 
 /**
- * @returns {string | null}
+ * @returns {MessageSpec | null}
  */
 function validate() {
   for (const engine of state.engines) {
     if (engine.enabled === false) continue;
-    if (!engine.name.trim()) return msg('errorNameRequired');
+    if (!engine.name.trim()) return { key: 'errorNameRequired' };
     if (engine.source === ENGINE_SOURCE.browser) continue;
     const problem = templateError(engine.name, engine.template);
     if (problem) return problem;
@@ -139,12 +139,12 @@ async function save() {
   try {
     await Promise.all(writes);
   } catch (error) {
-    setStatus(msg('statusSaveFailed', errorMessage(error)), true);
+    setStatus({ key: 'statusSaveFailed', args: errorMessage(error) }, true);
     return;
   }
 
   state.dirtyKeys.clear();
   state.dirty = false;
-  setStatus(msg('statusSaved'));
+  setStatus({ key: 'statusSaved' });
   clearStatusSoon();
 }

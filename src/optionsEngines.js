@@ -154,7 +154,7 @@ function restoreDefaults() {
   state.engines = defaultEngineList();
   renderEngines();
   markDirty(STORAGE_KEYS.engines);
-  setStatus(msg('statusDefaultsRestored'));
+  setStatus({ key: 'statusDefaultsRestored' });
 }
 
 async function importBrowserEngines() {
@@ -165,7 +165,7 @@ async function importBrowserEngines() {
   try {
     installed = await api.search.get();
   } catch (error) {
-    setStatus(msg('statusImportFailed', errorMessage(error)), true);
+    setStatus({ key: 'statusImportFailed', args: errorMessage(error) }, true);
     return;
   }
 
@@ -190,12 +190,12 @@ async function importBrowserEngines() {
 
   renderEngines();
   markDirty(STORAGE_KEYS.engines);
-  setStatus(msg('statusBrowserImported', String(added)));
+  setStatus({ key: 'statusBrowserImported', args: String(added) });
 }
 
 async function handleRefreshIcons() {
   if (state.dirty) {
-    setStatus(msg('statusSaveFirst'), true);
+    setStatus({ key: 'statusSaveFirst' }, true);
     return;
   }
   elements.refreshIcons.disabled = true;
@@ -203,15 +203,15 @@ async function handleRefreshIcons() {
   try {
     const granted = await requestHostAccess();
     if (!granted) {
-      setStatus(msg('statusIconAccessDenied'), true);
+      setStatus({ key: 'statusIconAccessDenied' }, true);
       return;
     }
 
     await refreshEngineIcons();
-    setStatus(msg('statusIconsRefreshed'));
+    setStatus({ key: 'statusIconsRefreshed' });
     clearStatusSoon();
   } catch (error) {
-    setStatus(msg('statusRefreshFailed', errorMessage(error)), true);
+    setStatus({ key: 'statusRefreshFailed', args: errorMessage(error) }, true);
   } finally {
     elements.refreshIcons.disabled = false;
     elements.refreshIcons.classList.remove('is-loading');

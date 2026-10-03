@@ -94,6 +94,11 @@ interface BuiltinActionValue {
   template?: string;
 }
 
+interface MessageSpec {
+  key: string;
+  args?: string | Array<string | number>;
+}
+
 interface Settings {
   trigger: string;
   openMethod: string;

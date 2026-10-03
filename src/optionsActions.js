@@ -73,5 +73,5 @@ function restoreActionDefaults() {
   state.settings.actionOrder = defaults.actionOrder;
   renderActions();
   markDirty(STORAGE_KEYS.settings);
-  setStatus(msg('statusDefaultsRestored'));
+  setStatus({ key: 'statusDefaultsRestored' });
 }

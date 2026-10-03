@@ -26,17 +26,17 @@ function readConfigFile(file, apply) {
     try {
       parsed = JSON.parse(String(reader.result));
     } catch (error) {
-      setStatus(msg('statusImportFailed', errorMessage(error)), true);
+      setStatus({ key: 'statusImportFailed', args: errorMessage(error) }, true);
       return;
     }
     const incoming = Array.isArray(parsed) ? parsed : parsed.engines;
     if (!Array.isArray(incoming)) {
-      setStatus(msg('errorConfigInvalid'), true);
+      setStatus({ key: 'errorConfigInvalid' }, true);
       return;
     }
     apply(parsed, incoming);
   };
-  reader.onerror = () => setStatus(msg('statusImportReadFailed'), true);
+  reader.onerror = () => setStatus({ key: 'statusImportReadFailed' }, true);
   reader.readAsText(file);
 }
 
@@ -52,7 +52,7 @@ function importConfig(file) {
     renderSettings();
     markDirty(STORAGE_KEYS.engines);
     markDirty(STORAGE_KEYS.settings);
-    setStatus(msg('statusConfigImported'));
+    setStatus({ key: 'statusConfigImported' });
   });
 }
 
