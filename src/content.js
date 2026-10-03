@@ -47,12 +47,18 @@
 
   /**
    * @param {Node} node
+   * @param {Range} range
    * @returns {HTMLAnchorElement | null}
    */
-  function findAnchor(node) {
+  function findAnchor(node, range) {
     let element = /** @type {Element | null} */ (node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement);
     while (element && element !== document.documentElement) {
-      if (element.tagName === 'A' && /** @type {HTMLAnchorElement} */ (element).href) {
+      if (
+        element.tagName === 'A' &&
+        /** @type {HTMLAnchorElement} */ (element).href &&
+        element.contains(range.startContainer) &&
+        element.contains(range.endContainer)
+      ) {
         return /** @type {HTMLAnchorElement} */ (element);
       }
       element = element.parentElement;
@@ -85,7 +91,9 @@
     if (!rect || (rect.width === 0 && rect.height === 0)) return null;
 
     const anchor =
-      findAnchor(range.commonAncestorContainer) || findAnchor(range.startContainer) || findAnchor(range.endContainer);
+      findAnchor(range.commonAncestorContainer, range) ||
+      findAnchor(range.startContainer, range) ||
+      findAnchor(range.endContainer, range);
     const anchorHref = anchor?.href && isHttpUrl(anchor.href) ? anchor.href : '';
 
     return {
@@ -102,7 +110,7 @@
    */
   function classify(info) {
     const isWord = /^\S+$/.test(info.text);
-    if (info.href) return isWord ? ['link', 'word'] : ['link'];
+    if (info.href) return isWord ? ['link', 'word'] : ['link', 'text'];
     return isWord ? ['word'] : ['text'];
   }
 
