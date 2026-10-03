@@ -83,21 +83,23 @@ function templateHost(template) {
   }
 }
 
-/**
- * @param {Engine} engine
- * @returns {IconSource | null}
- */
-function engineIconSource(engine) {
-  const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
-  if (engine.source === ENGINE_SOURCE.browser) {
+extendEngineSource(ENGINE_SOURCE.browser, {
+  iconSource: (engine) => {
+    const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
     if (hasIcon && isHttpUrl(engine.icon)) return { key: engine.icon, kind: 'image' };
     const host = browserEngineHost(engine.name);
     if (host) return { key: `https://${host}/`, kind: 'markup' };
     if (hasIcon) return { key: engine.icon, kind: 'image' };
     return null;
-  }
-  if (hasIcon) return { key: engine.icon, kind: 'image' };
-  const host = templateHost(engine.template);
-  if (!host) return null;
-  return { key: `https://${host}/`, kind: 'markup' };
-}
+  },
+});
+
+extendEngineSource(ENGINE_SOURCE.template, {
+  iconSource: (engine) => {
+    const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
+    if (hasIcon) return { key: engine.icon, kind: 'image' };
+    const host = templateHost(engine.template);
+    if (!host) return null;
+    return { key: `https://${host}/`, kind: 'markup' };
+  },
+});

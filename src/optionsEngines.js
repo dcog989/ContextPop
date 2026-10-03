@@ -41,11 +41,7 @@ function createRow(engine, index) {
 
   const template = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-template'));
   template.value = engine.template;
-  if (engine.source === ENGINE_SOURCE.browser) {
-    template.disabled = true;
-    template.dataset.i18nPlaceholder = 'templatePlaceholderBrowser';
-    template.placeholder = msg('templatePlaceholderBrowser');
-  }
+  engineStrategy(engine).applyTemplateField(template, engine);
   template.addEventListener('input', () => {
     engine.template = template.value;
     markDirty(STORAGE_KEYS.engines);
@@ -68,6 +64,14 @@ function createRow(engine, index) {
 
   return { fragment, setIcon: icon.setSource };
 }
+
+extendEngineSource(ENGINE_SOURCE.browser, {
+  applyTemplateField: (field) => {
+    field.disabled = true;
+    field.dataset.i18nPlaceholder = 'templatePlaceholderBrowser';
+    field.placeholder = msg('templatePlaceholderBrowser');
+  },
+});
 
 async function loadEngineIcons() {
   try {

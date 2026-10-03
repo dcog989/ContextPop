@@ -154,6 +154,20 @@ interface IconSource {
   kind: 'image' | 'markup';
 }
 
+interface EngineSourceFields {
+  template: string;
+  browserEngineName: string;
+}
+
+interface EngineSourceStrategy {
+  normalize(engine: any): EngineSourceFields;
+  isUsable(): boolean;
+  validate(engine: Engine): MessageSpec | null;
+  open(engine: Engine, query: string, method: string, sender: any): Promise<void>;
+  iconSource(engine: Engine): IconSource | null;
+  applyTemplateField(field: HTMLInputElement, engine: Engine): void;
+}
+
 interface IconCandidate {
   url: string;
   vector: boolean;

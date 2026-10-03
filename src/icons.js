@@ -95,7 +95,7 @@ async function cachedIconMap(engines) {
   const icons = {};
   await Promise.all(
     engines.map(async (engine) => {
-      const source = engineIconSource(engine);
+      const source = engineStrategy(engine).iconSource(engine);
       if (!source) return;
       if (source.key.startsWith('data:')) {
         icons[engine.id] = source.key;
@@ -120,12 +120,12 @@ async function resolveIconMap(engines) {
   /** @type {Set<string>} */
   const referenced = new Set();
   for (const engine of engines) {
-    const source = engineIconSource(engine);
+    const source = engineStrategy(engine).iconSource(engine);
     if (source) referenced.add(source.key);
   }
   await Promise.all(
     engines.map(async (engine) => {
-      const source = engineIconSource(engine);
+      const source = engineStrategy(engine).iconSource(engine);
       if (!source) return;
       const { dataUrl } = await resolveEngineIcon(source);
       if (dataUrl) icons[engine.id] = dataUrl;

@@ -110,9 +110,8 @@ function normalizeEngine(engine) {
     name: String(engine?.name ?? ''),
     source,
     enabled: engine?.enabled !== false,
-    template: String(engine?.template ?? ''),
-    browserEngineName: String(engine?.browserEngineName ?? ''),
     icon: typeof engine?.icon === 'string' ? engine.icon : '',
+    ...engineSourceStrategy(source).normalize(engine),
   };
 }
 
@@ -159,7 +158,7 @@ function supportsBrowserEngineSearch() {
  * @returns {Engine[]}
  */
 function filterUsableEngines(engines) {
-  return engines.filter((engine) => engine.source !== ENGINE_SOURCE.browser || supportsBrowserEngineSearch());
+  return engines.filter((engine) => engineStrategy(engine).isUsable());
 }
 
 /**

@@ -60,9 +60,7 @@ function templateError(name, template) {
 function validate() {
   for (const engine of state.engines) {
     if (engine.enabled === false) continue;
-    if (!engine.name.trim()) return { key: 'errorNameRequired' };
-    if (engine.source === ENGINE_SOURCE.browser) continue;
-    const problem = templateError(engine.name, engine.template);
+    const problem = engineStrategy(engine).validate(engine);
     if (problem) return problem;
   }
   for (const def of BUILTIN_ACTION_DEFS) {
@@ -75,6 +73,15 @@ function validate() {
   }
   return null;
 }
+
+extendEngineSource(ENGINE_SOURCE.template, {
+  validate: (engine) =>
+    engine.name.trim() ? templateError(engine.name, engine.template) : { key: 'errorNameRequired' },
+});
+
+extendEngineSource(ENGINE_SOURCE.browser, {
+  validate: (engine) => (engine.name.trim() ? null : { key: 'errorNameRequired' }),
+});
 
 /**
  * @param {Record<string, BuiltinActionValue>} target

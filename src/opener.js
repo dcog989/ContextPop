@@ -106,17 +106,22 @@ function assertTemplate(value, label) {
  */
 async function openSearch({ engine, terms, method }, sender) {
   const query = normalizeTerms(terms);
+  await engineStrategy(engine).open(engine, query, method, sender);
+}
 
-  if (engine.source === ENGINE_SOURCE.browser) {
+extendEngineSource(ENGINE_SOURCE.browser, {
+  open: async (engine, query, method, sender) => {
     if (!supportsBrowserEngineSearch()) throw new Error('Browser engine search is unavailable');
     await openBrowserSearch(engine, query, resolveOpenMethod(method, sender), sender);
-    return;
-  }
+  },
+});
 
-  assertTemplate(engine.template, 'Engine');
-  const url = buildSearchUrl(engine.template, query);
-  await openUrl(url, method, sender);
-}
+extendEngineSource(ENGINE_SOURCE.template, {
+  open: async (engine, query, method, sender) => {
+    assertTemplate(engine.template, 'Engine');
+    await openUrl(buildSearchUrl(engine.template, query), method, sender);
+  },
+});
 
 /**
  * @param {{ actionId: string, terms: string }} message
