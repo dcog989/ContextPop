@@ -34,6 +34,7 @@
         "src/actions.js",
         "src/defaultEngines.js",
         "src/storage.js",
+        "src/opener.js",
         "src/permissions.js",
         "src/icon*.js",
         "src/options*.js"

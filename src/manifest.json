@@ -30,6 +30,7 @@
       "iconCache.js",
       "iconFetch.js",
       "icons.js",
+      "opener.js",
       "background.js"
     ]
   },
