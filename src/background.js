@@ -1,5 +1,15 @@
 const POPUP_WIDTH = 520;
 const POPUP_HEIGHT = 720;
+const MAX_QUERY_CHARS = 2048;
+
+/**
+ * @param {unknown} terms
+ * @returns {string}
+ */
+function normalizeTerms(terms) {
+  const value = String(terms ?? '').trim();
+  return value.length > MAX_QUERY_CHARS ? value.slice(0, MAX_QUERY_CHARS) : value;
+}
 
 async function seedStorage() {
   await loadEngines();
@@ -96,7 +106,7 @@ function assertTemplate(value, label) {
  * @returns {Promise<void>}
  */
 async function openSearch({ engine, terms, method }, sender) {
-  const query = String(terms ?? '');
+  const query = normalizeTerms(terms);
 
   if (engine.source === ENGINE_SOURCE.browser) {
     if (!supportsBrowserEngineSearch()) throw new Error('Browser engine search is unavailable');
@@ -118,7 +128,7 @@ async function openReference({ template, terms }, sender) {
   const value = String(template ?? '');
   assertTemplate(value, 'Provider');
   await api.windows.create({
-    url: buildSearchUrl(value, String(terms ?? '')),
+    url: buildSearchUrl(value, normalizeTerms(terms)),
     type: 'popup',
     width: POPUP_WIDTH,
     height: POPUP_HEIGHT,

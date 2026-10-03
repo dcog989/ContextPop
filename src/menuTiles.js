@@ -7,6 +7,16 @@
 
   const { t } = globalThis.__contextPopMenuI18n;
 
+  const DISPLAY_TEXT_MAX_CHARS = 80;
+
+  /**
+   * @param {string} text
+   * @returns {string}
+   */
+  function displayText(text) {
+    return text.length > DISPLAY_TEXT_MAX_CHARS ? `${text.slice(0, DISPLAY_TEXT_MAX_CHARS)}...` : text;
+  }
+
   /**
    * @param {ActionItem} action
    * @param {string} text
@@ -14,7 +24,7 @@
    */
   function actionLabel(action, text) {
     const key = `action${capitalize(action.id)}`;
-    return action.usesText ? t(key, action.id, [text]) : t(key, action.id);
+    return action.usesText ? t(key, action.id, [displayText(text)]) : t(key, action.id);
   }
 
   /**
@@ -24,7 +34,7 @@
    */
   function actionTooltip(action, text) {
     const key = action.tooltipKey || `action${capitalize(action.id)}`;
-    return action.usesText ? t(key, action.id, [text]) : t(key, action.id);
+    return action.usesText ? t(key, action.id, [displayText(text)]) : t(key, action.id);
   }
 
   /**
