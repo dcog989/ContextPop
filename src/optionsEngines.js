@@ -29,7 +29,7 @@ function createRow(engine, index) {
   enabled.addEventListener('change', () => {
     engine.enabled = enabled.checked;
     syncDisabled();
-    markDirty();
+    markDirty(STORAGE_KEYS.engines);
   });
   syncDisabled();
 
@@ -40,7 +40,7 @@ function createRow(engine, index) {
   name.value = engine.name;
   name.addEventListener('input', () => {
     engine.name = name.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.engines);
   });
 
   const template = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-template'));
@@ -52,14 +52,14 @@ function createRow(engine, index) {
   }
   template.addEventListener('input', () => {
     engine.template = template.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.engines);
   });
 
   const iconUrl = /** @type {HTMLInputElement} */ (fragment.querySelector('.engine-icon-url'));
   iconUrl.value = engine.icon || '';
   iconUrl.addEventListener('input', () => {
     engine.icon = iconUrl.value.trim();
-    markDirty();
+    markDirty(STORAGE_KEYS.engines);
   });
 
   /** @type {HTMLElement} */ (fragment.querySelector('.move-up')).addEventListener('click', () =>
@@ -113,7 +113,7 @@ function moveEngine(index, offset) {
   state.engines.splice(target, 0, engine);
   renderEngines();
   playRowReorder(elements.list, first);
-  markDirty();
+  markDirty(STORAGE_KEYS.engines);
 }
 
 /**
@@ -122,7 +122,7 @@ function moveEngine(index, offset) {
 function removeEngine(index) {
   state.engines.splice(index, 1);
   renderEngines();
-  markDirty();
+  markDirty(STORAGE_KEYS.engines);
 }
 
 /**
@@ -157,13 +157,13 @@ function addEngine() {
     normalizeEngine({ id: generateId(), name: '', source: ENGINE_SOURCE.template, template: '', icon: '' }),
   );
   renderEngines();
-  markDirty();
+  markDirty(STORAGE_KEYS.engines);
 }
 
 function restoreDefaults() {
   state.engines = defaultEngineList();
   renderEngines();
-  markDirty();
+  markDirty(STORAGE_KEYS.engines);
   setStatus(msg('statusDefaultsRestored'));
 }
 
@@ -199,7 +199,7 @@ async function importBrowserEngines() {
   }
 
   renderEngines();
-  markDirty();
+  markDirty(STORAGE_KEYS.engines);
   setStatus(msg('statusBrowserImported', String(added)));
 }
 

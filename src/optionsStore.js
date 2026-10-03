@@ -1,12 +1,13 @@
 // Options-page state and persistence: the single source of truth for engines and settings,
-// plus debounced saving and validation. Views mutate `state` and call markDirty() to
-// schedule a save.
+// plus debounced saving and validation. Views mutate `state` and call markDirty(key) with
+// the storage key they changed to schedule a save of just that key.
 
-/** @type {{ engines: Engine[], settings: Settings, dirty: boolean }} */
+/** @type {{ engines: Engine[], settings: Settings, dirty: boolean, dirtyKeys: Set<string> }} */
 const state = {
   engines: [],
   settings: defaultSettings(),
   dirty: false,
+  dirtyKeys: new Set(),
 };
 
 /** @type {ReturnType<typeof setTimeout> | null} */
@@ -40,8 +41,12 @@ function clearStatusSoon() {
   }, 1500);
 }
 
-function markDirty() {
+/**
+ * @param {string} key
+ */
+function markDirty(key) {
   state.dirty = true;
+  state.dirtyKeys.add(key);
   setStatus(msg('statusSaving'));
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => save(), 400);
@@ -123,13 +128,21 @@ async function save() {
   for (const engine of state.engines) Object.assign(engine, normalizeEngine(engine));
   normalizeSettingsInPlace(state.settings);
 
+  // Persist only the collections the user actually touched, so an engine edit does not
+  // rewrite settings (and wake every frame's storage.onChanged listener), and vice versa.
+  /** @type {Promise<void>[]} */
+  const writes = [];
+  if (state.dirtyKeys.has(STORAGE_KEYS.engines)) writes.push(saveEngines(state.engines));
+  if (state.dirtyKeys.has(STORAGE_KEYS.settings)) writes.push(saveSettings(state.settings));
+
   try {
-    await Promise.all([saveEngines(state.engines), saveSettings(state.settings)]);
+    await Promise.all(writes);
   } catch (error) {
     setStatus(msg('statusSaveFailed', errorMessage(error)), true);
     return;
   }
 
+  state.dirtyKeys.clear();
   state.dirty = false;
   setStatus(msg('statusSaved'));
   clearStatusSoon();

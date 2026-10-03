@@ -18,48 +18,48 @@ function renderSettings() {
 function bindSettings() {
   elements.actionsPosition.addEventListener('change', () => {
     state.settings.actionsPosition = elements.actionsPosition.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.trigger.addEventListener('change', () => {
     state.settings.trigger = elements.trigger.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.openMethod.addEventListener('change', () => {
     state.settings.openMethod = elements.openMethod.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.columns.addEventListener('change', () => {
     state.settings.columns = clamp(Math.round(Number(elements.columns.value) || 0), MIN_COLUMNS, MAX_COLUMNS);
     elements.columns.value = String(state.settings.columns);
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.theme.addEventListener('change', () => {
     state.settings.theme = elements.theme.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.labels.addEventListener('change', () => {
     state.settings.showLabels = elements.labels.checked;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.accentBorder.addEventListener('change', () => {
     state.settings.accentBorder = elements.accentBorder.checked;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.popupSize.addEventListener('change', () => {
     state.settings.popupSize = elements.popupSize.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.popupPosition.addEventListener('change', () => {
     state.settings.popupPosition = elements.popupPosition.value;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.popupAnimation.addEventListener('change', () => {
     state.settings.popupAnimation = elements.popupAnimation.checked;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
   elements.popupOpacity.addEventListener('input', () => {
     state.settings.popupOpacity = clamp(Number(elements.popupOpacity.value) || 0, 0, 100);
     elements.popupOpacityValue.textContent = `${state.settings.popupOpacity}%`;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
 }

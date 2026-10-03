@@ -17,7 +17,7 @@ function createActionRow(actionId, index) {
   enabled.checked = value.enabled;
   enabled.addEventListener('change', () => {
     value.enabled = enabled.checked;
-    markDirty();
+    markDirty(STORAGE_KEYS.settings);
   });
 
   const icon = createSvgIcon(def?.icon);
@@ -33,7 +33,7 @@ function createActionRow(actionId, index) {
     templateInput.value = value.template || def.template;
     templateInput.addEventListener('input', () => {
       value.template = templateInput.value;
-      markDirty();
+      markDirty(STORAGE_KEYS.settings);
     });
   }
 
@@ -66,7 +66,7 @@ function moveAction(index, offset) {
   order.splice(target, 0, id);
   renderActions();
   playRowReorder(elements.actionList, first);
-  markDirty();
+  markDirty(STORAGE_KEYS.settings);
 }
 
 function restoreActionDefaults() {
@@ -74,6 +74,6 @@ function restoreActionDefaults() {
   state.settings.builtinActions = defaults.builtinActions;
   state.settings.actionOrder = defaults.actionOrder;
   renderActions();
-  markDirty();
+  markDirty(STORAGE_KEYS.settings);
   setStatus(msg('statusDefaultsRestored'));
 }

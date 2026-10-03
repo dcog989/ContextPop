@@ -50,7 +50,8 @@ function importConfig(file) {
     renderActions();
     renderEngines();
     renderSettings();
-    markDirty();
+    markDirty(STORAGE_KEYS.engines);
+    markDirty(STORAGE_KEYS.settings);
     setStatus(msg('statusConfigImported'));
   });
 }
