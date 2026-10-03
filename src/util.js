@@ -157,8 +157,7 @@ var BARE_URL_PATTERN = /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?::\d{1
 var AMBIGUOUS_TLDS = new Set(['py', 'rs', 'pl', 'cc', 'ai', 'is', 'in', 'md', 'sh', 'js', 'ts']);
 
 function generateId() {
-  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
-  return `engine-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  return globalThis.crypto.randomUUID();
 }
 
 /**
