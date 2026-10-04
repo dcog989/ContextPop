@@ -1,5 +1,5 @@
 // Network retrieval of favicons, site markup, and web-app manifests, plus byte-to-data-URL
-// encoding. Runs wherever fetch is available (service worker, content script, options page).
+// encoding. Runs wherever fetch is available (event page, content script, options page).
 // Candidate parsing lives in iconParse.js.
 
 var MAX_ICON_BYTES = 256 * 1024;

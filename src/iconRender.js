@@ -1,5 +1,5 @@
 // DOM rendering of engine and action icons. Requires a document, so this module is loaded
-// by the content scripts and the options page but not by the background service worker.
+// by the content scripts and the options page but not by the background event page.
 
 /**
  * @param {string | null | undefined} markup
