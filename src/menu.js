@@ -15,9 +15,10 @@
   /** @type {MenuState} */
   const menuState = {
     open: false,
-    actions: [],
-    settings: null,
+    selection: null,
+    config: null,
     callbacks: null,
+    actions: [],
     host: null,
     root: null,
     previousFocus: null,
@@ -101,12 +102,15 @@
       previousFocus.focus({ preventScroll: true });
     }
 
+    const animate = menuState.config?.settings.popupAnimation ?? false;
     const onClose = menuState.callbacks?.onClose;
+    menuState.selection = null;
+    menuState.config = null;
     menuState.callbacks = null;
     onClose?.(reason);
 
     const menu = /** @type {HTMLElement | null} */ (root?.querySelector?.('.cs-menu') ?? null);
-    if (reason === 'replace' || !menu || !host || !menuState.settings?.popupAnimation || prefersReducedMotion()) {
+    if (reason === 'replace' || !menu || !host || !animate || prefersReducedMotion()) {
       host?.remove();
       return;
     }
@@ -232,9 +236,14 @@
   /**
    * @param {OpenMenuOptions} options
    */
-  function openMenu({ text, contexts, rect, point, engines, settings, callbacks }) {
+  function openMenu({ selection, config, callbacks }) {
     closeMenu({ reason: 'replace' });
 
+    const { text, contexts, rect, point } = selection;
+    const { engines, settings } = config;
+
+    menuState.selection = selection;
+    menuState.config = config;
     menuState.callbacks = callbacks;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
@@ -306,7 +315,6 @@
 
     menuState.open = true;
     menuState.actions = allActions;
-    menuState.settings = settings;
     menuState.host = host;
     menuState.root = root;
 

@@ -278,6 +278,18 @@ interface MenuTilesApi {
   ): void;
 }
 
+interface MenuSelection {
+  text: string;
+  contexts: string[];
+  rect: DOMRect | null;
+  point: { x: number; y: number } | null;
+}
+
+interface MenuConfig {
+  engines: Engine[];
+  settings: Settings;
+}
+
 interface MenuCallbacks {
   onIcons(): Promise<IconMap>;
   onAction(action: ActionItem, event: MouseEvent): Promise<void>;
@@ -287,21 +299,18 @@ interface MenuCallbacks {
 
 interface MenuState {
   open: boolean;
-  actions: ActionItem[];
-  settings: Settings | null;
+  selection: MenuSelection | null;
+  config: MenuConfig | null;
   callbacks: MenuCallbacks | null;
+  actions: ActionItem[];
   host: HTMLElement | null;
   root: ShadowRoot | null;
   previousFocus: HTMLElement | null;
 }
 
 interface OpenMenuOptions {
-  text: string;
-  contexts: string[];
-  rect: DOMRect | null;
-  point: { x: number; y: number } | null;
-  engines: Engine[];
-  settings: Settings;
+  selection: MenuSelection;
+  config: MenuConfig;
   callbacks: MenuCallbacks;
 }
 

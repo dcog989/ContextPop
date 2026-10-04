@@ -225,12 +225,16 @@
   function showMenu(info, event) {
     contentState.selection = info;
     openMenu({
-      text: info.text,
-      contexts: info.contexts,
-      rect: info.rect,
-      point: event ? { x: event.clientX, y: event.clientY } : null,
-      engines: contentState.engines.filter((engine) => engine.enabled !== false),
-      settings: contentState.settings ?? defaultSettings(),
+      selection: {
+        text: info.text,
+        contexts: info.contexts,
+        rect: info.rect,
+        point: event ? { x: event.clientX, y: event.clientY } : null,
+      },
+      config: {
+        engines: contentState.engines.filter((engine) => engine.enabled !== false),
+        settings: contentState.settings ?? defaultSettings(),
+      },
       callbacks: menuCallbacks,
     });
   }
