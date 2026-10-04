@@ -52,6 +52,7 @@
   border-color: rgba(255, 255, 255, calc(0.16 * var(--cs-alpha, 1)));
 }
 .cs-menu.accent-border {
+  border-width: 2px;
   border-color: color-mix(in srgb, var(--accent) calc(var(--cs-alpha, 1) * 100%), transparent);
 }
 .cs-tiles {
