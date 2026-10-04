@@ -86,10 +86,9 @@ function templateHost(template) {
 extendEngineSource(ENGINE_SOURCE.browser, {
   iconSource: (engine) => {
     const hasIcon = typeof engine.icon === 'string' && engine.icon.length > 0;
-    if (hasIcon && isHttpUrl(engine.icon)) return { key: engine.icon, kind: 'image' };
+    if (hasIcon) return { key: engine.icon, kind: 'image' };
     const host = browserEngineHost(engine.name);
     if (host) return { key: `https://${host}/`, kind: 'markup' };
-    if (hasIcon) return { key: engine.icon, kind: 'image' };
     return null;
   },
 });
