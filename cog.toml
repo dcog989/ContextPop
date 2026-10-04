@@ -10,6 +10,7 @@ tag_prefix = "v"
 pre_bump_hooks = [
   "tsc --noEmit -p jsconfig.json",
   "./scripts/sync_version.sh {{version}}",
+  "./scripts/package.sh",
 ]
 
 post_bump_hooks = [
