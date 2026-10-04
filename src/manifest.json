@@ -19,6 +19,7 @@
   },
   "background": {
     "scripts": [
+      "url.js",
       "util.js",
       "afterAnimation.js",
       "actionIcons.js",
@@ -40,6 +41,7 @@
       "matches": ["<all_urls>"],
       "js": [
         "theme.js",
+        "url.js",
         "util.js",
         "afterAnimation.js",
         "messages.js",

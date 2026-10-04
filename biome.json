@@ -27,6 +27,7 @@
   "overrides": [
     {
       "includes": [
+        "src/url.js",
         "src/util.js",
         "src/afterAnimation.js",
         "src/messages.js",
