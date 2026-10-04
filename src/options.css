@@ -279,7 +279,14 @@ select {
   background: var(--bg);
   color: var(--text);
   font-size: 13px;
+}
+
+select {
   font-family: inherit;
+}
+
+input {
+  font-family: var(--font-family-mono);
 }
 
 input:disabled {

@@ -4,6 +4,7 @@
   const TOKENS = Object.freeze({
     accent: '#c65900',
     fontFamily: 'system-ui, sans-serif',
+    fontFamilyMono: 'monospace',
   });
 
   const DURATIONS = Object.freeze({
