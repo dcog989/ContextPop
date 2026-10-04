@@ -99,7 +99,7 @@
     "message": "Sombre"
   },
   "showLabels": {
-    "message": "Afficher le nom des moteurs"
+    "message": "Afficher les libellés des actions et des moteurs"
   },
   "accentBorder": {
     "message": "Bordure de couleur d'accent"

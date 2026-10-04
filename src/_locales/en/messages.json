@@ -103,7 +103,7 @@
     "message": "Dark"
   },
   "showLabels": {
-    "message": "Show engine names"
+    "message": "Show action + engine labels"
   },
   "accentBorder": {
     "message": "Accent color border"
