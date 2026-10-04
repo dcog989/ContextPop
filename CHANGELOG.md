@@ -2,6 +2,124 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.0 - 2026-10-04
+
+#### Features
+
+- (80c1e9c) use monospace font for input fields - dcog989
+
+- (77c0798) add copy page info action - dcog989
+
+- (1790fc3) relabel "Show engine names" to "Show action + engine labels" - dcog989
+
+#### Bug Fixes
+
+- (0fb6097) show imported browser engines in the popup - dcog989
+
+- (adaec28) remove focus outline on popup; use mid-grey dark border - dcog989
+
+- (7413974) build settings controls lazily to avoid TDZ on elements - dcog989
+
+- (279c57e) prefer custom engine icon over site favicon - dcog989
+
+- (08f6eb5) resolve menuLayout and optionsSettings tsc errors + format - dcog989
+
+- (e0bb5d0) restore message-type inference in messaging helpers - dcog989
+
+- (9f455f1) repair message helper inference and open-method guard - dcog989
+
+- (c0bf61e) make menu icon lookup cache-only with background warm-up - dcog989
+
+- (7783752) serialize rich copy in an inert document with absolute URLs - dcog989
+
+- (63474a2) truncate menu labels/tooltips and cap search query length - dcog989
+
+- (bd934ae) require www or a scheme for file-extension-like TLDs - dcog989
+
+- (1c862af) focus the menu container so Space/Enter no longer fire the first tile - dcog989
+
+- (7d08547) preserve selection on scroll and blur; ignore nested scroll containers - dcog989
+
+- (f74a0cc) serialize every selected range for rich copy - dcog989
+
+- (be39d2c) render popup in the top layer via the popover API - dcog989
+
+- (1d3fce2) open new windows in the sender's incognito context - dcog989
+
+- (54973b1) keep text context for link selections and require full-range anchor - dcog989
+
+- (ddc355b) allow new selection while menu is open - dcog989
+
+#### Performance Improvements
+
+- (59c5230) persist only the changed storage key on autosave - dcog989
+
+- (890e04b) memoize monochrome-SVG detection per data URL - dcog989
+
+- (e36209e) downscale raster favicons to 64px before caching - dcog989
+
+- (a38ec79) cache the engine icon map per frame - dcog989
+
+- (311dbff) hydrate config from storage on first selection - dcog989
+
+#### Refactoring
+
+- (9d484f9) extract URL logic from util.js into url.js - dcog989
+
+- (67b1390) group openMenu options and menu state into groups - dcog989
+
+- (0aebe8b) inject a callbacks object and move dispatch to content - dcog989
+
+- (aba1f00) centralize engine.source branching into a per-source strategy - dcog989
+
+- (8f03a74) return {key, args} from validation and render in view - dcog989
+
+- (3258984) extract opener.js from background entry - dcog989
+
+- (1f39f35) extract clipboard handlers into clipboard.js - dcog989
+
+- (9ee65ba) parse favicon <link> tags with DOMParser - dcog989
+
+- (17617bd) drop dead array branch in normalizeBuiltinActions - dcog989
+
+- (63cbcf7) drop redundant storage seeding - dcog989
+
+- (b973b9c) drop capability guards Firefox 140 guarantees - dcog989
+
+- (5ea420e) drop getKeys availability fallback - dcog989
+
+- (f9e7291) drop generateId crypto fallback - dcog989
+
+- (5a5f6e3) consolidate HTTP URL checks on isHttpUrl - dcog989
+
+- (c2ba15b) extract actionMessageKey for action label keys - dcog989
+
+- (9cf2d75) drive settings controls from one descriptor table - dcog989
+
+- (1259bee) extract enabledTiles helper for enabled tile queries - dcog989
+
+- (b94ff07) centralize template validation in templateProblem - dcog989
+
+- (7779387) add shared clamp/clampInt and consolidate call sites - dcog989
+
+- (c979e45) add pickEnum/defineEnum helpers for enum normalization - dcog989
+
+- (d084beb) extract shared afterAnimation helper - dcog989
+
+- (fc299bc) extract shared fetchWithTimeout helper - dcog989
+
+- (d4574a5) harden editable detection, viewport clamp, engine seeding, and reference dispatch - dcog989
+
+- (a3cd2f7) move runtime messaging helpers into messages module - dcog989
+
+- (8c1e035) extract ACTION_ICONS into dedicated actionIcons module - dcog989
+
+- (61b3f8b) centralize setting enum values in storage.js - dcog989
+
+- (b3cd1e9) share sendMessage empty-payload fallback helper - dcog989
+
+- - -
+
 ## v0.8.1 - 2026-10-02
 
 #### Bug Fixes
