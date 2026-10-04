@@ -153,8 +153,8 @@ var KNOWN_TLDS = new Set([
 var BARE_URL_PATTERN = /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?::\d{1,5})?(?:[/?#]\S*)?$/i;
 
 // TLDs that double as common file extensions or words ("main.py", "lib.rs",
-// "script.pl", "index.js", "readme.md"). For these, require an explicit scheme or a
-// "www." prefix so file names are not mistaken for URLs.
+// "script.pl", "index.js", "readme.md"). For these, require an explicit scheme, a "www."
+// prefix, or a path/query/fragment so bare file names are not mistaken for URLs.
 var AMBIGUOUS_TLDS = new Set(['py', 'rs', 'pl', 'cc', 'ai', 'is', 'in', 'md', 'sh', 'js', 'ts']);
 
 /**
@@ -181,7 +181,7 @@ function looksLikeUrl(value) {
   const host = candidate.split(/[/?#]/, 1)[0].split(':')[0];
   const tld = host.slice(host.lastIndexOf('.') + 1).toLowerCase();
   if (!KNOWN_TLDS.has(tld)) return false;
-  if (AMBIGUOUS_TLDS.has(tld) && !/^www\./i.test(host)) return false;
+  if (AMBIGUOUS_TLDS.has(tld) && !/^www\./i.test(host) && !/[/?#]/.test(candidate)) return false;
   return true;
 }
 
