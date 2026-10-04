@@ -7,9 +7,16 @@ var THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerm
 
 /** @type {ReadonlyArray<BuiltinAction>} */
 var BUILTIN_ACTION_DEFS = Object.freeze([
-  { id: 'copyPlain', kind: 'clipboard', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyPlain },
-  { id: 'copyLink', kind: 'clipboard', contexts: ['link'], icon: ACTION_ICONS.copyLink },
   { id: 'copyRich', kind: 'clipboard', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyRich },
+  { id: 'copyPlain', kind: 'clipboard', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyPlain },
+  {
+    id: 'copyPageInfo',
+    kind: 'clipboard',
+    contexts: ['text', 'word', 'link'],
+    icon: ACTION_ICONS.copyPageInfo,
+  },
+  { id: 'copyLink', kind: 'clipboard', contexts: ['link'], icon: ACTION_ICONS.copyLink },
+  { id: 'openLink', kind: 'link', contexts: ['link'], icon: ACTION_ICONS.openLink },
   {
     id: 'define',
     kind: 'reference',
@@ -19,7 +26,6 @@ var BUILTIN_ACTION_DEFS = Object.freeze([
     usesText: true,
     tooltipKey: 'actionDefineTooltip',
   },
-  { id: 'openLink', kind: 'link', contexts: ['link'], icon: ACTION_ICONS.openLink },
   {
     id: 'thesaurus',
     kind: 'reference',

@@ -242,6 +242,9 @@
   "actionCopyLink": {
     "message": "लिंक पता कॉपी करें"
   },
+  "actionCopyPageInfo": {
+    "message": "पेज जानकारी कॉपी करें"
+  },
   "actionOpenLink": {
     "message": "लिंक खोलें"
   },

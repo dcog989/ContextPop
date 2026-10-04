@@ -84,6 +84,19 @@
       await writeClipboardText(getSelection()?.href || '');
     }
 
+    async function copyPageInfo() {
+      const descriptionMeta = /** @type {HTMLMetaElement | null} */ (
+        document.querySelector('meta[name="description"]')
+      );
+      const descriptionFallback = /** @type {HTMLMetaElement | null} */ (
+        document.querySelector('meta[property="og:description"]')
+      );
+      const description = (descriptionMeta?.content || descriptionFallback?.content || '').trim();
+      const lines = [document.title.trim(), location.href];
+      if (description) lines.push(description);
+      await writeClipboardText(lines.filter(Boolean).join('\n'));
+    }
+
     async function copyRich() {
       const selection = getSelection();
       const plain = selection?.text || '';
@@ -110,7 +123,7 @@
       await copyPlain();
     }
 
-    return Object.freeze({ copyRich, copyPlain, copyLink });
+    return Object.freeze({ copyRich, copyPlain, copyLink, copyPageInfo });
   }
 
   globalThis.__contextPopClipboard = { createClipboardHandlers };

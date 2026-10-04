@@ -246,6 +246,9 @@
   "actionCopyLink": {
     "message": "Copy link address"
   },
+  "actionCopyPageInfo": {
+    "message": "Copy page info"
+  },
   "actionOpenLink": {
     "message": "Open link"
   },

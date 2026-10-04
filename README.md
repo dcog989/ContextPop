@@ -10,9 +10,9 @@ Install: [Firefox ContextPop](https://addons.mozilla.org/en-GB/firefox/addon/con
 ## Features
 
 - Popup tile grid on text selection, keyboard navigable
-- Built-in actions: copy (rich or plain), copy link address, open link, dictionary, thesaurus, and translate
+- Built-in actions: copy (rich or plain), copy link address, copy page info, open link, dictionary, thesaurus, and translate
 - Search engines, configurable to display either before or after Actions
-- Context-aware actions: copy, copy link address, open link, dictionary, thesaurus, and translate apply to the selections they suit
+- Context-aware actions: copy, copy link address, copy page info, open link, dictionary, thesaurus, and translate apply to the selections they suit
 - Manage engines (name, template, optional icon)
 - Import installed Firefox search engines
 - Engine icons fetched from each engine's own site (or a custom icon URL / Base64)

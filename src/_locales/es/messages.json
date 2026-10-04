@@ -242,6 +242,9 @@
   "actionCopyLink": {
     "message": "Copiar dirección del enlace"
   },
+  "actionCopyPageInfo": {
+    "message": "Copiar información de la página"
+  },
   "actionOpenLink": {
     "message": "Abrir enlace"
   },
