@@ -17,6 +17,7 @@
   border: 1px solid rgba(0, 0, 0, calc(0.16 * var(--cs-alpha, 1)));
   border-radius: 0.71em;
   box-shadow: 0 10px 32px rgba(0, 0, 0, calc(0.28 * var(--cs-alpha, 1)));
+  outline: none;
   pointer-events: auto;
   font-family: var(--font-family);
   font-size: 14px;
@@ -49,7 +50,7 @@
 .cs-menu.dark {
   background: rgba(33, 33, 33, var(--cs-alpha, 1));
   color: #f1f3f4;
-  border-color: rgba(255, 255, 255, calc(0.16 * var(--cs-alpha, 1)));
+  border-color: rgba(128, 128, 128, calc(0.5 * var(--cs-alpha, 1)));
 }
 .cs-menu.accent-border {
   border-width: 2px;

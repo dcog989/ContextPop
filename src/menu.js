@@ -253,6 +253,7 @@
     host.style.margin = '0';
     host.style.padding = '0';
     host.style.border = '0';
+    host.style.outline = 'none';
     host.style.background = 'transparent';
     host.style.width = '100%';
     host.style.height = '100%';
