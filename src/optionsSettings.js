@@ -1,6 +1,6 @@
 // Preferences form: reflect settings into the controls and persist each change to `state`.
 
-/** @type {ReadonlyArray<{ el: HTMLElement, key: string, event?: string, read: (el: any) => any, write: (el: any, value: any) => void, after?: () => void }>} */
+/** @type {ReadonlyArray<{ el: HTMLElement, key: keyof Settings, event?: string, read: (el: any) => any, write: (el: any, value: any) => void, after?: () => void }>} */
 const SETTINGS_CONTROLS = [
   {
     el: elements.actionsPosition,
@@ -62,7 +62,7 @@ function renderSettings() {
 function bindSettings() {
   for (const control of SETTINGS_CONTROLS) {
     control.el.addEventListener(control.event ?? 'change', () => {
-      state.settings[control.key] = control.read(control.el);
+      /** @type {Record<string, any>} */ (state.settings)[control.key] = control.read(control.el);
       if (control.after) control.after();
       markDirty(STORAGE_KEYS.settings);
     });

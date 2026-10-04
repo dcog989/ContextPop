@@ -172,10 +172,7 @@
     if (!menuState.callbacks) return;
     runWithFeedback(
       menuState.host,
-      menuState.callbacks.onSearch(
-        /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
-        event,
-      ),
+      menuState.callbacks.onSearch(/** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '', event),
     );
   }
 
@@ -188,10 +185,7 @@
     if (!menuState.callbacks) return;
     runWithFeedback(
       menuState.host,
-      menuState.callbacks.onSearch(
-        /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
-        event,
-      ),
+      menuState.callbacks.onSearch(/** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '', event),
     );
   }
 

@@ -75,9 +75,7 @@
    */
   async function runSearch(engineId, event) {
     const method =
-      event.type === 'auxclick'
-        ? OPEN_METHOD.backgroundTab
-        : resolveMethod(event, contentState.settings?.openMethod);
+      event.type === 'auxclick' ? OPEN_METHOD.backgroundTab : resolveMethod(event, contentState.settings?.openMethod);
     await sendMessage({ type: 'search', engineId, terms: contentState.selection?.text || '', method });
   }
 

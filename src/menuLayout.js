@@ -66,7 +66,7 @@
    * @returns {HTMLElement[]}
    */
   function enabledTiles(menu) {
-    return [...menu.querySelectorAll('.cs-tile:not(:disabled)')];
+    return /** @type {HTMLElement[]} */ ([...menu.querySelectorAll('.cs-tile:not(:disabled)')]);
   }
 
   /**
