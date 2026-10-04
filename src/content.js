@@ -88,12 +88,13 @@
       const result = await api.storage.local.get([STORAGE_KEYS.settings, STORAGE_KEYS.engines]);
       contentState.settings = normalizeSettings(result[STORAGE_KEYS.settings]);
       const stored = result[STORAGE_KEYS.engines];
-      const engines = Array.isArray(stored) ? stored.map(normalizeEngine) : defaultEngineList();
-      contentState.engines = filterUsableEngines(engines);
+      // Browser-source engines are opened by the background, which has the search API this
+      // frame lacks, so do not capability-filter them here.
+      contentState.engines = Array.isArray(stored) ? stored.map(normalizeEngine) : defaultEngineList();
     } catch (error) {
       console.error('ContextPop: failed to load config', error);
       contentState.settings = defaultSettings();
-      contentState.engines = filterUsableEngines(defaultEngineList());
+      contentState.engines = defaultEngineList();
     }
   }
 
