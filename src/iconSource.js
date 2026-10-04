@@ -14,6 +14,8 @@
 /** @type {Record<string, string>} */
 var KNOWN_ENGINE_HOSTS = Object.freeze({
   google: 'www.google.com',
+  'google maps': 'www.google.com/maps',
+  'google scholar': 'scholar.google.com',
   duckduckgo: 'duckduckgo.com',
   bing: 'www.bing.com',
   wikipedia: 'en.wikipedia.org',
