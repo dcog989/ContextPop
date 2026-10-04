@@ -1,6 +1,6 @@
-// Popup shell: owns the private menu state, lifecycle (open/close), action dispatch, and
-// composition of the stateless menu modules. Publishes globalThis.__contextPopMenu for
-// content.js.
+// Popup shell: owns the private menu state, lifecycle (open/close), and composition of the
+// stateless menu modules. Actions and searches are delegated to injected callbacks, keeping
+// the shell decoupled from transport. Publishes globalThis.__contextPopMenu for content.js.
 
 (() => {
   if (globalThis.__contextPopMenu) return;
@@ -15,15 +15,12 @@
   /** @type {MenuState} */
   const menuState = {
     open: false,
-    text: '',
-    href: '',
     actions: [],
     settings: null,
-    handlers: null,
+    callbacks: null,
     host: null,
     root: null,
     previousFocus: null,
-    onClose: null,
   };
 
   function isMenuOpen() {
@@ -65,8 +62,10 @@
   function requestIcons() {
     if (cachedIcons) return Promise.resolve(cachedIcons);
     if (!iconRequest) {
+      const onIcons = menuState.callbacks?.onIcons;
+      if (!onIcons) return Promise.resolve({});
       const generation = iconGeneration;
-      iconRequest = sendMessageOrEmpty({ type: 'getIcons' })
+      iconRequest = onIcons()
         .then((icons) => {
           if (generation === iconGeneration) cachedIcons = icons;
           return icons;
@@ -102,8 +101,8 @@
       previousFocus.focus({ preventScroll: true });
     }
 
-    const onClose = menuState.onClose;
-    menuState.onClose = null;
+    const onClose = menuState.callbacks?.onClose;
+    menuState.callbacks = null;
     onClose?.(reason);
 
     const menu = /** @type {HTMLElement | null} */ (root?.querySelector?.('.cs-menu') ?? null);
@@ -116,17 +115,6 @@
     afterAnimation(menu, closeMs, 'cs-shrink').then(() => host.remove());
     menu.classList.remove('cs-anim-in');
     menu.classList.add('cs-anim-out');
-  }
-
-  /**
-   * @param {MouseEvent} event
-   * @param {string | undefined} base
-   * @returns {string}
-   */
-  function resolveMethod(event, base) {
-    if (event.shiftKey) return OPEN_METHOD.newWindow;
-    if (event.ctrlKey || event.metaKey) return OPEN_METHOD.backgroundTab;
-    return base || OPEN_METHOD.newTab;
   }
 
   /**
@@ -162,54 +150,28 @@
   }
 
   /**
-   * @param {string} id
-   * @param {MouseEvent} event
-   * @returns {Promise<void>}
-   */
-  async function dispatchAction(id, event) {
-    const action = menuState.actions.find((item) => item.id === id);
-    if (!action) return;
-    const method = resolveMethod(event, menuState.settings?.openMethod);
-
-    switch (action.kind) {
-      case 'clipboard': {
-        const handler = menuState.handlers?.[action.id];
-        if (!handler) throw new Error(`No clipboard handler for action "${action.id}"`);
-        await handler();
-        break;
-      }
-      case 'link':
-        await sendMessage({ type: 'openLink', url: menuState.href, method });
-        break;
-      case 'reference':
-        await sendMessage({ type: 'openReference', actionId: action.id, terms: menuState.text });
-        break;
-      default:
-        break;
-    }
-  }
-
-  /**
    * @param {MouseEvent} event
    */
   function handleActionClick(event) {
-    const target = /** @type {HTMLElement} */ (event.currentTarget);
-    runWithFeedback(menuState.host, dispatchAction(target.dataset.actionId ?? '', event));
+    const callbacks = menuState.callbacks;
+    if (!callbacks) return;
+    const id = /** @type {HTMLElement} */ (event.currentTarget).dataset.actionId ?? '';
+    const action = menuState.actions.find((item) => item.id === id);
+    if (!action) return;
+    runWithFeedback(menuState.host, callbacks.onAction(action, event));
   }
 
   /**
    * @param {MouseEvent} event
    */
   function handleEngineClick(event) {
-    const method = resolveMethod(event, menuState.settings?.openMethod);
+    if (!menuState.callbacks) return;
     runWithFeedback(
       menuState.host,
-      sendMessage({
-        type: 'search',
-        engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
-        terms: menuState.text,
-        method,
-      }),
+      menuState.callbacks.onSearch(
+        /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
+        event,
+      ),
     );
   }
 
@@ -219,14 +181,13 @@
   function handleEngineAuxClick(event) {
     if (event.button !== 1) return;
     event.preventDefault();
+    if (!menuState.callbacks) return;
     runWithFeedback(
       menuState.host,
-      sendMessage({
-        type: 'search',
-        engineId: /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
-        terms: menuState.text,
-        method: OPEN_METHOD.backgroundTab,
-      }),
+      menuState.callbacks.onSearch(
+        /** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '',
+        event,
+      ),
     );
   }
 
@@ -271,13 +232,10 @@
   /**
    * @param {OpenMenuOptions} options
    */
-  function openMenu({ text, contexts, href, rect, point, engines, settings, handlers, onClose }) {
+  function openMenu({ text, contexts, rect, point, engines, settings, callbacks }) {
     closeMenu({ reason: 'replace' });
 
-    menuState.text = text;
-    menuState.href = href;
-    menuState.handlers = handlers;
-    menuState.onClose = onClose ?? null;
+    menuState.callbacks = callbacks;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     const allActions = builtinActionList(settings);

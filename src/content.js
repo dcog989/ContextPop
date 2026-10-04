@@ -26,6 +26,61 @@
 
   const clipboardHandlers = clipboardApi.createClipboardHandlers(() => contentState.selection);
 
+  /**
+   * @param {MouseEvent} event
+   * @param {string | undefined} base
+   * @returns {string}
+   */
+  function resolveMethod(event, base) {
+    if (event.shiftKey) return OPEN_METHOD.newWindow;
+    if (event.ctrlKey || event.metaKey) return OPEN_METHOD.backgroundTab;
+    return base || OPEN_METHOD.newTab;
+  }
+
+  /**
+   * Routes an action to its kind's behavior. The menu shell supplies only the item and the
+   * triggering event.
+   * @param {ActionItem} action
+   * @param {MouseEvent} event
+   * @returns {Promise<void>}
+   */
+  async function runAction(action, event) {
+    const method = resolveMethod(event, contentState.settings?.openMethod);
+    switch (action.kind) {
+      case 'clipboard': {
+        const handler = clipboardHandlers[action.id];
+        if (!handler) throw new Error(`No clipboard handler for action "${action.id}"`);
+        await handler();
+        break;
+      }
+      case 'link':
+        await sendMessage({ type: 'openLink', url: contentState.selection?.href || '', method });
+        break;
+      case 'reference':
+        await sendMessage({
+          type: 'openReference',
+          actionId: action.id,
+          terms: contentState.selection?.text || '',
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * @param {string} engineId
+   * @param {MouseEvent} event
+   * @returns {Promise<void>}
+   */
+  async function runSearch(engineId, event) {
+    const method =
+      event.type === 'auxclick'
+        ? OPEN_METHOD.backgroundTab
+        : resolveMethod(event, contentState.settings?.openMethod);
+    await sendMessage({ type: 'search', engineId, terms: contentState.selection?.text || '', method });
+  }
+
   // Reads config straight from storage (already injected into this frame) instead of
   // messaging the background, so page/iframe loads never wake the event page. Loaded on
   // the first valid selection and cached until the storage onChanged listener invalidates.
@@ -155,6 +210,14 @@
     }
   }
 
+  /** @type {MenuCallbacks} */
+  const menuCallbacks = {
+    onIcons: () => sendMessageOrEmpty({ type: 'getIcons' }),
+    onAction: runAction,
+    onSearch: runSearch,
+    onClose: handleMenuClose,
+  };
+
   /**
    * @param {SelectionInfo & { contexts: string[] }} info
    * @param {MouseEvent | null} event
@@ -164,13 +227,11 @@
     openMenu({
       text: info.text,
       contexts: info.contexts,
-      href: info.href,
       rect: info.rect,
       point: event ? { x: event.clientX, y: event.clientY } : null,
       engines: contentState.engines.filter((engine) => engine.enabled !== false),
       settings: contentState.settings ?? defaultSettings(),
-      handlers: clipboardHandlers,
-      onClose: handleMenuClose,
+      callbacks: menuCallbacks,
     });
   }
 

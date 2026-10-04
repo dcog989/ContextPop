@@ -278,29 +278,31 @@ interface MenuTilesApi {
   ): void;
 }
 
+interface MenuCallbacks {
+  onIcons(): Promise<IconMap>;
+  onAction(action: ActionItem, event: MouseEvent): Promise<void>;
+  onSearch(engineId: string, event: MouseEvent): Promise<void>;
+  onClose(reason: string): void;
+}
+
 interface MenuState {
   open: boolean;
-  text: string;
-  href: string;
   actions: ActionItem[];
   settings: Settings | null;
-  handlers: Record<string, (() => void) | undefined> | null;
+  callbacks: MenuCallbacks | null;
   host: HTMLElement | null;
   root: ShadowRoot | null;
   previousFocus: HTMLElement | null;
-  onClose: ((reason: string) => void) | null;
 }
 
 interface OpenMenuOptions {
   text: string;
   contexts: string[];
-  href: string;
   rect: DOMRect | null;
   point: { x: number; y: number } | null;
   engines: Engine[];
   settings: Settings;
-  handlers: Record<string, () => void>;
-  onClose: (reason: string) => void;
+  callbacks: MenuCallbacks;
 }
 
 interface MenuApi {

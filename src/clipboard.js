@@ -69,8 +69,9 @@
 
   /**
    * Builds the clipboard handlers, reading the active selection through `getSelection`.
-   * Keyed by their BUILTIN_ACTION_DEFS id (see actions.js): dispatchAction resolves
-   * menuState.handlers[action.id], so every `kind: 'clipboard'` def needs a matching entry.
+   * Keyed by their BUILTIN_ACTION_DEFS id (see actions.js): content.js resolves
+   * clipboardHandlers[action.id] when dispatching, so every `kind: 'clipboard'` def needs a
+   * matching entry.
    * @param {() => SelectionInfo | null} getSelection
    * @returns {Readonly<Record<string, () => Promise<void>>>}
    */
