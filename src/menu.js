@@ -28,6 +28,18 @@
     return menuState.open;
   }
 
+  // A modal <dialog> makes the rest of the document inert, so a popover mounted outside it
+  // renders in the top layer but never receives interaction events. Mount the menu inside the
+  // topmost modal dialog when one is open; otherwise the document is the correct container.
+  /**
+   * @returns {HTMLElement | null}
+   */
+  function modalContainer() {
+    const modals = document.querySelectorAll(':modal');
+    const last = modals[modals.length - 1];
+    return last instanceof HTMLElement ? last : null;
+  }
+
   /**
    * @param {Event} event
    * @returns {boolean}
@@ -305,7 +317,7 @@
     if (menu.querySelector('.cs-tile')) menu.addEventListener('keydown', handleMenuKeydown);
 
     root.appendChild(menu);
-    document.documentElement.appendChild(host);
+    (modalContainer() ?? document.documentElement).appendChild(host);
     host.showPopover();
 
     menuState.open = true;
