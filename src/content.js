@@ -140,10 +140,17 @@
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || !selection.rangeCount) return null;
 
-    const text = selection.toString().trim();
+    const ranges = Array.from({ length: selection.rangeCount }, (_, index) => selection.getRangeAt(index).cloneRange());
+    // Selection.toString() can be empty when its anchor/focus sit in a shadow tree or a modal
+    // dialog (e.g. GitHub's confirmation label); the range's own toString() still returns the
+    // selected text, so read from the ranges instead.
+    const text = ranges
+      .map((range) => range.toString())
+      .join('')
+      .trim();
     if (!text) return null;
 
-    const range = selection.getRangeAt(0);
+    const range = ranges[0];
     const rect = range.getBoundingClientRect();
     if (!rect || (rect.width === 0 && rect.height === 0)) return null;
 
@@ -152,8 +159,6 @@
       findAnchor(range.startContainer, range) ||
       findAnchor(range.endContainer, range);
     const anchorHref = anchor?.href && isHttpUrl(anchor.href) ? anchor.href : '';
-
-    const ranges = Array.from({ length: selection.rangeCount }, (_, index) => selection.getRangeAt(index).cloneRange());
 
     return {
       text,
