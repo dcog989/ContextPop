@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.1 - 2026-10-05
+
+#### Bug Fixes
+
+- (65c4382) read selection text from ranges, not Selection.toString() - dcog989
+
+- (32a4f2f) mount popup inside modal dialog so actions stay clickable - dcog989
+
+- (7e5e329) resolve Google Maps and Scholar favicons for imported engines - dcog989
+
+- - -
+
 ## v0.9.0 - 2026-10-04
 
 #### Features
