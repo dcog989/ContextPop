@@ -138,20 +138,27 @@ async function save() {
 
   // Persist only the collections the user actually touched, so an engine edit does not
   // rewrite settings (and wake every frame's storage.onChanged listener), and vice versa.
+  // Take the pending keys before the await: a change made while the write is in flight
+  // re-adds its key to a fresh set and schedules its own save, so this one cannot drop it.
+  const pending = state.dirtyKeys;
+  state.dirtyKeys = new Set();
+
   /** @type {Promise<void>[]} */
   const writes = [];
-  if (state.dirtyKeys.has(STORAGE_KEYS.engines)) writes.push(saveEngines(state.engines));
-  if (state.dirtyKeys.has(STORAGE_KEYS.settings)) writes.push(saveSettings(state.settings));
+  if (pending.has(STORAGE_KEYS.engines)) writes.push(saveEngines(state.engines));
+  if (pending.has(STORAGE_KEYS.settings)) writes.push(saveSettings(state.settings));
 
   try {
     await Promise.all(writes);
   } catch (error) {
+    for (const key of pending) state.dirtyKeys.add(key);
     setStatus({ key: 'statusSaveFailed', args: errorMessage(error) }, true);
     return;
   }
 
-  state.dirtyKeys.clear();
-  state.dirty = false;
-  setStatus({ key: 'statusSaved' });
-  clearStatusSoon();
+  if (state.dirtyKeys.size === 0) {
+    state.dirty = false;
+    setStatus({ key: 'statusSaved' });
+    clearStatusSoon();
+  }
 }
