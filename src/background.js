@@ -8,10 +8,6 @@
  */
 async function handleMessage(message, sender) {
   switch (message.type) {
-    case 'getEngines':
-      return filterUsableEngines(await loadEngines());
-    case 'getSettings':
-      return loadSettings();
     case 'getIcons': {
       const engines = await loadEngines();
       const icons = await cachedIconMap(engines);

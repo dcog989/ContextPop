@@ -188,8 +188,6 @@ interface MenuContent {
 // --- Message protocol ------------------------------------------------------
 
 interface MessageMap {
-  getEngines: { type: 'getEngines' };
-  getSettings: { type: 'getSettings' };
   getIcons: { type: 'getIcons' };
   resolveIcons: { type: 'resolveIcons' };
   refreshIcons: { type: 'refreshIcons' };
@@ -205,8 +203,6 @@ type Message = MessageMap[MessageType];
 type IconMap = Record<string, string>;
 
 interface MessageResultMap {
-  getEngines: Engine[];
-  getSettings: Settings;
   getIcons: IconMap;
   resolveIcons: IconMap;
   refreshIcons: IconMap;
