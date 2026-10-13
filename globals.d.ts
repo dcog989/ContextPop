@@ -242,7 +242,6 @@ interface MenuLayoutApi {
   positionMenu(menu: HTMLElement, anchor: MenuAnchor): void;
   applyAnimationOrigin(menu: HTMLElement, anchor: MenuAnchor): void;
   enabledTiles(menu: HTMLElement): HTMLElement[];
-  focusTile(tile: HTMLElement): void;
   moveFocus(menu: HTMLElement, delta: number): void;
   focusEdge(menu: HTMLElement, last: boolean): void;
 }

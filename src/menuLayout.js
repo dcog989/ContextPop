@@ -108,7 +108,6 @@
     positionMenu,
     applyAnimationOrigin,
     enabledTiles,
-    focusTile,
     moveFocus,
     focusEdge,
   };
