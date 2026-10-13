@@ -72,33 +72,6 @@ extendEngineSource(ENGINE_SOURCE.browser, {
 });
 
 /**
- * @param {Record<string, BuiltinActionValue>} target
- * @param {Record<string, BuiltinActionValue>} source
- * @returns {Record<string, BuiltinActionValue>}
- */
-function syncBuiltinActions(target, source) {
-  for (const key of Object.keys(target)) {
-    if (!(key in source)) delete target[key];
-  }
-  for (const [id, entry] of Object.entries(source)) {
-    const current = target[id];
-    if (current) Object.assign(current, entry);
-    else target[id] = { ...entry };
-  }
-  return target;
-}
-
-/**
- * @param {string[]} target
- * @param {string[]} source
- * @returns {string[]}
- */
-function syncStringList(target, source) {
-  target.splice(0, target.length, ...source);
-  return target;
-}
-
-/**
  * Normalizes settings onto the existing object so closures that captured
  * `state.settings` and its nested action entries keep working.
  * @param {Settings} settings
@@ -108,8 +81,16 @@ function normalizeSettingsInPlace(settings) {
   const normalized = normalizeSettings(settings);
   const { builtinActions, actionOrder, ...rest } = normalized;
   Object.assign(settings, rest);
-  settings.builtinActions = syncBuiltinActions(settings.builtinActions, builtinActions);
-  settings.actionOrder = syncStringList(settings.actionOrder, actionOrder);
+
+  for (const key of Object.keys(settings.builtinActions)) {
+    if (!(key in builtinActions)) delete settings.builtinActions[key];
+  }
+  for (const [id, entry] of Object.entries(builtinActions)) {
+    const current = settings.builtinActions[id];
+    if (current) Object.assign(current, entry);
+    else settings.builtinActions[id] = { ...entry };
+  }
+  settings.actionOrder.splice(0, settings.actionOrder.length, ...actionOrder);
   return settings;
 }
 
