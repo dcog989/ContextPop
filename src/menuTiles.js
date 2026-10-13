@@ -19,21 +19,11 @@
 
   /**
    * @param {ActionItem} action
+   * @param {string} key
    * @param {string} text
    * @returns {string}
    */
-  function actionLabel(action, text) {
-    const key = actionMessageKey(action.id);
-    return action.usesText ? t(key, action.id, [displayText(text)]) : t(key, action.id);
-  }
-
-  /**
-   * @param {ActionItem} action
-   * @param {string} text
-   * @returns {string}
-   */
-  function actionTooltip(action, text) {
-    const key = action.tooltipKey || actionMessageKey(action.id);
+  function actionText(action, key, text) {
     return action.usesText ? t(key, action.id, [displayText(text)]) : t(key, action.id);
   }
 
@@ -81,9 +71,10 @@
    * @returns {HTMLButtonElement}
    */
   function createActionTile(action, text, showLabels, onActivate) {
-    const label = actionLabel(action, text);
+    const messageKey = actionMessageKey(action.id);
+    const label = actionText(action, messageKey, text);
     const tile = document.createElement('button');
-    decorateTile(tile, label, showLabels, actionTooltip(action, text));
+    decorateTile(tile, label, showLabels, actionText(action, action.tooltipKey || messageKey, text));
     tile.dataset.actionId = action.id;
     if (action.disabled) tile.disabled = true;
     tile.prepend(createBuiltinIcon(action));
