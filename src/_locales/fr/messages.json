@@ -170,6 +170,15 @@
       }
     }
   },
+  "statusLoadFailed": {
+    "message": "Impossible de charger les paramètres : $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Storage unavailable"
+      }
+    }
+  },
   "statusIconAccessDenied": {
     "message": "L'accès aux icônes n'a pas été accordé, les icônes des moteurs sont donc remplacées par des lettres."
   },

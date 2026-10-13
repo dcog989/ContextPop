@@ -87,4 +87,4 @@ elements.version.textContent = `v${api.runtime.getManifest().version}`;
 bindSettings();
 bindActions();
 bindOnboarding();
-load();
+load().catch((error) => setStatus({ key: 'statusLoadFailed', args: errorMessage(error) }, true));

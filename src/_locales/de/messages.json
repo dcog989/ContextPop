@@ -170,6 +170,15 @@
       }
     }
   },
+  "statusLoadFailed": {
+    "message": "Einstellungen konnten nicht geladen werden: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Storage unavailable"
+      }
+    }
+  },
   "statusIconAccessDenied": {
     "message": "Der Icon-Zugriff wurde nicht gewährt, daher werden für Suchmaschinen Buchstaben angezeigt."
   },

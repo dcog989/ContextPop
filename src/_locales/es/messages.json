@@ -170,6 +170,15 @@
       }
     }
   },
+  "statusLoadFailed": {
+    "message": "No se pudo cargar la configuración: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Storage unavailable"
+      }
+    }
+  },
   "statusIconAccessDenied": {
     "message": "No se concedió acceso a los iconos, así que los iconos de los motores se sustituyen por letras."
   },

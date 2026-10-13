@@ -170,6 +170,15 @@
       }
     }
   },
+  "statusLoadFailed": {
+    "message": "सेटिंग्स लोड नहीं हो सकीं: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Storage unavailable"
+      }
+    }
+  },
   "statusIconAccessDenied": {
     "message": "आइकन पहुँच नहीं दी गई, इसलिए इंजन आइकन की जगह अक्षर दिखाए जाते हैं।"
   },
