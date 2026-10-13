@@ -70,6 +70,9 @@ async function pruneIconCache(referencedKeys) {
 
 async function clearIconCache() {
   iconMemoryCache.clear();
+  // Drop in-flight fetches too (owned by icons.js), so a refresh starts new ones
+  // instead of adopting a fetch that began before the clear.
+  iconInflight.clear();
   try {
     const keys = await iconCacheKeys();
     if (keys.length) await api.storage.local.remove(keys);
