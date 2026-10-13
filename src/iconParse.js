@@ -48,15 +48,15 @@ function parseIconDocument(markup) {
 }
 
 /**
- * @param {string} markup
+ * @param {Document} doc
  * @param {string} baseUrl
  * @returns {IconCandidate[]}
  */
-function iconCandidates(markup, baseUrl) {
+function iconCandidates(doc, baseUrl) {
   /** @type {IconCandidate[]} */
   const candidates = [];
   const seen = new Set();
-  for (const link of parseIconDocument(markup).querySelectorAll(ICON_LINK_SELECTOR)) {
+  for (const link of doc.querySelectorAll(ICON_LINK_SELECTOR)) {
     const href = link.getAttribute('href');
     if (!href) continue;
     try {
@@ -76,12 +76,12 @@ function iconCandidates(markup, baseUrl) {
 }
 
 /**
- * @param {string} markup
+ * @param {Document} doc
  * @param {string} baseUrl
  * @returns {string}
  */
-function findManifestUrl(markup, baseUrl) {
-  for (const link of parseIconDocument(markup).querySelectorAll(MANIFEST_LINK_SELECTOR)) {
+function findManifestUrl(doc, baseUrl) {
+  for (const link of doc.querySelectorAll(MANIFEST_LINK_SELECTOR)) {
     const href = link.getAttribute('href');
     if (!href) continue;
     try {

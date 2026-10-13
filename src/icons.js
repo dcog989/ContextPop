@@ -25,10 +25,12 @@ function rankCandidates(candidates) {
  */
 async function fetchBestIcon(homeUrl) {
   const { markup, baseUrl, definitive: markupDefinitive } = await fetchMarkup(homeUrl);
-  const candidates = markup ? iconCandidates(markup, baseUrl) : [];
+  // Parse the markup once; both helpers read the same document.
+  const doc = markup ? parseIconDocument(markup) : null;
+  const candidates = doc ? iconCandidates(doc, baseUrl) : [];
 
-  if (markup && !candidates.some((candidate) => candidate.vector)) {
-    const manifestUrl = findManifestUrl(markup, baseUrl) || new URL('/manifest.json', homeUrl).href;
+  if (doc && !candidates.some((candidate) => candidate.vector)) {
+    const manifestUrl = findManifestUrl(doc, baseUrl) || new URL('/manifest.json', homeUrl).href;
     candidates.push(...(await fetchManifestIcons(manifestUrl)));
   }
 
