@@ -78,10 +78,12 @@ function computeSvgDataUrlMonochrome(dataUrl) {
 }
 
 // Same data URLs recur across menu opens and tiles, so the atob+regex pass is memoized.
-// Bounded to keep a long-lived frame from accumulating stale entries.
-var MONO_SVG_CACHE_LIMIT = 128;
+// Bounded by total characters, not entry count: a key is a whole data URL (up to
+// MAX_ICON_BYTES), so a fixed entry cap could hold megabytes per frame.
+var MONO_SVG_CACHE_MAX_CHARS = 256 * 1024;
 /** @type {Map<string, boolean>} */
 var monoSvgCache = new Map();
+var monoSvgCacheChars = 0;
 
 /**
  * @param {string} dataUrl
@@ -92,10 +94,12 @@ function svgDataUrlIsMonochrome(dataUrl) {
   const cached = monoSvgCache.get(dataUrl);
   if (cached !== undefined) return cached;
   const result = computeSvgDataUrlMonochrome(dataUrl);
-  if (monoSvgCache.size >= MONO_SVG_CACHE_LIMIT) {
-    const oldest = monoSvgCache.keys().next().value;
-    if (oldest !== undefined) monoSvgCache.delete(oldest);
+  for (const key of monoSvgCache.keys()) {
+    if (monoSvgCacheChars + dataUrl.length <= MONO_SVG_CACHE_MAX_CHARS) break;
+    monoSvgCache.delete(key);
+    monoSvgCacheChars -= key.length;
   }
   monoSvgCache.set(dataUrl, result);
+  monoSvgCacheChars += dataUrl.length;
   return result;
 }
