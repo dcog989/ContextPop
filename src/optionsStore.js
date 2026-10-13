@@ -43,18 +43,6 @@ function markDirty(key) {
 }
 
 /**
- * @param {string} name
- * @param {string} template
- * @returns {MessageSpec | null}
- */
-function templateError(name, template) {
-  const problem = templateProblem(template);
-  if (problem === TEMPLATE_PROBLEM.missingTerms) return { key: 'errorTemplateTerms', args: name };
-  if (problem === TEMPLATE_PROBLEM.scheme) return { key: 'errorTemplateScheme', args: name };
-  return null;
-}
-
-/**
  * @returns {MessageSpec | null}
  */
 function validate() {
@@ -68,7 +56,7 @@ function validate() {
     const value = state.settings.builtinActions[def.id];
     if (!value?.enabled) continue;
     const name = (msg(actionMessageKey(def.id)) || capitalize(def.id)).trim();
-    const problem = templateError(name, String(value.template ?? ''));
+    const problem = templateProblemMessage(String(value.template ?? ''), name);
     if (problem) return problem;
   }
   return null;
@@ -76,7 +64,7 @@ function validate() {
 
 extendEngineSource(ENGINE_SOURCE.template, {
   validate: (engine) =>
-    engine.name.trim() ? templateError(engine.name, engine.template) : { key: 'errorNameRequired' },
+    engine.name.trim() ? templateProblemMessage(engine.template, engine.name) : { key: 'errorNameRequired' },
 });
 
 extendEngineSource(ENGINE_SOURCE.browser, {

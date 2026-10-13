@@ -88,6 +88,20 @@ function templateProblem(template) {
 }
 
 /**
+ * Maps a template's validation failure to the i18n message shown for it, so the
+ * code-to-message rule lives in one place for the options page and the background.
+ * @param {string} template
+ * @param {string} name
+ * @returns {MessageSpec | null}
+ */
+function templateProblemMessage(template, name) {
+  const problem = templateProblem(template);
+  if (problem === TEMPLATE_PROBLEM.missingTerms) return { key: 'errorTemplateTerms', args: name };
+  if (problem === TEMPLATE_PROBLEM.scheme) return { key: 'errorTemplateScheme', args: name };
+  return null;
+}
+
+/**
  * @param {string} template
  * @returns {boolean}
  */
