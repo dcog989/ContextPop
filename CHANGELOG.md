@@ -2,6 +2,36 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.2 - 2026-10-13
+
+#### Bug Fixes
+
+- (59b1046) show a message when the settings page fails to load - dcog989
+
+- (164ba3f) bound the monochrome-SVG memo by total characters, not entry count - dcog989
+
+- (f1215d5) drop in-flight fetches when clearing the icon cache - dcog989
+
+- (7f9630b) stop losing edits made during an in-flight save - dcog989
+
+#### Performance Improvements
+
+- (9dd4e77) parse page markup once per engine during icon resolution - dcog989
+
+#### Refactoring
+
+- (fc43b6d) unexport the file-local focusTile helper - dcog989
+
+- (ed90858) inline the one-caller settings sync helpers - dcog989
+
+- (0cc2a13) merge the duplicate action label and tooltip helpers - dcog989
+
+- (1673851) share one template-problem-to-message mapping - dcog989
+
+- (fc19078) drop unused getEngines and getSettings handlers - dcog989
+
+- - -
+
 ## v0.9.1 - 2026-10-05
 
 #### Bug Fixes
