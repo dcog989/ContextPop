@@ -2,10 +2,11 @@
 // plus debounced saving and validation. Views mutate `state` and call markDirty(key) with
 // the storage key they changed to schedule a save of just that key.
 
-/** @type {{ engines: Engine[], settings: Settings, dirty: boolean, dirtyKeys: Set<string> }} */
+/** @type {{ engines: Engine[], settings: Settings, loaded: boolean, dirty: boolean, dirtyKeys: Set<string> }} */
 const state = {
   engines: [],
   settings: defaultSettings(),
+  loaded: false,
   dirty: false,
   dirtyKeys: new Set(),
 };
@@ -31,10 +32,17 @@ function clearStatusSoon() {
   }, 1500);
 }
 
+// Saving is blocked until the stored state has been read, so a failed load cannot write the
+// empty/default state over the user's config.
+function markLoaded() {
+  state.loaded = true;
+}
+
 /**
  * @param {string} key
  */
 function markDirty(key) {
+  if (!state.loaded) return;
   state.dirty = true;
   state.dirtyKeys.add(key);
   setStatus({ key: 'statusSaving' });
@@ -95,6 +103,7 @@ function normalizeSettingsInPlace(settings) {
 }
 
 async function save() {
+  if (!state.loaded) return;
   if (saveTimer) clearTimeout(saveTimer);
   const problem = validate();
   if (problem) {

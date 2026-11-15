@@ -44,8 +44,9 @@ function createHarness() {
 
 test('a change made during an in-flight save is not dropped', async () => {
   const { context, writes, releases } = createHarness();
-  const { markDirty, save, STORAGE_KEYS } = context;
+  const { markDirty, markLoaded, save, STORAGE_KEYS } = context;
 
+  markLoaded();
   markDirty(STORAGE_KEYS.engines);
   const firstSave = save();
   assert.equal(writes.length, 1);

@@ -78,6 +78,7 @@ async function load() {
   renderSettings();
   configureBrowserImport();
   loadEngineIcons();
+  markLoaded();
   await revealOnboarding();
 }
 
