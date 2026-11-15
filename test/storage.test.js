@@ -64,6 +64,10 @@ test('normalizeSettings clamps opacity and validates enums and booleans', () => 
   assert.equal(normalizeSettings({ popupPosition: 'left' }).popupPosition, 'below');
   assert.equal(normalizeSettings({ popupAnimation: 1 }).popupAnimation, false);
   assert.equal(normalizeSettings({ popupAnimation: true }).popupAnimation, true);
+  assert.equal(normalizeSettings({ showLabels: 'false' }).showLabels, false);
+  assert.equal(normalizeSettings({ showLabels: true }).showLabels, true);
+  assert.equal(normalizeSettings({ accentBorder: 1 }).accentBorder, false);
+  assert.equal(normalizeSettings({ accentBorder: true }).accentBorder, true);
 });
 
 test('normalizeSettings rebuilds the built-in action list and order', () => {
@@ -89,20 +93,6 @@ test('normalizeSettings drops the retired Wiktionary template but keeps custom o
     builtinActions: { define: { template: 'https://example.org/?w={searchTerms}' } },
   });
   assert.equal(custom.builtinActions.define.template, 'https://example.org/?w={searchTerms}');
-});
-
-test('filterUsableEngines drops browser engines only when search is unavailable', () => {
-  const engines = [
-    { id: 't', source: 'template' },
-    { id: 'b', source: 'browser' },
-  ];
-  const unsupported = loadScripts(FILES, { browser: {} });
-  const kept = unsupported.filterUsableEngines(engines);
-  assert.equal(kept.length, 1);
-  assert.equal(kept[0].id, 't');
-
-  const supported = loadScripts(FILES, { browser: { search: { search() {} } } });
-  assert.equal(supported.filterUsableEngines(engines).length, 2);
 });
 
 test('loadEngines returns defaults without persisting when storage is empty', async () => {

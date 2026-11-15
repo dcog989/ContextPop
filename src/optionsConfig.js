@@ -29,12 +29,13 @@ function readConfigFile(file, apply) {
       setStatus({ key: 'statusImportFailed', args: errorMessage(error) }, true);
       return;
     }
-    const incoming = Array.isArray(parsed) ? parsed : parsed.engines;
-    if (!Array.isArray(incoming)) {
+    // Only our own export is accepted: importing anything else replaces every engine and
+    // setting with whatever the file happens to contain.
+    if (!parsed || typeof parsed !== 'object' || parsed.app !== 'contextpop' || !Array.isArray(parsed.engines)) {
       setStatus({ key: 'errorConfigInvalid' }, true);
       return;
     }
-    apply(parsed, incoming);
+    apply(parsed, parsed.engines);
   };
   reader.onerror = () => setStatus({ key: 'statusImportReadFailed' }, true);
   reader.readAsText(file);
@@ -45,7 +46,13 @@ function readConfigFile(file, apply) {
  */
 function importConfig(file) {
   readConfigFile(file, (parsed, incoming) => {
-    state.engines = filterUsableEngines(incoming.map(normalizeEngine));
+    const seen = new Set();
+    state.engines = incoming.map((entry) => {
+      const engine = normalizeEngine(entry);
+      if (seen.has(engine.id)) engine.id = generateId();
+      seen.add(engine.id);
+      return engine;
+    });
     state.settings = normalizeSettings({ ...state.settings, ...(parsed.settings || {}) });
     renderActions();
     renderEngines();

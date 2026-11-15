@@ -133,6 +133,8 @@ function normalizeSettings(stored) {
   settings.actionsPosition = pickEnum(settings.actionsPosition, ACTIONS_POSITIONS, DEFAULT_SETTINGS.actionsPosition);
   settings.popupPosition = pickEnum(settings.popupPosition, POPUP_POSITIONS, DEFAULT_SETTINGS.popupPosition);
   settings.popupAnimation = settings.popupAnimation === true;
+  settings.showLabels = settings.showLabels === true;
+  settings.accentBorder = settings.accentBorder === true;
   settings.popupOpacity = clampInt(input.popupOpacity, 0, 100, DEFAULT_SETTINGS.popupOpacity);
   return settings;
 }
@@ -149,16 +151,6 @@ function defaultEngineList() {
  */
 function supportsBrowserEngineSearch() {
   return typeof api.search?.search === 'function';
-}
-
-/**
- * Drops engines this context cannot search. Kept out of loadEngines() so a
- * capability-filtered list never flows back into saveEngines().
- * @param {Engine[]} engines
- * @returns {Engine[]}
- */
-function filterUsableEngines(engines) {
-  return engines.filter((engine) => engineStrategy(engine).isUsable());
 }
 
 /**

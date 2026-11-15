@@ -28,7 +28,7 @@ Install: [Firefox ContextPop](https://addons.mozilla.org/en-US/firefox/addon/con
 ## Permissions and privacy
 
 - `storage` — engines, actions, and preferences, kept on-device.
-- `search` — enumerate and search the browser's installed engines (Firefox import/search; imported engines are hidden where the API is unavailable).
+- `search` — enumerate and search the browser's installed engines (the import button is hidden where the API is unavailable).
 - `clipboardWrite` — copy actions.
 - Host access to all sites — needed to show the menu wherever you select text and to fetch engine icons. It is granted at install, but users can revoke it. When it is missing, grant it from the onboarding callout or "Refresh icons" in settings. Revoke per-site in the browser's extension settings.
 
