@@ -2,6 +2,36 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.10.0 - 2026-11-15
+
+#### Features
+
+- (085c87f) request unlimitedStorage for the icon cache - dcog989
+
+#### Bug Fixes
+
+- (0673ca0) close the popup when content moves under it - dcog989
+
+- (329fba5) stop buffering oversized icon responses - dcog989
+
+- (02f983d) stop saving until the stored state has loaded - dcog989
+
+- (9a6d8b0) harden config import and settings normalization - dcog989
+
+- (5ed6b33) make the Wiktionary lookup case-insensitive - dcog989
+
+#### Performance Improvements
+
+- (b50376f) read the icon cache in one storage call - dcog989
+
+#### Refactoring
+
+- (46d0762) drop the unused isUsable strategy hook - dcog989
+
+- (7edcec6) drop unused menu selection state and token export - dcog989
+
+- - -
+
 ## v0.9.2 - 2026-10-13
 
 #### Bug Fixes
