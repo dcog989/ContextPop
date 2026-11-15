@@ -5,6 +5,15 @@
 
 var THESAURUS_TEMPLATE = 'https://dictionary.cambridge.org/thesaurus/{searchTerms}';
 
+// Wiktionary slugs are case-sensitive: /wiki/Deeper is a 404 while /wiki/deeper is the entry.
+// MediaWiki's go-search redirects to the exact title when it exists ("London"), otherwise to
+// the case-insensitive match, so sentence-initial capitalization no longer breaks the lookup.
+var DEFINE_TEMPLATE = 'https://en.wiktionary.org/w/index.php?search={searchTerms}';
+
+// Templates that shipped as defaults before a fix. A stored copy means the user never edited
+// it, so it is ignored in favor of the current default.
+var RETIRED_TEMPLATES = new Set(['https://en.wiktionary.org/wiki/{searchTerms}']);
+
 /** @type {ReadonlyArray<BuiltinAction>} */
 var BUILTIN_ACTION_DEFS = Object.freeze([
   { id: 'copyRich', kind: 'clipboard', contexts: ['text', 'word', 'link'], icon: ACTION_ICONS.copyRich },
@@ -21,7 +30,7 @@ var BUILTIN_ACTION_DEFS = Object.freeze([
     id: 'define',
     kind: 'reference',
     contexts: ['word'],
-    template: 'https://en.wiktionary.org/wiki/{searchTerms}',
+    template: DEFINE_TEMPLATE,
     icon: ACTION_ICONS.define,
     usesText: true,
     tooltipKey: 'actionDefineTooltip',
@@ -71,8 +80,8 @@ function normalizeBuiltinActions(stored, base) {
       };
       if (def.template) {
         const storedTemplate = value.template;
-        entry.template =
-          typeof storedTemplate === 'string' ? storedTemplate : String(fallback.template ?? def.template);
+        const keepStored = typeof storedTemplate === 'string' && !RETIRED_TEMPLATES.has(storedTemplate);
+        entry.template = keepStored ? storedTemplate : String(fallback.template ?? def.template);
       }
       return [def.id, entry];
     }),

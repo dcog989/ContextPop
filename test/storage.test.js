@@ -83,6 +83,20 @@ test('normalizeSettings rebuilds the built-in action list and order', () => {
   ]);
 });
 
+test('normalizeSettings drops the retired Wiktionary template but keeps custom ones', () => {
+  const { normalizeSettings } = loadScripts(FILES, { browser: {} });
+  const retired = normalizeSettings({
+    builtinActions: { define: { enabled: false, template: 'https://en.wiktionary.org/wiki/{searchTerms}' } },
+  });
+  assert.equal(retired.builtinActions.define.template, 'https://en.wiktionary.org/w/index.php?search={searchTerms}');
+  assert.equal(retired.builtinActions.define.enabled, false);
+
+  const custom = normalizeSettings({
+    builtinActions: { define: { template: 'https://example.org/?w={searchTerms}' } },
+  });
+  assert.equal(custom.builtinActions.define.template, 'https://example.org/?w={searchTerms}');
+});
+
 test('filterUsableEngines drops browser engines only when search is unavailable', () => {
   const engines = [
     { id: 't', source: 'template' },
