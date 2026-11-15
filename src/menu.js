@@ -15,7 +15,6 @@
   /** @type {MenuState} */
   const menuState = {
     open: false,
-    selection: null,
     config: null,
     callbacks: null,
     actions: [],
@@ -45,7 +44,11 @@
    * @returns {boolean}
    */
   function isEventInsideMenu(event) {
-    return Boolean(menuState.host && event.composedPath().includes(menuState.host));
+    const host = menuState.host;
+    if (!host) return false;
+    // Scroll events do not cross the shadow boundary composed, so a menu scroll can surface
+    // with the host as its retargeted target instead of appearing in composedPath().
+    return host === event.target || event.composedPath().includes(host);
   }
 
   /**
@@ -116,7 +119,6 @@
 
     const animate = menuState.config?.settings.popupAnimation ?? false;
     const onClose = menuState.callbacks?.onClose;
-    menuState.selection = null;
     menuState.config = null;
     menuState.callbacks = null;
     onClose?.(reason);
@@ -248,7 +250,6 @@
     const { text, contexts, rect, point } = selection;
     const { engines, settings } = config;
 
-    menuState.selection = selection;
     menuState.config = config;
     menuState.callbacks = callbacks;
     menuState.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;

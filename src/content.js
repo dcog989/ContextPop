@@ -284,16 +284,16 @@
       },
       true,
     );
+    // Close when the page content moves under the menu so it never points at a stale spot.
+    // Scrolls and resizes that happen inside the menu itself keep it open.
     window.addEventListener(
       'scroll',
       /** @param {Event} event */ (event) => {
-        const target = event.target;
-        if (target === document || target === window || target === document.documentElement) {
-          closeMenu({ reason: 'scroll' });
-        }
+        if (!isEventInsideMenu(event)) closeMenu({ reason: 'scroll' });
       },
       { capture: true, passive: true },
     );
+    window.addEventListener('resize', () => closeMenu({ reason: 'scroll' }));
     window.addEventListener('blur', () => closeMenu({ reason: 'blur' }));
 
     api.storage.onChanged.addListener((/** @type {any} */ changes, /** @type {string} */ area) => {
