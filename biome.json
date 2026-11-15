@@ -17,10 +17,36 @@
   },
   "linter": {
     "enabled": true,
+    "domains": {
+      "types": "all"
+    },
     "rules": {
       "preset": "recommended",
       "complexity": {
         "noImportantStyles": "off"
+      },
+      "nursery": {
+        "noBaseToString": "error",
+        "noFloatingPromises": "error",
+        "noMeaninglessVoidOperator": "error",
+        "noMisleadingReturnType": "error",
+        "noMisusedPromises": "error",
+        "noUnsafePlusOperands": "error",
+        "noUnsafeReturn": "off",
+        "noUnsafeUnaryMinus": "error",
+        "noUselessTypeAssertion": "error",
+        "noUselessTypeConversion": "error",
+        "useAwaitThenable": "error",
+        "useDisposables": "error",
+        "useExhaustiveSwitchCases": "error",
+        "useIncludes": "error",
+        "useNullishCoalescing": "error",
+        "useRegexpExec": "error",
+        "useStrictBooleanExpressions": "off",
+        "useStringStartsEndsWith": "error"
+      },
+      "suspicious": {
+        "noUnnecessaryConditions": "off"
       }
     }
   },

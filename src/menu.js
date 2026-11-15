@@ -174,7 +174,7 @@
     const id = /** @type {HTMLElement} */ (event.currentTarget).dataset.actionId ?? '';
     const action = menuState.actions.find((item) => item.id === id);
     if (!action) return;
-    runWithFeedback(menuState.host, callbacks.onAction(action, event));
+    void runWithFeedback(menuState.host, callbacks.onAction(action, event));
   }
 
   /**
@@ -182,7 +182,7 @@
    */
   function handleEngineClick(event) {
     if (!menuState.callbacks) return;
-    runWithFeedback(
+    void runWithFeedback(
       menuState.host,
       menuState.callbacks.onSearch(/** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '', event),
     );
@@ -195,7 +195,7 @@
     if (event.button !== 1) return;
     event.preventDefault();
     if (!menuState.callbacks) return;
-    runWithFeedback(
+    void runWithFeedback(
       menuState.host,
       menuState.callbacks.onSearch(/** @type {HTMLElement} */ (event.currentTarget).dataset.engineId ?? '', event),
     );

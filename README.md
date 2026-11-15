@@ -40,14 +40,14 @@ Remote icons are fetched, preferring high-resolution variants, and cached on-dev
 
 ### Development
 
-No install and no build. Dev tooling is the system `biome`, `lefthook`, `cog`, and `tsc` binaries:
+No install and no build. Dev tooling is the system `biome`, `lefthook`, and `cog` binaries:
 
 ```sh
-biome check                    # lint + format check
-biome check --write            # apply fixes
-tsc --noEmit -p jsconfig.json  # type-check the JS
-node --test test/*.test.js     # unit tests for shared/pure logic
 lefthook install               # enable git hooks once per clone
+
+biome check                    # lint, format, and type-aware checks
+biome check --write            # lint, format, apply fixes
+node --test test/*.test.js     # unit tests for shared/pure logic
 cog bump --auto                # version + changelog; syncs the manifest version
 ```
 

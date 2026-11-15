@@ -4,7 +4,7 @@
 
 - Name: ContextPop
 - Description: Browser extension that launches a customizable popup when text is selected, providing instant access to search engines, copy to clipboard, dictionary / thesaurus lookup, etc.. Firefox, Manifest V3.
-- Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, Lefthook, Cocogitto, and TypeScript (`tsc`) binaries.
+- Tech: Vanilla JavaScript, HTML, CSS. WebExtensions APIs only. No build step and no runtime dependencies; dev tooling uses system Biome, Lefthook, and Cocogitto binaries.
 
 ### Key Files
 
@@ -18,18 +18,19 @@
 - `src/options.html` / `src/options*.js` — options page; `options.js` is the entry and the remaining modules load in a fixed order from the HTML. The background opens this page on install.
 - `src/manifest.json` — Firefox MV3 manifest.
 - `src/_locales/<lang>/messages.json` — UI strings (en, es, de, fr, hi), used via `__MSG_*__` / `api.i18n`.
-- `jsconfig.json` / `globals.d.ts` — `checkJs` config and hand-written ambient types (the WebExtension `browser` surface, IIFE-published globals, shared domain typedefs).
+- `jsconfig.json` / `globals.d.ts` — editor-only `checkJs` config and hand-written ambient types (the WebExtension `browser` surface, IIFE-published globals, shared domain typedefs). Biome's type-aware checks do not read them.
 
 ### Workflow
 
 - Install: none. Dev tooling expects the system `biome`, `lefthook`, and `cog` binaries.
 - Dev: reload the unpacked extension after edits.
 - Test: manual, load unpacked (see README); plus `node --test test/*.test.js` for the pure/shared logic (zero-dep harness in `test/`).
-- Lint/format: `biome check` (`biome check --write` to fix).
-- Type-check: `tsc --noEmit -p jsconfig.json` (strict `checkJs`; `globals.d.ts` supplies platform and shared-global types).
-- CI: `.github/workflows/ci.yml` runs `biome ci`, `tsc`, the unit tests, `web-ext lint`, and `scripts/package.sh` on push/PR.
+- Lint/format: `biome check` (`biome check --write` to fix). This is the only static check.
+- Type-check: `biome check` too, via `linter.domains.types: all` plus the type-aware nursery rules enabled in `biome.json` (inference-based, no `tsc`). `jsconfig.json` (`checkJs`) and `globals.d.ts` exist for editor errors only, since Biome ignores them.
+- Disabled type-aware rules: `useStrictBooleanExpressions`, `noUnsafeReturn`, `noUnnecessaryConditions` (false positives on JSDoc-typed JS; `Map#get` and optional-object fields are inferred as `any`/`always-truthy`).
+- CI: `.github/workflows/ci.yml` runs `biome ci`, the unit tests, `web-ext lint`, and `scripts/package.sh` on push/PR.
 - Release: pushing a `v*` tag (from `cog bump`) triggers `.github/workflows/release.yml`, which packages the extension and publishes a GitHub Release using the matching `CHANGELOG.md` section.
-- Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files, runs `tsc` on staged JS, and runs `cog verify` on commit messages.
+- Git hooks: run `lefthook install` once per clone; `lefthook.yml` formats/lints staged files and runs `cog verify` on commit messages.
 - Version/changelog: `cog bump --auto`; `cog.toml` calls `scripts/sync_version.sh` so the manifest version stays in sync.
 - Build: none for the extension. `scripts/package.sh` produces `dist/contextpop-firefox.zip`.
 

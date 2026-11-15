@@ -32,10 +32,6 @@ jobs:
       - name: Lint and format
         run: biome ci .
 
-      # Pins match the locally installed toolchain (tsc --version, web-ext).
-      - name: Type-check
-        run: npx --yes -p typescript@7.0.2 tsc --noEmit -p jsconfig.json
-
       - name: Unit tests
         run: node --test test/*.test.js
 

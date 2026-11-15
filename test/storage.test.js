@@ -71,16 +71,10 @@ test('normalizeSettings rebuilds the built-in action list and order', () => {
   const settings = normalizeSettings({ actionOrder: ['bogus', 'thesaurus', 'thesaurus'] });
   assert.equal(settings.actionOrder[0], 'thesaurus');
   assert.equal(settings.actionOrder.length, 8);
-  assert.deepStrictEqual(Object.keys(settings.builtinActions).sort(), [
-    'copyLink',
-    'copyPageInfo',
-    'copyPlain',
-    'copyRich',
-    'define',
-    'openLink',
-    'thesaurus',
-    'translate',
-  ]);
+  assert.deepStrictEqual(
+    Object.keys(settings.builtinActions).sort((a, b) => a.localeCompare(b)),
+    ['copyLink', 'copyPageInfo', 'copyPlain', 'copyRich', 'define', 'openLink', 'thesaurus', 'translate'],
+  );
 });
 
 test('normalizeSettings drops the retired Wiktionary template but keeps custom ones', () => {
