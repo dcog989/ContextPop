@@ -69,7 +69,7 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "search", "clipboardWrite"],
+  "permissions": ["storage", "unlimitedStorage", "search", "clipboardWrite"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "icons": {
     "16": "icons/icon-16.png",
