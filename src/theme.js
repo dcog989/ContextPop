@@ -44,5 +44,5 @@
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  globalThis.__contextPopTheme = { TOKENS, DURATIONS, applyTokens, prefersReducedMotion };
+  globalThis.__contextPopTheme = { DURATIONS, applyTokens, prefersReducedMotion };
 })();

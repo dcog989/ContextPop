@@ -220,7 +220,6 @@ declare function afterAnimation(el: HTMLElement, fallbackMs: number, animationNa
 // --- Published globals -----------------------------------------------------
 
 interface ThemeApi {
-  TOKENS: Readonly<{ accent: string; fontFamily: string }>;
   DURATIONS: Readonly<{
     rowRemoveMs: number;
     rowReorderMs: number;
@@ -294,7 +293,6 @@ interface MenuCallbacks {
 
 interface MenuState {
   open: boolean;
-  selection: MenuSelection | null;
   config: MenuConfig | null;
   callbacks: MenuCallbacks | null;
   actions: ActionItem[];
