@@ -93,20 +93,21 @@ function resolveEngineIcon(source) {
  * @returns {Promise<Record<string, string>>}
  */
 async function cachedIconMap(engines) {
+  /** @type {Map<string, IconSource>} */
+  const sources = new Map();
+  for (const engine of engines) {
+    const source = engineStrategy(engine).iconSource(engine);
+    if (source) sources.set(engine.id, source);
+  }
+  // One storage read for every cache key instead of one per engine.
+  await primeIconCache([...sources.values()].map((source) => source.key).filter((key) => !key.startsWith('data:')));
+
   /** @type {Record<string, string>} */
   const icons = {};
-  await Promise.all(
-    engines.map(async (engine) => {
-      const source = engineStrategy(engine).iconSource(engine);
-      if (!source) return;
-      if (source.key.startsWith('data:')) {
-        icons[engine.id] = source.key;
-        return;
-      }
-      const cached = await readIconCache(source.key);
-      if (typeof cached === 'string' && cached) icons[engine.id] = cached;
-    }),
-  );
+  for (const [engineId, source] of sources) {
+    const dataUrl = source.key.startsWith('data:') ? source.key : iconMemoryCache.get(source.key);
+    if (typeof dataUrl === 'string' && dataUrl) icons[engineId] = dataUrl;
+  }
   return icons;
 }
 

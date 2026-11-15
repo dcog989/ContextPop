@@ -47,6 +47,26 @@ function markIconUnavailable(key) {
 }
 
 /**
+ * Loads the given cache keys from storage in one read, filling the in-memory layer. Keys
+ * already in memory are skipped so a recorded miss is not re-read.
+ * @param {string[]} keys
+ * @returns {Promise<void>}
+ */
+async function primeIconCache(keys) {
+  const missing = keys.filter((key) => !iconMemoryCache.has(key));
+  if (!missing.length) return;
+  try {
+    const stored = await api.storage.local.get(missing.map((key) => ICON_CACHE_PREFIX + key));
+    for (const key of missing) {
+      const value = stored[ICON_CACHE_PREFIX + key];
+      if (value !== undefined) iconMemoryCache.set(key, value);
+    }
+  } catch {
+    // Storage read failed; callers fall back to the letter tile.
+  }
+}
+
+/**
  * @returns {Promise<string[]>}
  */
 async function iconCacheKeys() {
