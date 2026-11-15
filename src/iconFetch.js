@@ -80,6 +80,43 @@ async function fetchWithTimeout(url, consume) {
 }
 
 /**
+ * Reads a response body, stopping as soon as it exceeds `limit`. Returns null when the body
+ * is too large, so a chunked or unbounded response is never buffered in full.
+ * @param {Response} response
+ * @param {number} limit
+ * @returns {Promise<ArrayBuffer | null>}
+ */
+async function readBodyWithLimit(response, limit) {
+  const reader = response.body?.getReader();
+  if (!reader) {
+    const buffer = await response.arrayBuffer();
+    return buffer.byteLength <= limit ? buffer : null;
+  }
+
+  /** @type {Uint8Array[]} */
+  const chunks = [];
+  let received = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    received += value.byteLength;
+    if (received > limit) {
+      reader.cancel().catch(() => {});
+      return null;
+    }
+    chunks.push(value);
+  }
+
+  const bytes = new Uint8Array(received);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return bytes.buffer;
+}
+
+/**
  * @param {string} url
  * @returns {Promise<FetchResult>}
  */
@@ -94,8 +131,8 @@ async function fetchImage(url) {
       const declaredLength = Number(response.headers.get('content-length') || 0);
       const withinLimit = !declaredLength || declaredLength <= MAX_ICON_BYTES;
       if (response.ok && contentType.startsWith('image/') && withinLimit) {
-        const buffer = await response.arrayBuffer();
-        if (buffer.byteLength <= MAX_ICON_BYTES) {
+        const buffer = await readBodyWithLimit(response, MAX_ICON_BYTES);
+        if (buffer) {
           const downscaled = await downscaleImageToDataUrl(buffer, contentType);
           return { dataUrl: downscaled ?? arrayBufferToDataUrl(buffer, contentType), definitive: true };
         }
