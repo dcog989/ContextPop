@@ -9,7 +9,6 @@
 var ENGINE_SOURCE_STRATEGIES = {
   [ENGINE_SOURCE.template]: {
     normalize: (engine) => ({ template: String(engine?.template ?? ''), browserEngineName: '' }),
-    isUsable: () => true,
     validate: () => null,
     applyTemplateField: () => {},
     iconSource: () => null,
@@ -22,7 +21,6 @@ var ENGINE_SOURCE_STRATEGIES = {
       template: String(engine?.template ?? ''),
       browserEngineName: String(engine?.browserEngineName ?? ''),
     }),
-    isUsable: () => supportsBrowserEngineSearch(),
     validate: () => null,
     applyTemplateField: () => {},
     iconSource: () => null,
